@@ -1,0 +1,335 @@
+{
+  "source_sha256": "7A290B13563A058464FA01287FA801687B76E55A85A80867DDA76AAC73743094",
+  "model": [
+    "Qualcomm Technologies, Inc. Cape MTP, Senna B"
+  ],
+  "compatible": [
+    "qcom,cape-mtp",
+    "qcom,cape",
+    "qcom,mtp"
+  ],
+  "msm_id": [
+    531,
+    65536,
+    540,
+    65536,
+    530,
+    65536
+  ],
+  "board_id": [
+    65544,
+    0
+  ],
+  "memory": [
+    [
+      2147483648,
+      1778384896
+    ],
+    [
+      4047503360,
+      247463936
+    ],
+    [
+      34359738368,
+      965738496
+    ],
+    [
+      38654705664,
+      6442450944
+    ],
+    [
+      35433480192,
+      3221225472
+    ]
+  ],
+  "gic": {
+    "path": "/soc/interrupt-controller@17100000",
+    "compatible": [
+      "arm,gic-v3"
+    ],
+    "reg": [
+      [
+        386924544,
+        65536
+      ],
+      [
+        387448832,
+        2097152
+      ]
+    ],
+    "reg_names": [],
+    "interrupts": [
+      1,
+      9,
+      8
+    ],
+    "clock_frequency": null
+  },
+  "pdc": {
+    "path": "/soc/interrupt-controller@b220000",
+    "compatible": [
+      "qcom,pdc",
+      "qcom,cape-pdc"
+    ],
+    "reg": [
+      [
+        186777600,
+        196608
+      ],
+      [
+        390070512,
+        100
+      ]
+    ],
+    "reg_names": [
+      "pdc-interrupt-base",
+      "apss-shared-spi-cfg"
+    ],
+    "interrupts": [],
+    "clock_frequency": null
+  },
+  "timer": {
+    "path": "/soc/timer@17420000",
+    "compatible": [
+      "arm,armv7-timer-mem"
+    ],
+    "reg": [
+      [
+        390201344,
+        4096
+      ]
+    ],
+    "reg_names": [],
+    "interrupts": [],
+    "clock_frequency": 19200000
+  },
+  "uart": {
+    "path": "/soc/qcom,qup_uart@99c000",
+    "compatible": [
+      "qcom,msm-geni-console"
+    ],
+    "reg": [
+      [
+        10076160,
+        16384
+      ]
+    ],
+    "reg_names": [
+      "se_phys"
+    ],
+    "interrupts": [
+      0,
+      608,
+      4
+    ],
+    "clock_frequency": null
+  },
+  "ufs": {
+    "path": "/soc/ufshc@1d84000",
+    "compatible": [
+      "qcom,ufshc"
+    ],
+    "reg": [
+      [
+        30949376,
+        12288
+      ],
+      [
+        30965760,
+        32768
+      ],
+      [
+        30998528,
+        36864
+      ]
+    ],
+    "reg_names": [
+      "ufs_mem",
+      "ufs_ice",
+      "ufs_ice_hwkm"
+    ],
+    "interrupts": [
+      0,
+      265,
+      4
+    ],
+    "clock_frequency": null
+  },
+  "mdp": {
+    "path": "/soc/qcom,mdss_mdp@ae00000",
+    "compatible": [
+      "qcom,sde-kms"
+    ],
+    "reg": [
+      [
+        182452224,
+        540672
+      ],
+      [
+        183173120,
+        8200
+      ],
+      [
+        183156736,
+        2048
+      ]
+    ],
+    "reg_names": [
+      "mdp_phys",
+      "vbif_phys",
+      "regdma_phys"
+    ],
+    "interrupts": [
+      0,
+      83,
+      4
+    ],
+    "clock_frequency": null
+  },
+  "its": {
+    "path": "/soc/interrupt-controller@17100000/msi-controller@17140000",
+    "reg": [
+      [
+        387186688,
+        131072
+      ]
+    ]
+  },
+  "timer_frames": {
+    "/soc/timer@17420000/frame@17421000": {
+      "reg": [
+        [
+          390205440,
+          4096
+        ],
+        [
+          390209536,
+          4096
+        ]
+      ],
+      "interrupts": [
+        0,
+        8,
+        4,
+        0,
+        6,
+        4
+      ],
+      "status": []
+    },
+    "/soc/timer@17420000/frame@17423000": {
+      "reg": [
+        [
+          390213632,
+          4096
+        ]
+      ],
+      "interrupts": [
+        0,
+        9,
+        4
+      ],
+      "status": [
+        "disabled"
+      ]
+    },
+    "/soc/timer@17420000/frame@17425000": {
+      "reg": [
+        [
+          390221824,
+          4096
+        ]
+      ],
+      "interrupts": [
+        0,
+        10,
+        4
+      ],
+      "status": [
+        "disabled"
+      ]
+    },
+    "/soc/timer@17420000/frame@17427000": {
+      "reg": [
+        [
+          390230016,
+          4096
+        ]
+      ],
+      "interrupts": [
+        0,
+        11,
+        4
+      ],
+      "status": [
+        "disabled"
+      ]
+    },
+    "/soc/timer@17420000/frame@17429000": {
+      "reg": [
+        [
+          390238208,
+          4096
+        ]
+      ],
+      "interrupts": [
+        0,
+        12,
+        4
+      ],
+      "status": [
+        "disabled"
+      ]
+    },
+    "/soc/timer@17420000/frame@1742b000": {
+      "reg": [
+        [
+          390246400,
+          4096
+        ]
+      ],
+      "interrupts": [
+        0,
+        13,
+        4
+      ],
+      "status": [
+        "disabled"
+      ]
+    },
+    "/soc/timer@17420000/frame@1742d000": {
+      "reg": [
+        [
+          390254592,
+          4096
+        ]
+      ],
+      "interrupts": [
+        0,
+        14,
+        4
+      ],
+      "status": [
+        "disabled"
+      ]
+    }
+  },
+  "cpu_paths": [
+    "/cpus/cpu@0",
+    "/cpus/cpu@100",
+    "/cpus/cpu@200",
+    "/cpus/cpu@300",
+    "/cpus/cpu@400",
+    "/cpus/cpu@500",
+    "/cpus/cpu@600",
+    "/cpus/cpu@700"
+  ],
+  "psci": {
+    "compatible": [
+      "arm,psci-1.0"
+    ],
+    "method": [
+      "smc"
+    ]
+  }
+}

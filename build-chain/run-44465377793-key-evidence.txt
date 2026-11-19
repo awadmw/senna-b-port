@@ -1,0 +1,10 @@
+140: 2026-11-19T05:28:18.8576990Z [36;1m    echo "KC_INPUT=${kernel_path}"[0m
+141: 2026-11-19T05:28:18.8578920Z [36;1m    echo "KC_KDK=${KDKROOT}"[0m
+142: 2026-11-19T05:28:18.8580180Z [36;1m    echo "KC_OUTPUT=${output_path}"[0m
+275245: 2026-11-19T05:38:47.0637570Z   🎉 XNU Build Done!
+275260: 2026-11-19T05:38:57.4118760Z KC_INPUT=/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet
+275261: 2026-11-19T05:38:57.4119410Z KC_KDK=/Library/Developer/KDKs/KDK_13.5_22G74.kdk
+275262: 2026-11-19T05:38:57.4120040Z KC_OUTPUT=/Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/oss-xnu.macOS.13.5.kc.sweet
+275263: 2026-11-19T05:38:57.4230420Z /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet: Mach-O 64-bit executable arm64
+275267: 2026-11-19T05:39:10.1796610Z Error Domain=KMErrorDomain Code=31 "Error occurred while building a collection: in /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet: could not use '/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet' because it is not a compatible arch" UserInfo={NSLocalizedDescription=Error occurred while building a collection: in /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet: could not use '/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet' because it is not a compatible arch}
+275268: 2026-11-19T05:39:10.1837290Z ##[error]Process completed with exit code 31.

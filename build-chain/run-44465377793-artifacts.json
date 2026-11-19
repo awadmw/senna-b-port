@@ -1,0 +1,25 @@
+{
+  "total_count": 1,
+  "artifacts": [
+    {
+      "id": 14502053883,
+      "node_id": "MDg6QXJ0aWZhY3QxNDUwMjA1Mzg4Mw==",
+      "name": "xnu-buildtree-SWEET",
+      "size_in_bytes": 23183269,
+      "url": "https://api.github.com/repos/awadmw/ios-sweet/actions/artifacts/14502053883",
+      "archive_download_url": "https://api.github.com/repos/awadmw/ios-sweet/actions/artifacts/14502053883/zip",
+      "expired": false,
+      "digest": "sha256:39190e15892465d143b69478dddae5f18390db93cedc4f419926bdd080f8ca56",
+      "created_at": "2026-11-19T05:39:20Z",
+      "updated_at": "2026-11-19T05:39:20Z",
+      "expires_at": "2026-11-26T05:39:17Z",
+      "workflow_run": {
+        "id": 44465377793,
+        "repository_id": 1463617381,
+        "head_repository_id": 1463617381,
+        "head_branch": "main",
+        "head_sha": "74b1d2d0f2df5118f57d5d1a9df351247623acba"
+      }
+    }
+  ]
+}

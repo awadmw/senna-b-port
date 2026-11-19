@@ -1,0 +1,279 @@
+{
+  "stage": 1,
+  "scope": "host-side evidence only; not a boot/UEFI/XNU functionality test",
+  "overall_pass": true,
+  "checks_passed": 54,
+  "checks_total": 54,
+  "checks": [
+    {
+      "name": "stage0 hash: boot_b.img",
+      "pass": true,
+      "detail": "5B470B39DB25382558D41E764C94DBC1DDCA225CAFF56A148F4B8CEDEFE33A61"
+    },
+    {
+      "name": "stage0 hash: dtbo_b.img",
+      "pass": true,
+      "detail": "4F80DE98FAF3BD9881A252AE4FE3C17C151D45AB27FDB0E4AF9CFD43C03C2169"
+    },
+    {
+      "name": "stage0 hash: vendor_boot_b.img",
+      "pass": true,
+      "detail": "4AAB629EEB33DCFFFD6448FBFD5C2A8AA93B7EB13953C94063DC34392DF1B6CB"
+    },
+    {
+      "name": "stage0 hash: vbmeta_b.img",
+      "pass": true,
+      "detail": "63888B4817EBC3194B2FADB4A9F43DD012787553FAECE7EB770190E05949A44E"
+    },
+    {
+      "name": "stage0 hash: senna-b-live-base.dtb",
+      "pass": true,
+      "detail": "AB7B51E9564A168BA3AE93E22F70CEE32BA5CAF776A4438B3CF31B2A3CC77E57"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-00.dtb",
+      "pass": true,
+      "detail": "size=1203098"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-01.dtb",
+      "pass": true,
+      "detail": "size=662913"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-02.dtb",
+      "pass": true,
+      "detail": "size=604061"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-03.dtb",
+      "pass": true,
+      "detail": "size=579632"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-04.dtb",
+      "pass": true,
+      "detail": "size=553359"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-05.dtb",
+      "pass": true,
+      "detail": "size=646566"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-06.dtb",
+      "pass": true,
+      "detail": "size=589900"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-07.dtb",
+      "pass": true,
+      "detail": "size=681573"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-08.dtb",
+      "pass": true,
+      "detail": "size=1118819"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-09.dtb",
+      "pass": true,
+      "detail": "size=1121383"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-10.dtb",
+      "pass": true,
+      "detail": "size=1084330"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-11.dtb",
+      "pass": true,
+      "detail": "size=1212016"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-12.dtb",
+      "pass": true,
+      "detail": "size=1211504"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-13.dtb",
+      "pass": true,
+      "detail": "size=1090228"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-14.dtb",
+      "pass": true,
+      "detail": "size=675227"
+    },
+    {
+      "name": "FDT magic/totalsize: dtbo-entry-15.dtb",
+      "pass": true,
+      "detail": "size=1152874"
+    },
+    {
+      "name": "FDT magic/totalsize: vendor-boot-00.dtb",
+      "pass": true,
+      "detail": "size=479405"
+    },
+    {
+      "name": "FDT magic/totalsize: vendor-boot-01.dtb",
+      "pass": true,
+      "detail": "size=479393"
+    },
+    {
+      "name": "FDT magic/totalsize: vendor-boot-02.dtb",
+      "pass": true,
+      "detail": "size=476418"
+    },
+    {
+      "name": "FDT magic/totalsize: live-base-copy.dtb",
+      "pass": true,
+      "detail": "size=1118143"
+    },
+    {
+      "name": "FDT inventory count",
+      "pass": true,
+      "detail": "16 DTBO + 3 vendor base + 1 live"
+    },
+    {
+      "name": "senna-b entry 11 hash",
+      "pass": true,
+      "detail": "D3169C92C8D9FC4DC49C94F18778A81391DE2CAF1AA9D9AE5BB0BBE4504F04CD"
+    },
+    {
+      "name": "senna-b root model",
+      "pass": true,
+      "detail": "entry 11"
+    },
+    {
+      "name": "live root model agrees",
+      "pass": true,
+      "detail": "live merged FDT"
+    },
+    {
+      "name": "live DTB copy hash",
+      "pass": true,
+      "detail": "AB7B51E9564A168BA3AE93E22F70CEE32BA5CAF776A4438B3CF31B2A3CC77E57"
+    },
+    {
+      "name": "memory range count",
+      "pass": true,
+      "detail": "ranges=5"
+    },
+    {
+      "name": "memory total",
+      "pass": true,
+      "detail": "12655263744"
+    },
+    {
+      "name": "hardware node: /soc/psci",
+      "pass": true,
+      "detail": "/soc/psci"
+    },
+    {
+      "name": "hardware node: /soc/interrupt-controller@17100000",
+      "pass": true,
+      "detail": "/soc/interrupt-controller@17100000"
+    },
+    {
+      "name": "hardware node: /soc/timer@17420000",
+      "pass": true,
+      "detail": "/soc/timer@17420000"
+    },
+    {
+      "name": "hardware node: /soc/qcom,qup_uart@99c000",
+      "pass": true,
+      "detail": "/soc/qcom,qup_uart@99c000"
+    },
+    {
+      "name": "hardware node: /soc/ufshc@1d84000",
+      "pass": true,
+      "detail": "/soc/ufshc@1d84000"
+    },
+    {
+      "name": "hardware node: /soc/qcom,mdss_mdp@ae00000",
+      "pass": true,
+      "detail": "/soc/qcom,mdss_mdp@ae00000"
+    },
+    {
+      "name": "hardware node: /reserved-memory/splash_region",
+      "pass": true,
+      "detail": "/reserved-memory/splash_region"
+    },
+    {
+      "name": "repository commit: dipa-studio__ios-sweet",
+      "pass": true,
+      "detail": "45263bee51df4a0f55cdf9c649af886399488ddb"
+    },
+    {
+      "name": "repository complete tree: dipa-studio__ios-sweet",
+      "pass": true,
+      "detail": "entries=149"
+    },
+    {
+      "name": "repository commit: UniXNU__UniXNU",
+      "pass": true,
+      "detail": "519d80242a5028ee123447b01bc3b809baed565f"
+    },
+    {
+      "name": "repository complete tree: UniXNU__UniXNU",
+      "pass": true,
+      "detail": "entries=2452"
+    },
+    {
+      "name": "repository commit: edk2-porting__edk2-msm",
+      "pass": true,
+      "detail": "e1952621f419f8db60ed28271264e1b5184c571d"
+    },
+    {
+      "name": "repository complete tree: edk2-porting__edk2-msm",
+      "pass": true,
+      "detail": "entries=1890"
+    },
+    {
+      "name": "repository commit: blacktop__darwin-xnu-build",
+      "pass": true,
+      "detail": "663906528d1cd5ea8fde7de6f16de73db9511549"
+    },
+    {
+      "name": "repository complete tree: blacktop__darwin-xnu-build",
+      "pass": true,
+      "detail": "entries=51"
+    },
+    {
+      "name": "ios-sweet pins darwin-xnu-build",
+      "pass": true,
+      "detail": "663906528d1cd5ea8fde7de6f16de73db9511549"
+    },
+    {
+      "name": "UniXNU actual license",
+      "pass": true,
+      "detail": "BSD-2-Clause-Patent"
+    },
+    {
+      "name": "required artifact: STAGE1-REPORT.md",
+      "pass": true,
+      "detail": "STAGE1-REPORT.md"
+    },
+    {
+      "name": "required artifact: repository-audit.md",
+      "pass": true,
+      "detail": "repository-audit.md"
+    },
+    {
+      "name": "required artifact: FAILURES.md",
+      "pass": true,
+      "detail": "FAILURES.md"
+    },
+    {
+      "name": "required artifact: image-headers.json",
+      "pass": true,
+      "detail": "image-headers.json"
+    },
+    {
+      "name": "required artifact: hardware-evidence.json",
+      "pass": true,
+      "detail": "hardware-evidence.json"
+    }
+  ]
+}

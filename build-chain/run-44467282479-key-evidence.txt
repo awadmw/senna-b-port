@@ -1,0 +1,11 @@
+140: 2026-11-19T05:45:08.7705110Z [36;1m    echo "KC_INPUT=${kernel_path}"[0m
+141: 2026-11-19T05:45:08.7705350Z [36;1m    echo "KC_KDK=${KDKROOT}"[0m
+142: 2026-11-19T05:45:08.7705590Z [36;1m    echo "KC_OUTPUT=${output_path}"[0m
+275175: 2026-11-19T05:53:31.3727670Z   🎉 XNU Build Done!
+275190: 2026-11-19T05:53:43.0063600Z KC_INPUT=/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet
+275191: 2026-11-19T05:53:43.0080040Z KC_KDK=/Library/Developer/KDKs/KDK_13.5_22G74.kdk
+275192: 2026-11-19T05:53:43.0190310Z KC_OUTPUT=/Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/oss-xnu.macOS.13.5.kc.sweet
+275193: 2026-11-19T05:53:43.0303420Z + kmutil create -v -V development -a arm64 -n boot -s none --kdk /Library/Developer/KDKs/KDK_13.5_22G74.kdk -B /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/oss-xnu.macOS.13.5.kc.sweet -k /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet -x
+275194: 2026-11-19T05:53:43.0314350Z /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet: Mach-O 64-bit executable arm64
+275195: 2026-11-19T05:53:54.6586030Z Error Domain=KMErrorDomain Code=31 "Error occurred while building a collection: 
+275206: 2026-11-19T05:53:54.6647120Z ##[error]Process completed with exit code 31.

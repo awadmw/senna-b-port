@@ -1,0 +1,15 @@
+run=44452597243
+job=135319900949
+result=success
+xnu_kernel_build=passed
+kernelcache_build=not-invoked (workflow used bash build.sh without -k)
+kmutil_create_count=0
+kc_done_count=0
+2026-11-19T03:36:38.9978560Z Xcode 16.0
+2026-11-19T03:43:59.2949210Z /bin/mv /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET//kernel.development.sweet.dSYM/Contents/Resources/DWARF/kernel.development.sweet.unstripped /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET//kernel.development.sweet.dSYM/Contents/Resources/DWARF/kernel.development.sweet
+2026-11-19T03:43:59.3348900Z /Applications/Xcode_16.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip -S /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET//kernel.development.sweet.unstripped -o /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET//kernel.development.sweet
+2026-11-19T03:43:59.3763650Z built kernel at /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET//kernel.development.sweet
+2026-11-19T03:43:59.4072580Z /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/usr/local/bin/ctfconvert -c -l xnu -u xnu -o /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET//kernel.development.sweet.ctf /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET//kernel.development.sweet.dSYM/Contents/Resources/DWARF/kernel.development.sweet
+2026-11-19T03:44:05.5734410Z /bin/ln -fs DEVELOPMENT_ARM64_SWEET/kernel.development.sweet /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet
+2026-11-19T03:44:12.4682690Z   🎉 XNU Build Done!
+2026-11-19T03:44:28.1960620Z -rwxr-xr-x   1 runner  staff  17188640 Nov 19 03:44 kernel.development.sweet

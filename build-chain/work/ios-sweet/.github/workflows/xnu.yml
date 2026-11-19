@@ -1,0 +1,270 @@
+name: xnu
+
+on:
+  workflow_dispatch:
+    inputs:
+      macos_version:
+        description: macOS release whose xnu to build (13.5 = xnu-8796, iOS 16 era)
+        default: "13.5"
+      kernel_config:
+        description: RELEASE / DEVELOPMENT / DEBUG
+        default: DEVELOPMENT
+      machine_config:
+        description: xnu MACHINE_CONFIG (SWEET baseline or SENNA compile-only target)
+        default: SWEET
+      keep_going:
+        description: make -k (collect all compile errors in one run)
+        default: "true"
+  push:
+    branches: [main]
+    paths:
+      - "xnu/patches/**"
+      - "xnu/senna/**"
+      - ".github/workflows/xnu.yml"
+
+concurrency:
+  group: xnu-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DXB_REPO: https://github.com/blacktop/darwin-xnu-build
+  DXB_SHA: 663906528d1cd5ea8fde7de6f16de73db9511549
+  MACOS_VERSION: ${{ inputs.macos_version || '13.5' }}
+  KERNEL_CONFIG: ${{ inputs.kernel_config || 'DEVELOPMENT' }}
+  MACHINE_CONFIG: ${{ inputs.machine_config || 'SWEET' }}
+
+jobs:
+  build:
+    # GitHub retired macos-14. Validate the existing patches on macOS 15.
+    # This runner has Xcode 16; the Xcode 15 ABI warning is not assumed away.
+    runs-on: macos-15
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch build script
+        run: |
+          set -euo pipefail
+          git init -q dxb
+          git -C dxb fetch -q --depth 1 "$DXB_REPO" "$DXB_SHA"
+          git -C dxb checkout -q FETCH_HEAD
+          # ios-sweet's boot path uses a plain-arm64 raw kernel payload, not
+          # KDK kexts. For this compile-only artifact, create a kernel-only KC:
+          # -x with no -b avoids mixing arm64e-only KDK kexts into the KC.
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("dxb/build.sh")
+          s = p.read_text()
+          start = s.index("build_kc() {")
+          end = s.index("\nmain() {", start)
+          replacement = r'''build_kc() {
+              if [ "$BUILDLIB" -ne "0" ]; then
+                  info "Skipping kernel collection build because --lib was requested"
+                  return
+              fi
+              local kernel_path="${BUILD_DIR}/xnu.obj/kernel.${KERNEL_TYPE}"
+              local machine_lower
+              machine_lower=$(echo "$MACHINE_CONFIG" | tr '[:upper:]' '[:lower:]')
+              local output_path="${DSTROOT}/oss-xnu.macOS.${MACOS_VERSION}.kc.${machine_lower}"
+              test -s "${kernel_path}"
+              test -d "${KDKROOT}"
+              echo "KC_INPUT=${kernel_path}"
+              echo "KC_KDK=${KDKROOT}"
+              echo "KC_OUTPUT=${output_path}"
+              file "${kernel_path}"
+              set -x
+              kmutil create -v -V "${KC_VARIANT}" -a arm64 -n boot -s none \
+                  --kdk "${KDKROOT}" \
+                  -B "${output_path}" \
+                  -k "${kernel_path}" \
+                  -x
+              set +x
+              test -s "${output_path}"
+              file "${output_path}"
+              echo "KC Build Done: ${output_path}"
+          }
+          '''
+          s = s[:start] + replacement + s[end:]
+          assert s.count("        install_ipsw\n") == 1
+          assert s.count("build_kc() {") == 1
+          p.write_text(s)
+          PY
+          cp xnu/patches/*.patch xnu/patches/*.sh dxb/patches/
+          # libfirehose_kernel is built arm64e-only; these targets are plain arm64.
+          sed -i '' 's/ARCHS="x86_64 arm64e" VALID_ARCHS="x86_64 arm64e"/ARCHS="x86_64 arm64e arm64" VALID_ARCHS="x86_64 arm64e arm64"/' dxb/build.sh
+          grep -c 'VALID_ARCHS="x86_64 arm64e arm64"' dxb/build.sh
+          # kmutil requires split seg v2. Upstream XNU defines the needed
+          # linker flags for arm64e but not for ios-sweet's plain-arm64 override.
+          cat > /tmp/prepare-kc-link.sh <<'KC_LINK'
+          python3 - "${WORK_DIR}/xnu/makedefs/MakeInc.def" <<'PY'
+          from pathlib import Path
+          import sys
+          path = Path(sys.argv[1])
+          text = path.read_text()
+          marker = "LDFLAGS_KERNEL_ONLY_SUBARCH_x86_64 ="
+          addition = "LDFLAGS_KERNEL_ONLY_SUBARCH_arm64 = -Wl,-add_split_seg_info -Wl,-kernel\n\n"
+          assert text.count(marker) == 1
+          assert "LDFLAGS_KERNEL_ONLY_SUBARCH_arm64 =" not in text
+          path.write_text(text.replace(marker, addition + marker, 1))
+          PY
+          grep -n 'LDFLAGS_KERNEL_ONLY_SUBARCH_arm64' "${WORK_DIR}/xnu/makedefs/MakeInc.def"
+          KC_LINK
+          sed -i '' '/^[[:space:]]*patches[[:space:]]*$/r /tmp/prepare-kc-link.sh' dxb/build.sh
+          test "$(grep -c 'LDFLAGS_KERNEL_ONLY_SUBARCH_arm64 = -Wl,-add_split_seg_info' dxb/build.sh)" = "1"
+          MACHINE_LOWER=$(echo "$MACHINE_CONFIG" | tr '[:upper:]' '[:lower:]')
+          echo "MACHINE_LOWER=$MACHINE_LOWER" >> "$GITHUB_ENV"
+          if [ "$MACHINE_CONFIG" = "SENNA" ]; then
+            # The senna directory intentionally contains only a comments-only patch
+            # placeholder and the SM8475 platform configuration. Do not feed a
+            # comments-only file to git apply. The generated target is a compile alias
+            # for SWEET's board implementation, not a hardware bring-up patch.
+            if grep -Ev '^[[:space:]]*(#|$)' xnu/senna/0001-empty.patch | grep -q .; then
+              echo 'senna empty patch contains a functional change' >&2
+              exit 1
+            fi
+            test -f xnu/senna/platform.sm8475.conf
+            cat > /tmp/prepare-senna.sh <<'SENNA_PREPARE'
+          if [ "$MACHINE_CONFIG" = "SENNA" ]; then
+              # senna compile-only target generated from platform.sm8475.conf
+              set -a
+              . "$GITHUB_WORKSPACE/xnu/senna/platform.sm8475.conf"
+              set +a
+              test "$MACHINE_CONFIG" = "SENNA"
+              test "$SOC" = "SM8475"
+              test "$BASE_MACHINE_CONFIG" = "SWEET"
+              test "$XNU_BOARD_CONFIG" = "SWEET"
+              test "$RUNTIME_SUPPORT" = "not-implemented"
+              cp "${WORK_DIR}/xnu/config/MASTER.arm64.sweet" "${WORK_DIR}/xnu/config/MASTER.arm64.senna"
+              python3 - "${WORK_DIR}/xnu/makedefs/MakeInc.def" <<'PY'
+          import pathlib
+          import re
+          import sys
+
+          path = pathlib.Path(sys.argv[1])
+          text = path.read_text()
+          old = "SUPPORTED_ARM64_MACHINE_CONFIGS = BCM2837 T6000 T8101 T8103 VMAPPLE SWEET"
+          new = old + " SENNA"
+          assert text.count(old) == 1, "SWEET supported-machine line not found"
+          text = text.replace(old, new, 1)
+          pattern = r"(?m)^(MACHINE_FLAGS_ARM64_SWEET[ \t]*=.*\n)"
+          replacement = r"\1MACHINE_FLAGS_ARM64_SENNA = -DARM64_BOARD_CONFIG_SWEET -DSENNA=1 -march=armv8.2-a+crypto\n"
+          text, count = re.subn(pattern, replacement, text, count=1)
+          assert count == 1, "SWEET machine-flags line not found"
+          old = "ifneq ($(CURRENT_MACHINE_CONFIG),SWEET)"
+          new = "ifeq ($(filter $(CURRENT_MACHINE_CONFIG),SWEET SENNA),)"
+          assert text.count(old) == 1, "plain-arm64 condition not found"
+          text = text.replace(old, new, 1)
+          path.write_text(text)
+          PY
+              grep -n 'SUPPORTED_ARM64_MACHINE_CONFIGS\|MACHINE_FLAGS_ARM64_SENNA\|filter $(CURRENT_MACHINE_CONFIG)' "${WORK_DIR}/xnu/makedefs/MakeInc.def"
+              test -s "${WORK_DIR}/xnu/config/MASTER.arm64.senna"
+          fi
+          SENNA_PREPARE
+            sed -i '' '/^[[:space:]]*patches[[:space:]]*$/r /tmp/prepare-senna.sh' dxb/build.sh
+            test "$(grep -c 'senna compile-only target generated' dxb/build.sh)" = "1"
+            sed -n '850,950p' dxb/build.sh
+          fi
+          ls dxb/patches
+
+      - name: Deps
+        run: |
+          brew install jq gum bash cmake ninja
+          # build.sh only checks that xcodes exists; Xcode is preinstalled.
+          printf '#!/bin/sh\nexit 0\n' | sudo tee /usr/local/bin/xcodes >/dev/null
+          sudo chmod +x /usr/local/bin/xcodes
+          sw_vers
+          ls -d /Applications/Xcode*.app
+          XC=$(ls -d /Applications/Xcode_*.app | sort -V | head -1)
+          echo "DEVELOPER_DIR=$XC/Contents/Developer" >> "$GITHUB_ENV"
+          sudo xcode-select -s "$XC"
+          xcodebuild -version
+          xcrun --find iig
+
+      - name: Install host KDK for kmutil
+        # kmutil on macOS 15.8.2 (24H232) refuses to create any collection
+        # until the KDK matching the host build is installed, even with --kdk.
+        run: |
+          set -euo pipefail
+          test "$(sw_vers -buildVersion)" = "24H232"
+          HOST_KDK_URL="https://github.com/dortania/KdkSupportPkg/releases/download/24H232/Kernel_Debug_Kit_15.8.2_build_24H232.dmg"
+          curl -fL --retry 3 --connect-timeout 60 --max-time 900 -o /tmp/host-kdk.dmg "${HOST_KDK_URL}"
+          hdiutil attach /tmp/host-kdk.dmg
+          sudo installer -pkg '/Volumes/Kernel Debug Kit/KernelDebugKit.pkg' -target /
+          hdiutil detach '/Volumes/Kernel Debug Kit'
+          test -d /Library/Developer/KDKs/KDK_15.8.2_24H232.kdk
+      - name: Build
+        working-directory: dxb
+        env:
+          MAKEFLAGS: ${{ inputs.keep_going == 'false' && '' || '-k' }}
+        run: bash build.sh -k
+
+      - name: Verify and collect kernelcache
+        run: |
+          set -euo pipefail
+          KC="dxb/fakeroot/oss-xnu.macOS.${MACOS_VERSION}.kc.${MACHINE_LOWER}"
+          test -s "$KC"
+          kmutil inspect --show-kernel-uuid -B "$KC"
+          mkdir -p out
+          cp "$KC" "out/kernelcache.${MACHINE_LOWER}"
+          file "out/kernelcache.${MACHINE_LOWER}"
+          ls -lh "out/kernelcache.${MACHINE_LOWER}"
+          SOC=SM7150
+          if [ "$MACHINE_CONFIG" = "SENNA" ]; then
+            . xnu/senna/platform.sm8475.conf
+          fi
+          jq -n \
+            --arg machine "$MACHINE_CONFIG" \
+            --arg soc "$SOC" \
+            --arg runtime "${RUNTIME_SUPPORT:-sweet-reference-only}" \
+            --arg source "$GITHUB_SHA" \
+            --arg dxb "$DXB_SHA" \
+            --arg developer_dir "$DEVELOPER_DIR" \
+            --arg kernelcache "kernelcache.${MACHINE_LOWER}" \
+            '{machine_config:$machine,soc:$soc,runtime_support:$runtime,source_commit:$source,dxb_commit:$dxb,developer_dir:$developer_dir,kernelcache:$kernelcache}' \
+            > out/build-metadata.json
+          cat out/build-metadata.json
+
+      - name: Package build tree for local compiles
+        if: always()
+        run: |
+          SDK=$(xcrun --sdk macosx --show-sdk-path)
+          mkdir -p sdk-kernel-platform
+          cp -R "$SDK/System/Library/Frameworks/Kernel.framework/Versions/A/PrivateHeaders/platform" sdk-kernel-platform/ || true
+          tar czf buildtree.tgz \
+            --exclude='*.o' --exclude='*.cpo' --exclude='*.a' --exclude='*.dSYM' --exclude='*.unstripped' \
+            --exclude='kernel.development.*' --exclude='.git' \
+            -C dxb build/xnu.obj fakeroot/usr/local/include xnu \
+            -C .. sdk-kernel-platform
+          ls -la buildtree.tgz
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: xnu-buildtree-${{ env.MACHINE_CONFIG }}
+          path: buildtree.tgz
+          retention-days: 7
+
+      - name: Inspect closed KDK support libs
+        if: always()
+        run: |
+          mkdir -p out/kdk-libs
+          for lib in /Library/Developer/KDKs/*/System/Library/KernelSupport/lib*.a; do
+            b=$(basename "$lib" .a)
+            ar t "$lib" > "out/kdk-libs/$b.members.txt" 2>&1 || true
+            nm -m "$lib" > "out/kdk-libs/$b.nm.txt" 2>&1 || true
+            lipo -info "$lib" >> out/kdk-libs/arch.txt 2>&1 || true
+          done
+          ls -la out/kdk-libs
+
+      - name: Collect
+        run: |
+          mkdir -p out
+          cp -R dxb/fakeroot/System/Library/Kernels/. out/ 2>/dev/null || true
+          ls -la out
+          (cd out && find . -maxdepth 1 -type f \( -name 'kernel.*' -o -name 'kernelcache.*' \) -exec shasum -a 256 {} + > SHA256SUMS)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xnu-kernelcache-${{ env.MACHINE_CONFIG }}
+          path: out/
+          if-no-files-found: warn

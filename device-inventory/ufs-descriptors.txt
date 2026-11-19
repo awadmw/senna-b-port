@@ -1,0 +1,340 @@
+=== UFS DESCRIPTOR SYSFS ===
+--- /sys/devices/platform/soc/1d84000.ufshc/device_descriptor ---
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/bkops_termination_latency
+0x05
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/boot_enable
+0x01
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/descriptor_access_enable
+0x00
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/device_class
+0x00
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/device_sub_class
+0x00
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/device_type
+0x00
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/device_version
+0x0011
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/ext_feature_sup
+0x800003BB
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/ffu_timeout
+0x0A
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/high_priority_lun
+0x05
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/hpb_control
+0x00
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/hpb_version
+0x0200
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/initial_active_icc_level
+0x00
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/initial_power_mode
+0x01
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/manufacturer_id
+0x012C
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/manufacturing_date
+0x0123
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/number_of_luns
+0x06
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/number_of_secure_wpa
+0x20
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/number_of_wluns
+0x04
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/protocol
+0x00
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/psa_max_data_size
+0x00EE5E00
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/psa_state_timeout
+0x14
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/queue_depth
+0x20
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/rtc_update
+0x0000
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/rtt_capability
+0x02
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/secure_removal_type
+0x00
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/specification_version
+0x0310
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/support_security_lun
+0x01
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/ufs_features
+0xBB
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/wb_presv_us_en
+0x01
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/wb_shared_alloc_units
+0x00000400
+### /sys/devices/platform/soc/1d84000.ufshc/device_descriptor/wb_type
+0x01
+--- /sys/devices/platform/soc/1d84000.ufshc/interconnect_descriptor ---
+### /sys/devices/platform/soc/1d84000.ufshc/interconnect_descriptor/mphy_version
+0x0410
+### /sys/devices/platform/soc/1d84000.ufshc/interconnect_descriptor/unipro_version
+0x0180
+=== UFS HOST/CONTROLLER SYSFS CANDIDATES ===
+--- /sys/class/scsi_host ---
+--- /sys/devices/platform/soc/1d84000.ufshc ---
+/sys/devices/platform/soc/1d84000.ufshc/rpm_target_dev_state
+/sys/devices/platform/soc/1d84000.ufshc/uevent
+/sys/devices/platform/soc/1d84000.ufshc/string_descriptors/serial_number
+/sys/devices/platform/soc/1d84000.ufshc/string_descriptors/product_name
+/sys/devices/platform/soc/1d84000.ufshc/string_descriptors/product_revision
+/sys/devices/platform/soc/1d84000.ufshc/string_descriptors/manufacturer_name
+/sys/devices/platform/soc/1d84000.ufshc/string_descriptors/oem_id
+/sys/devices/platform/soc/1d84000.ufshc/monitor/read_nr_requests
+/sys/devices/platform/soc/1d84000.ufshc/monitor/read_total_sectors
+/sys/devices/platform/soc/1d84000.ufshc/monitor/read_req_latency_min
+/sys/devices/platform/soc/1d84000.ufshc/monitor/write_nr_requests
+/sys/devices/platform/soc/1d84000.ufshc/monitor/write_req_latency_min
+/sys/devices/platform/soc/1d84000.ufshc/monitor/read_req_latency_max
+/sys/devices/platform/soc/1d84000.ufshc/monitor/write_req_latency_max
+/sys/devices/platform/soc/1d84000.ufshc/monitor/write_total_busy
+/sys/devices/platform/soc/1d84000.ufshc/monitor/monitor_enable
+/sys/devices/platform/soc/1d84000.ufshc/monitor/write_total_sectors
+/sys/devices/platform/soc/1d84000.ufshc/monitor/read_req_latency_avg
+/sys/devices/platform/soc/1d84000.ufshc/monitor/read_req_latency_sum
+/sys/devices/platform/soc/1d84000.ufshc/monitor/write_req_latency_avg
+/sys/devices/platform/soc/1d84000.ufshc/monitor/write_req_latency_sum
+/sys/devices/platform/soc/1d84000.ufshc/monitor/read_total_busy
+/sys/devices/platform/soc/1d84000.ufshc/monitor/monitor_chunk_size
+/sys/devices/platform/soc/1d84000.ufshc/clkscale_enable
+/sys/devices/platform/soc/1d84000.ufshc/power/runtime_active_time
+/sys/devices/platform/soc/1d84000.ufshc/power/runtime_status
+/sys/devices/platform/soc/1d84000.ufshc/power/autosuspend_delay_ms
+/sys/devices/platform/soc/1d84000.ufshc/power/runtime_suspended_time
+/sys/devices/platform/soc/1d84000.ufshc/power/control
+/sys/devices/platform/soc/1d84000.ufshc/clkgate_delay_ms
+/sys/devices/platform/soc/1d84000.ufshc/rpm_target_link_state
+/sys/devices/platform/soc/1d84000.ufshc/ufs_transmission_status
+/sys/devices/platform/soc/1d84000.ufshc/interconnect_descriptor/mphy_version
+/sys/devices/platform/soc/1d84000.ufshc/interconnect_descriptor/unipro_version
+/sys/devices/platform/soc/1d84000.ufshc/auto_hibern8
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/dyn_capacity_resource_policy
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/segment_size
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/enh4_memory_capacity_adjustment_factor
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/enh1_memory_capacity_adjustment_factor
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/enh1_memory_max_alloc_units
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/non_persist_memory_capacity_adjustment_factor
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/hpb_region_size
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/max_number_of_luns
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/wb_sup_red_type
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/max_in_buffer_size
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/sys_data_tag_resource_size
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/raw_device_capacity
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/wb_max_alloc_units
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/enh4_memory_max_alloc_units
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/enh2_memory_capacity_adjustment_factor
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/optimal_write_block_size
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/wb_max_wb_luns
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/sys_code_memory_capacity_adjustment_factor
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/secure_removal_types
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/allocation_unit_size
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/enh2_memory_max_alloc_units
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/non_persist_memory_max_alloc_units
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/memory_types
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/sys_code_memory_max_alloc_units
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/max_number_of_contexts
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/hpb_subregion_size
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/optimal_read_block_size
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/rpmb_rw_size
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/max_out_buffer_size
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/min_addressable_block_size
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/enh3_memory_capacity_adjustment_factor
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/hpb_max_active_regions
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/sys_data_tag_unit_size
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/data_ordering
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/wb_sup_wb_type
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/wb_buff_cap_adj
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/hpb_number_lu
+/sys/devices/platform/soc/1d84000.ufshc/geometry_descriptor/enh3_memory_max_alloc_units
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/wb_shared_alloc_units
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/device_version
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/manufacturer_id
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/rtc_update
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/ffu_timeout
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/device_sub_class
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/ext_feature_sup
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/secure_removal_type
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/ufs_features
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/protocol
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/device_type
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/initial_active_icc_level
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/wb_type
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/number_of_luns
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/wb_presv_us_en
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/specification_version
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/initial_power_mode
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/manufacturing_date
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/descriptor_access_enable
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/high_priority_lun
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/bkops_termination_latency
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/device_class
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/hpb_control
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/support_security_lun
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/psa_max_data_size
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/number_of_wluns
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/hpb_version
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/rtt_capability
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/queue_depth
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/boot_enable
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/number_of_secure_wpa
+/sys/devices/platform/soc/1d84000.ufshc/device_descriptor/psa_state_timeout
+/sys/devices/platform/soc/1d84000.ufshc/qcom/clk_mode
+/sys/devices/platform/soc/1d84000.ufshc/qcom/err_count
+/sys/devices/platform/soc/1d84000.ufshc/qcom/bus_speed_mode
+/sys/devices/platform/soc/1d84000.ufshc/qcom/crash_on_err
+/sys/devices/platform/soc/1d84000.ufshc/qcom/power_mode
+/sys/devices/platform/soc/1d84000.ufshc/qcom/clk_status
+/sys/devices/platform/soc/1d84000.ufshc/qcom/hibern8_count
+/sys/devices/platform/soc/1d84000.ufshc/qcom/irq_affinity_support
+/sys/devices/platform/soc/1d84000.ufshc/qcom/err_state
+/sys/devices/platform/soc/1d84000.ufshc/qcom/turbo_support
+/sys/devices/platform/soc/1d84000.ufshc/qcom/dbg_state
+/sys/devices/platform/soc/1d84000.ufshc/rpm_lvl
+/sys/devices/platform/soc/1d84000.ufshc/health_descriptor/life_time_estimation_a
+/sys/devices/platform/soc/1d84000.ufshc/health_descriptor/life_time_estimation_b
+/sys/devices/platform/soc/1d84000.ufshc/health_descriptor/eol_info
+/sys/devices/platform/soc/1d84000.ufshc/driver_override
+/sys/devices/platform/soc/1d84000.ufshc/devfreq/1d84000.ufshc/uevent
+/sys/devices/platform/soc/1d84000.ufshc/devfreq/1d84000.ufshc/polling_interval
+/sys/devices/platform/soc/1d84000.ufshc/devfreq/1d84000.ufshc/available_frequencies
+/sys/devices/platform/soc/1d84000.ufshc/devfreq/1d84000.ufshc/min_freq
+/sys/devices/platform/soc/1d84000.ufshc/devfreq/1d84000.ufshc/trans_stat
+/sys/devices/platform/soc/1d84000.ufshc/devfreq/1d84000.ufshc/governor
+/sys/devices/platform/soc/1d84000.ufshc/devfreq/1d84000.ufshc/timer
+/sys/devices/platform/soc/1d84000.ufshc/devfreq/1d84000.ufshc/cur_freq
+/sys/devices/platform/soc/1d84000.ufshc/devfreq/1d84000.ufshc/max_freq
+/sys/devices/platform/soc/1d84000.ufshc/devfreq/1d84000.ufshc/available_governors
+/sys/devices/platform/soc/1d84000.ufshc/devfreq/1d84000.ufshc/target_freq
+/sys/devices/platform/soc/1d84000.ufshc/devfreq/1d84000.ufshc/name
+/sys/devices/platform/soc/1d84000.ufshc/max_bus_bw
+/sys/devices/platform/soc/1d84000.ufshc/spm_target_dev_state
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc8
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq28
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq6
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc6
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq26
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq4
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc14
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc4
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq24
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq2
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc12
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq14
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq214
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc2
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq22
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq0
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc10
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq12
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq212
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq9
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc0
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq20
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq10
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq210
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc9
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq29
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq7
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc7
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq27
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq5
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc15
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc5
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq25
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq3
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc13
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq15
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq215
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc3
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq23
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq1
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc11
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq13
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq213
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vcc1
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq21
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq11
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq211
+/sys/devices/platform/soc/1d84000.ufshc/power_descriptor/active_icc_levels_vccq8
+/sys/devices/platform/soc/1d84000.ufshc/spm_lvl
+/sys/devices/platform/soc/1d84000.ufshc/attributes/wb_flush_status
+/sys/devices/platform/soc/1d84000.ufshc/attributes/exception_event_status
+/sys/devices/platform/soc/1d84000.ufshc/attributes/current_power_mode
+/sys/devices/platform/soc/1d84000.ufshc/attributes/boot_lun_enabled
+/sys/devices/platform/soc/1d84000.ufshc/attributes/max_number_of_rtt
+/sys/devices/platform/soc/1d84000.ufshc/attributes/purge_status
+/sys/devices/platform/soc/1d84000.ufshc/attributes/max_data_out_size
+/sys/devices/platform/soc/1d84000.ufshc/attributes/ooo_data_enabled
+/sys/devices/platform/soc/1d84000.ufshc/attributes/bkops_status
+/sys/devices/platform/soc/1d84000.ufshc/attributes/psa_data_size
+/sys/devices/platform/soc/1d84000.ufshc/attributes/configuration_descriptor_lock
+/sys/devices/platform/soc/1d84000.ufshc/attributes/wb_cur_buf
+/sys/devices/platform/soc/1d84000.ufshc/attributes/exception_event_control
+/sys/devices/platform/soc/1d84000.ufshc/attributes/ffu_status
+/sys/devices/platform/soc/1d84000.ufshc/attributes/wb_life_time_est
+/sys/devices/platform/soc/1d84000.ufshc/attributes/active_icc_level
+=== UFS KERNEL LOG MATCHES ===
+[ 2103.294284] GICv3:ufshcd(36):65215 
+[ 2112.762663] (virq:irq_count)- GICv3:IPI(1):1925932 GICv3:arch_timer(11):1185880 GICv3:IPI(6):547916 GICv3:IPI(2):131020 GICv3:apps_rsc(24):119523 GICv3:ipcc_0(30):100504 pmic_arb:pm-adc7(263):74094 ipcc:glink-native-slpi(372):65735 GICv3:ufshcd(36):65243 ipcc:glink-native-adsp(373):53471 
+[ 2122.234752] GICv3:ufshcd(36):65265 
+[ 2131.706735] (virq:irq_count)- GICv3:IPI(1):1938154 GICv3:arch_timer(11):1195275 GICv3:IPI(6):551022 GICv3:IPI(2):131568 GICv3:apps_rsc(24):120502 GICv3:ipcc_0(30):101220 pmic_arb:pm-adc7(263):74757 ipcc:glink-native-slpi(372):66245 GICv3:ufshcd(36):65286 ipcc:glink-native-adsp(373):53901 
+[ 2141.181231] GICv3:ufshcd(36):65310 
+[ 2150.650952] GICv3:ufshcd(36):65337 
+[ 2160.122306] (virq:irq_count)- GICv3:IPI(1):1957034 GICv3:arch_timer(11):1209314 GICv3:IPI(6):556032 GICv3:IPI(2):132574 GICv3:apps_rsc(24):122082 GICv3:ipcc_0(30):102382 pmic_arb:pm-adc7(263):75757 ipcc:glink-native-slpi(372):67006 GICv3:ufshcd(36):65413 ipcc:glink-native-adsp(373):54588 
+[ 2169.594386] GICv3:ufshcd(36):65479 
+[ 2179.066305] GICv3:ufshcd(36):65510 
+[ 2188.538574] (virq:irq_count)- GICv3:IPI(1):1977031 GICv3:arch_timer(11):1224560 GICv3:IPI(6):561089 GICv3:IPI(2):133472 GICv3:apps_rsc(24):123551 GICv3:ipcc_0(30):103559 pmic_arb:pm-adc7(263):76754 ipcc:glink-native-slpi(372):67766 GICv3:ufshcd(36):65534 ipcc:glink-native-adsp(373):55300 
+[ 2198.010693] GICv3:ufshcd(36):65559 
+[ 2207.482087] (virq:irq_count)- GICv3:IPI(1):1988724 GICv3:arch_timer(11):1233373 GICv3:IPI(6):564104 GICv3:IPI(2):134069 GICv3:apps_rsc(24):124556 GICv3:ipcc_0(30):104358 pmic_arb:pm-adc7(263):77417 ipcc:glink-native-slpi(372):68262 GICv3:ufshcd(36):65592 ipcc:glink-native-adsp(373):55798 
+[ 2216.958218] GICv3:ufshcd(36):65612 
+[ 2226.426678] GICv3:ufshcd(36):65637 
+[ 2235.898917] GICv3:ufshcd(36):65667 
+[ 2245.370130] (virq:irq_count)- GICv3:IPI(1):2012559 GICv3:arch_timer(11):1251929 GICv3:IPI(6):570368 GICv3:IPI(2):135205 GICv3:apps_rsc(24):126531 GICv3:ipcc_0(30):105870 pmic_arb:pm-adc7(263):78742 ipcc:glink-native-slpi(372):69261 GICv3:ufshcd(36):65697 ipcc:glink-native-adsp(373):56697 
+[ 2254.843011] (virq:irq_count)- GICv3:IPI(1):2018072 GICv3:arch_timer(11):1256097 GICv3:IPI(6):571878 GICv3:IPI(2):135471 GICv3:apps_rsc(24):127003 GICv3:ipcc_0(30):106226 pmic_arb:pm-adc7(263):79070 ipcc:glink-native-slpi(372):69510 GICv3:ufshcd(36):65717 
+[ 2264.314566] (virq:irq_count)- GICv3:IPI(1):2024398 GICv3:arch_timer(11):1261013 GICv3:IPI(6):573505 GICv3:IPI(2):135768 GICv3:apps_rsc(24):127506 GICv3:ipcc_0(30):106642 pmic_arb:pm-adc7(263):79405 ipcc:glink-native-slpi(372):69762 GICv3:ufshcd(36):65737 ipcc:glink-native-adsp(373):57144 
+[ 2273.786527] (virq:irq_count)- GICv3:IPI(1):2030749 GICv3:arch_timer(11):1266015 GICv3:IPI(6):575108 GICv3:IPI(2):136069 GICv3:apps_rsc(24):128071 GICv3:ipcc_0(30):107030 pmic_arb:pm-adc7(263):79738 ipcc:glink-native-slpi(372):70013 GICv3:ufshcd(36):65766 ipcc:glink-native-adsp(373):57393 
+[ 2283.258100] GICv3:ufshcd(36):65793 
+[ 2292.730611] GICv3:ufshcd(36):65812 
+[ 2302.202534] (virq:irq_count)- GICv3:IPI(1):2047680 GICv3:arch_timer(11):1279136 GICv3:IPI(6):579680 GICv3:IPI(2):136871 GICv3:apps_rsc(24):129494 GICv3:ipcc_0(30):108153 pmic_arb:pm-adc7(263):80730 ipcc:glink-native-slpi(372):70752 GICv3:ufshcd(36):65839 ipcc:glink-native-adsp(373):58092 
+[ 2311.674582] (virq:irq_count)- GICv3:IPI(1):2054304 GICv3:arch_timer(11):1284244 GICv3:IPI(6):581263 GICv3:IPI(2):137152 GICv3:apps_rsc(24):129996 GICv3:ipcc_0(30):108520 pmic_arb:pm-adc7(263):81063 ipcc:glink-native-slpi(372):70996 GICv3:ufshcd(36):65868 ipcc:glink-native-adsp(373):58296 
+[ 2321.150120] GICv3:ufshcd(36):65886 
+[ 2330.619974] GICv3:ufshcd(36):65917 
+[ 2340.093131] GICv3:ufshcd(36):65944 
+[ 2349.562683] GICv3:ufshcd(36):65975 
+[ 2359.036995] (virq:irq_count)- GICv3:IPI(1):2083978 GICv3:arch_timer(11):1307256 GICv3:IPI(6):589038 GICv3:IPI(2):138574 GICv3:apps_rsc(24):132478 GICv3:ipcc_0(30):110446 pmic_arb:pm-adc7(263):82721 ipcc:glink-native-slpi(372):72252 GICv3:ufshcd(36):65999 ipcc:glink-native-adsp(373):59498 
+[ 2368.507982] GICv3:ufshcd(36):66043 
+[ 2377.978387] (virq:irq_count)- GICv3:IPI(1):2095520 GICv3:arch_timer(11):1316181 GICv3:IPI(6):592153 GICv3:IPI(2):139154 GICv3:apps_rsc(24):133438 GICv3:ipcc_0(30):111185 pmic_arb:pm-adc7(263):83379 ipcc:glink-native-slpi(372):72745 GICv3:ufshcd(36):66064 ipcc:glink-native-adsp(373):59927 
+[ 2387.454093] GICv3:ufshcd(36):66098 
+[ 2396.923802] GICv3:ufshcd(36):66118 
+[ 2406.398149] (virq:irq_count)- GICv3:IPI(1):2113778 GICv3:arch_timer(11):1330158 GICv3:IPI(6):596820 GICv3:IPI(2):139997 GICv3:apps_rsc(24):135016 GICv3:ipcc_0(30):112338 pmic_arb:pm-adc7(263):84381 ipcc:glink-native-slpi(372):73497 GICv3:ufshcd(36):66137 ipcc:glink-native-adsp(373):60606 
+[ 2415.867262] GICv3:ufshcd(36):66174 
+[ 2425.338781] GICv3:ufshcd(36):66205 
+[ 2434.810672] GICv3:ufshcd(36):66233 
+[ 2444.282837] (virq:irq_count)- GICv3:IPI(1):2138005 GICv3:arch_timer(11):1349034 GICv3:IPI(6):603043 GICv3:IPI(2):141114 GICv3:apps_rsc(24):136960 GICv3:ipcc_0(30):113906 pmic_arb:pm-adc7(263):85709 ipcc:glink-native-slpi(372):74501 GICv3:ufshcd(36):66255 ipcc:glink-native-adsp(373):61557 
+[ 2453.755065] GICv3:ufshcd(36):66281 
+[ 2463.228210] (virq:irq_count)- GICv3:IPI(1):2150456 GICv3:arch_timer(11):1358674 GICv3:IPI(6):606237 GICv3:IPI(2):141704 GICv3:apps_rsc(24):138039 GICv3:ipcc_0(30):114700 pmic_arb:pm-adc7(263):86379 ipcc:glink-native-slpi(372):75004 GICv3:ufshcd(36):66300 ipcc:glink-native-adsp(373):62053 
+[ 2472.699507] GICv3:ufshcd(36):66360 
+[ 2482.171439] GICv3:ufshcd(36):66383 
+[ 2491.642781] GICv3:ufshcd(36):66410 
+[ 2501.115698] GICv3:ufshcd(36):66433 
+[ 2510.590346] (virq:irq_count)- GICv3:IPI(1):2181471 GICv3:arch_timer(11):1382183 GICv3:IPI(6):614195 GICv3:IPI(2):143102 GICv3:apps_rsc(24):140529 GICv3:ipcc_0(30):116575 pmic_arb:pm-adc7(263):88032 ipcc:glink-native-slpi(372):76271 GICv3:ufshcd(36):66459 ipcc:glink-native-adsp(373):63157 
+[ 2520.059358] GICv3:ufshcd(36):66482 
+[ 2529.534635] GICv3:ufshcd(36):66500 
+[ 2539.005216] (virq:irq_count)- GICv3:IPI(1):2199529 GICv3:arch_timer(11):1396311 GICv3:IPI(6):618907 GICv3:IPI(2):143938 GICv3:apps_rsc(24):142056 GICv3:ipcc_0(30):117770 pmic_arb:pm-adc7(263):89030 ipcc:glink-native-slpi(372):77035 GICv3:ufshcd(36):66532 ipcc:glink-native-adsp(373):63927 
+[ 2548.474726] GICv3:ufshcd(36):66548 
+[ 2557.946768] GICv3:ufshcd(36):66574 
+[ 2567.420798] GICv3:ufshcd(36):66598 
+[ 2576.890648] GICv3:ufshcd(36):66630 
+[ 2586.362733] (virq:irq_count)- GICv3:IPI(1):2230654 GICv3:arch_timer(11):1420348 GICv3:IPI(6):626797 GICv3:IPI(2):145359 GICv3:apps_rsc(24):144610 GICv3:ipcc_0(30):119622 pmic_arb:pm-adc7(263):90695 ipcc:glink-native-slpi(372):78301 GICv3:ufshcd(36):66659 ipcc:glink-native-adsp(373):65058 
+[ 2595.837463] GICv3:ufshcd(36):66679 
+[ 2605.307271] GICv3:ufshcd(36):66711 
+[ 2614.782024] GICv3:ufshcd(36):66738 
+[ 2624.250243] GICv3:ufshcd(36):66768 
+[ 2633.722712] GICv3:ufshcd(36):67043 
+[ 2643.194302] GICv3:ufshcd(36):67063 
+[ 2652.666872] GICv3:ufshcd(36):67085 
+[ 2662.138657] GICv3:ufshcd(36):67114 
+[ 2671.610266] GICv3:ufshcd(36):67139 
+[ 2681.084492] (virq:irq_count)- GICv3:IPI(1):2362086 GICv3:arch_timer(11):1477505 GICv3:IPI(6):645741 GICv3:IPI(2):150515 GICv3:apps_rsc(24):149825 GICv3:ipcc_0(30):123453 pmic_arb:pm-adc7(263):94053 ipcc:glink-native-slpi(372):80995 ipcc:glink-native-adsp(373):67361 GICv3:ufshcd(36):67159 
+[ 2690.554689] GICv3:ufshcd(36):67196 
+[ 2700.029378] GICv3:ufshcd(36):67218 
+[ 2709.502456] GICv3:ufshcd(36):67243 

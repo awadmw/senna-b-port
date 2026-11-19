@@ -1,0 +1,45 @@
+{
+  "total_count": 2,
+  "artifacts": [
+    {
+      "id": 14497166054,
+      "node_id": "MDg6QXJ0aWZhY3QxNDQ5NzE2NjA1NA==",
+      "name": "xnu-kernel",
+      "size_in_bytes": 60546915,
+      "url": "https://api.github.com/repos/awadmw/ios-sweet/actions/artifacts/14497166054",
+      "archive_download_url": "https://api.github.com/repos/awadmw/ios-sweet/actions/artifacts/14497166054/zip",
+      "expired": false,
+      "digest": "sha256:5129ab05386df740b3cd9132e1dac8a24882b1bf9056d0e114e9554009e82e9e",
+      "created_at": "2026-11-19T03:44:35Z",
+      "updated_at": "2026-11-19T03:44:35Z",
+      "expires_at": "2027-02-17T03:36:17Z",
+      "workflow_run": {
+        "id": 44452597243,
+        "repository_id": 1463617381,
+        "head_repository_id": 1463617381,
+        "head_branch": "main",
+        "head_sha": "ba55e26bfc193b3e671f0653f5a95b922aee37bc"
+      }
+    },
+    {
+      "id": 14497166018,
+      "node_id": "MDg6QXJ0aWZhY3QxNDQ5NzE2NjAxOA==",
+      "name": "xnu-buildtree",
+      "size_in_bytes": 23186420,
+      "url": "https://api.github.com/repos/awadmw/ios-sweet/actions/artifacts/14497166018",
+      "archive_download_url": "https://api.github.com/repos/awadmw/ios-sweet/actions/artifacts/14497166018/zip",
+      "expired": false,
+      "digest": "sha256:bc3c3dae7591c54ffce3557bcf4a82d769879de355efb1e9487aa152703afb02",
+      "created_at": "2026-11-19T03:44:24Z",
+      "updated_at": "2026-11-19T03:44:24Z",
+      "expires_at": "2026-11-26T03:44:21Z",
+      "workflow_run": {
+        "id": 44452597243,
+        "repository_id": 1463617381,
+        "head_repository_id": 1463617381,
+        "head_branch": "main",
+        "head_sha": "ba55e26bfc193b3e671f0653f5a95b922aee37bc"
+      }
+    }
+  ]
+}

@@ -1,0 +1,294 @@
+[ 1667.582342] (virq:irq_count)- GICv3:IPI(1):1640072 GICv3:arch_timer(11):964402 GICv3:IPI(6):473261 GICv3:IPI(2):117716 GICv3:apps_rsc(24):95793 GICv3:ipcc_0(30):82334 GICv3:ufshcd(36):63743 pmic_arb:pm-adc7(263):58482 ipcc:glink-native-slpi(372):53931 ipcc:glink-native-adsp(373):42431 
+[ 1676.283551] [PMICWD]pmicwd_kthread PET wd suspend state 0
+[ 1677.053092] GICv3:ufshcd(36):63767 
+[ 1677.053103] pmic_arb:pm-adc7(263):58816 
+[ 1686.523609] GICv3:ufshcd(36):63781 
+[ 1686.523618] pmic_arb:pm-adc7(263):59152 
+[ 1695.996009] GICv3:ufshcd(36):63820 
+[ 1695.996018] pmic_arb:pm-adc7(263):59485 
+[ 1705.467767] GICv3:ufshcd(36):63836 
+[ 1705.467776] pmic_arb:pm-adc7(263):59817 
+[ 1705.503466] cnss: Set PCI link status to: 2
+[ 1705.507553] [kworke][0x7a6286a8d][01:27:39.582378] qca6490: [2507:I:PMO] pmo_core_psoc_send_host_wakeup_ind_to_fw: Host wakeup indication sent to fw
+[ 1705.517195] cnss: Runtime resume status: 0
+[ 1705.559958] [schedu][0x7a637c3bd][01:27:39.634767] qca6490: [4312:I:OSIF] scan start scan id 40986
+[ 1706.674947] [schedu][0x7a77e6bea][01:27:40.749756] qca6490: [4312:I:OSIF] vdev 0, scan id 40986 type COMPLETED(1) reason COMPLETED(1) scan found 28 bss
+[ 1706.707242] [wifi@1][0x7a787e346][01:27:40.782067] qca6490: [2114:E:OSIF] wlan_hdd_set_station_stats_request_pending: peer is null
+[ 1707.306824] [kworke][0x7a8378a80][01:27:41.381630] qca6490: [2630:I:PMO] pmo_core_enable_wow_in_fw: drv wow is enabled
+[ 1707.337952] [kworke][0x7a840a8fb][01:27:41.412757] qca6490: [2630:I:HIF] hif_try_complete_tasks: waiting for tasklets 0 grp tasklets 0 work 2
+[ 1707.355307] cnss: Use PCIe DRV suspend
+[ 1707.364693] cnss: Runtime suspend status: 0
+[ 1714.938476] GICv3:ufshcd(36):63865 
+[ 1714.938484] pmic_arb:pm-adc7(263):60148 
+[ 1724.412206] GICv3:ufshcd(36):63900 
+[ 1724.412217] pmic_arb:pm-adc7(263):60480 
+[ 1733.882710] GICv3:ufshcd(36):63924 
+[ 1733.882720] pmic_arb:pm-adc7(263):60811 
+[ 1743.358254] GICv3:ufshcd(36):63950 
+[ 1743.358263] pmic_arb:pm-adc7(263):61150 
+[ 1752.826253] GICv3:ufshcd(36):63972 
+[ 1752.826258] pmic_arb:pm-adc7(263):61478 
+[ 1762.298303] GICv3:ufshcd(36):64003 
+[ 1762.298307] pmic_arb:pm-adc7(263):61807 
+[ 1771.774220] GICv3:ufshcd(36):64021 
+[ 1771.774230] pmic_arb:pm-adc7(263):62137 
+[ 1781.242242] GICv3:ufshcd(36):64050 
+[ 1781.242246] pmic_arb:pm-adc7(263):62473 
+[ 1790.714374] (virq:irq_count)- GICv3:IPI(1):1718441 GICv3:arch_timer(11):1025334 GICv3:IPI(6):493733 GICv3:IPI(2):121380 GICv3:apps_rsc(24):102312 GICv3:ipcc_0(30):87270 GICv3:ufshcd(36):64076 pmic_arb:pm-adc7(263):62801 ipcc:glink-native-slpi(372):57178 ipcc:glink-native-adsp(373):45465 
+[ 1800.066576] cnss: Set PCI link status to: 2
+[ 1800.070526] [wifi@1][0x8126068cf][01:29:14.145341] qca6490: [2114:E:OSIF] wlan_hdd_set_station_stats_request_pending: peer is null
+[ 1800.091383] cnss: Use PCIe DRV suspend
+[ 1800.186175] GICv3:ufshcd(36):64103 
+[ 1800.186179] pmic_arb:pm-adc7(263):63137 
+[ 1805.306467] [PMICWD]pmicwd_kthread PET wd suspend state 0
+[ 1809.661038] (virq:irq_count)- GICv3:IPI(1):1730120 GICv3:arch_timer(11):1034431 GICv3:IPI(6):496804 GICv3:IPI(2):121922 GICv3:apps_rsc(24):103297 GICv3:ipcc_0(30):88102 GICv3:ufshcd(36):64133 pmic_arb:pm-adc7(263):63466 ipcc:glink-native-slpi(372):57672 ipcc:glink-native-adsp(373):45975 
+[ 1819.132683] GICv3:ufshcd(36):64158 
+[ 1819.132692] pmic_arb:pm-adc7(263):63801 
+[ 1823.738411] cnss: Runtime PM resume is requested by cnss_pci_time_sync_work_hdlr [cnss2]
+[ 1823.744471] cnss: Set PCI link status to: 2
+[ 1823.751392] [kworke][0x82d7a29ce][01:29:37.826208] qca6490: [2519:I:PMO] pmo_core_psoc_send_host_wakeup_ind_to_fw: Host wakeup indication sent to fw
+[ 1823.761953] cnss: Runtime resume status: 0
+[ 1823.762787] cnss: Host time = 1829319640 us, device time = 1810060530 us, offset = 19259110 us
+[ 1823.762868] cnss: Updated time sync regs [0x984] = 0x125dee6, [0x988] = 0x0
+[ 1824.364387] [kworke][0x82e2dbfb6][01:29:38.439193] qca6490: [2519:I:PMO] pmo_core_enable_wow_in_fw: drv wow is enabled
+[ 1824.388716] [kworke][0x82e34e1b4][01:29:38.463540] qca6490: [2519:I:HIF] hif_try_complete_tasks: waiting for tasklets 1 grp tasklets 0 work 0
+[ 1824.401713] cnss: Use PCIe DRV suspend
+[ 1824.404820] cnss: Runtime suspend status: 0
+[ 1825.512329] cnss: Set PCI link status to: 2
+[ 1825.516425] [kworke][0x82f7f43c8][01:29:39.591247] qca6490: [3895:I:PMO] pmo_core_psoc_send_host_wakeup_ind_to_fw: Host wakeup indication sent to fw
+[ 1825.524713] cnss: Runtime resume status: 0
+[ 1825.561299] [schedu][0x82f8c68b1][01:29:39.636113] qca6490: [4312:I:OSIF] scan start scan id 40987
+[ 1826.675813] [schedu][0x830d2ed0e][01:29:40.750624] qca6490: [4312:I:OSIF] vdev 0, scan id 40987 type COMPLETED(1) reason COMPLETED(1) scan found 25 bss
+[ 1826.704104] [wifi@1][0x830db378c][01:29:40.778924] qca6490: [2114:E:OSIF] wlan_hdd_set_station_stats_request_pending: peer is null
+[ 1827.219040] [kworke][0x83172128f][01:29:41.293844] qca6490: [19887:I:PMO] pmo_core_enable_wow_in_fw: drv wow is enabled
+[ 1827.249823] [kworke][0x8317b1775][01:29:41.324630] qca6490: [19887:I:HIF] hif_try_complete_tasks: waiting for tasklets 1 grp tasklets 0 work 0
+[ 1827.265773] cnss: Use PCIe DRV suspend
+[ 1827.269499] cnss: Runtime suspend status: 0
+[ 1828.603004] (virq:irq_count)- GICv3:IPI(1):1742966 GICv3:arch_timer(11):1044383 GICv3:IPI(6):499992 GICv3:IPI(2):122469 GICv3:apps_rsc(24):104266 GICv3:ipcc_0(30):88856 GICv3:ufshcd(36):64188 pmic_arb:pm-adc7(263):64133 ipcc:glink-native-slpi(372):58177 ipcc:glink-native-adsp(373):46450 
+[ 1838.074683] pmic_arb:pm-adc7(263):64463 
+[ 1838.074692] GICv3:ufshcd(36):64207 
+[ 1847.546559] (virq:irq_count)- GICv3:IPI(1):1755457 GICv3:arch_timer(11):1053879 GICv3:IPI(6):503153 GICv3:IPI(2):123040 GICv3:apps_rsc(24):105364 GICv3:ipcc_0(30):89606 pmic_arb:pm-adc7(263):64795 GICv3:ufshcd(36):64259 ipcc:glink-native-slpi(372):58679 ipcc:glink-native-adsp(373):46890 
+[ 1857.023474] pmic_arb:pm-adc7(263):65126 
+[ 1857.023481] GICv3:ufshcd(36):64304 
+[ 1858.460848] cnss: Set PCI link status to: 2
+[ 1858.464728] [wifi@1][0x8553415d9][01:30:12.539542] qca6490: [2114:E:OSIF] wlan_hdd_set_station_stats_request_pending: peer is null
+[ 1858.486731] cnss: Use PCIe DRV suspend
+[ 1866.490253] pmic_arb:pm-adc7(263):65468 
+[ 1866.490257] GICv3:ufshcd(36):64495 
+[ 1875.964376] (virq:irq_count)- GICv3:IPI(1):1775734 GICv3:arch_timer(11):1069109 GICv3:IPI(6):508405 GICv3:IPI(2):123982 GICv3:apps_rsc(24):106951 GICv3:ipcc_0(30):90829 pmic_arb:pm-adc7(263):65799 GICv3:ufshcd(36):64516 ipcc:glink-native-slpi(372):59447 ipcc:glink-native-adsp(373):47621 
+[ 1885.435507] pmic_arb:pm-adc7(263):66129 
+[ 1885.435515] GICv3:ufshcd(36):64541 
+[ 1894.910014] pmic_arb:pm-adc7(263):66460 
+[ 1894.910022] GICv3:ufshcd(36):64562 
+[ 1904.379984] (virq:irq_count)- GICv3:IPI(1):1792750 GICv3:arch_timer(11):1082203 GICv3:IPI(6):513019 GICv3:IPI(2):124768 GICv3:apps_rsc(24):108376 GICv3:ipcc_0(30):91997 pmic_arb:pm-adc7(263):66794 GICv3:ufshcd(36):64582 ipcc:glink-native-slpi(372):60187 ipcc:glink-native-adsp(373):48311 
+[ 1913.850215] pmic_arb:pm-adc7(263):67127 
+[ 1913.850218] GICv3:ufshcd(36):64618 
+[ 1919.819328] cnss: Set PCI link status to: 2
+[ 1919.823190] [wifi@1][0x89b6c3254][01:31:13.898001] qca6490: [2114:E:OSIF] wlan_hdd_set_station_stats_request_pending: peer is null
+[ 1919.843772] cnss: Use PCIe DRV suspend
+[ 1923.323467] pmic_arb:pm-adc7(263):67460 
+[ 1923.323477] GICv3:ufshcd(36):64655 
+[ 1932.794624] pmic_arb:pm-adc7(263):67790 
+[ 1932.794632] GICv3:ufshcd(36):64683 
+[ 1934.330406] [PMICWD]pmicwd_kthread PET wd suspend state 0
+[ 1942.267206] pmic_arb:pm-adc7(263):68120 
+[ 1942.267214] GICv3:ufshcd(36):64707 
+[ 1945.540358] cnss: Set PCI link status to: 2
+[ 1945.544697] [kworke][0x8b8dbcc10][01:31:39.619518] qca6490: [19239:I:PMO] pmo_core_psoc_send_host_wakeup_ind_to_fw: Host wakeup indication sent to fw
+[ 1945.558078] cnss: Runtime resume status: 0
+[ 1945.602923] [schedu][0x8b8ecd9d0][01:31:39.677728] qca6490: [4312:I:OSIF] scan start scan id 40988
+[ 1946.715942] [schedu][0x8ba32ee35][01:31:40.790746] qca6490: [4312:I:OSIF] vdev 0, scan id 40988 type COMPLETED(1) reason COMPLETED(1) scan found 22 bss
+[ 1946.742825] [wifi@1][0x8ba3acffc][01:31:40.817650] qca6490: [2114:E:OSIF] wlan_hdd_set_station_stats_request_pending: peer is null
+[ 1947.307311] [kworke][0x8bae02f0a][01:31:41.382117] qca6490: [2630:I:PMO] pmo_core_enable_wow_in_fw: drv wow is enabled
+[ 1947.337190] [kworke][0x8bae8f112][01:31:41.412011] qca6490: [2630:I:HIF] hif_try_complete_tasks: waiting for tasklets 0 grp tasklets 0 work 2
+[ 1947.349949] cnss: Use PCIe DRV suspend
+[ 1947.354568] cnss: Runtime suspend status: 0
+[ 1951.741109] pmic_arb:pm-adc7(263):68457 
+[ 1951.741119] GICv3:ufshcd(36):64738 
+[ 1961.214691] pmic_arb:pm-adc7(263):68786 
+[ 1961.214700] GICv3:ufshcd(36):64761 
+[ 1970.683379] pmic_arb:pm-adc7(263):69121 
+[ 1970.683388] GICv3:ufshcd(36):64854 
+[ 1980.155252] pmic_arb:pm-adc7(263):69451 
+[ 1980.155259] GICv3:ufshcd(36):64874 
+[ 1989.629402] pmic_arb:pm-adc7(263):69783 
+[ 1989.629410] GICv3:ufshcd(36):64904 
+[ 1999.098210] pmic_arb:pm-adc7(263):70117 
+[ 1999.098214] GICv3:ufshcd(36):64932 
+[ 2008.571876] pmic_arb:pm-adc7(263):70447 
+[ 2008.571883] GICv3:ufshcd(36):64959 
+[ 2018.042953] (virq:irq_count)- GICv3:IPI(1):1865976 GICv3:arch_timer(11):1139300 GICv3:IPI(6):532338 GICv3:IPI(2):128188 GICv3:apps_rsc(24):114477 GICv3:ipcc_0(30):96649 pmic_arb:pm-adc7(263):70779 GICv3:ufshcd(36):64989 ipcc:glink-native-slpi(372):63242 ipcc:glink-native-adsp(373):51111 
+[ 2027.515843] pmic_arb:pm-adc7(263):71108 
+[ 2027.515851] GICv3:ufshcd(36):65019 
+[ 2036.988168] pmic_arb:pm-adc7(263):71442 
+[ 2036.988177] GICv3:ufshcd(36):65053 
+[ 2046.458484] pmic_arb:pm-adc7(263):71774 
+[ 2046.458492] GICv3:ufshcd(36):65074 
+[ 2055.932413] pmic_arb:pm-adc7(263):72106 
+[ 2055.932422] GICv3:ufshcd(36):65100 
+[ 2063.355193] [PMICWD]pmicwd_kthread PET wd suspend state 0
+[ 2065.402571] (virq:irq_count)- GICv3:IPI(1):1895822 GICv3:arch_timer(11):1162283 GICv3:IPI(6):540202 GICv3:IPI(2):129578 GICv3:apps_rsc(24):116959 GICv3:ipcc_0(30):98537 pmic_arb:pm-adc7(263):72436 GICv3:ufshcd(36):65121 ipcc:glink-native-slpi(372):64489 ipcc:glink-native-adsp(373):52261 
+[ 2065.605688] cnss: Set PCI link status to: 2
+[ 2065.610217] [kworke][0x942433e21][01:33:39.685039] qca6490: [19887:I:PMO] pmo_core_psoc_send_host_wakeup_ind_to_fw: Host wakeup indication sent to fw
+[ 2065.622031] cnss: Runtime resume status: 0
+[ 2065.661781] [schedu][0x942525960][01:33:39.736602] qca6490: [4312:I:OSIF] scan start scan id 40989
+[ 2066.775672] [schedu][0x94398aed6][01:33:40.850488] qca6490: [4312:I:OSIF] vdev 0, scan id 40989 type COMPLETED(1) reason COMPLETED(1) scan found 30 bss
+[ 2066.807425] [wifi@1][0x943a1fc31][01:33:40.882239] qca6490: [2114:E:OSIF] wlan_hdd_set_station_stats_request_pending: peer is null
+[ 2067.326743] [kworke][0x9443a2057][01:33:41.401548] qca6490: [19728:I:PMO] pmo_core_enable_wow_in_fw: drv wow is enabled
+[ 2067.359326] cnss: Use PCIe DRV suspend
+[ 2067.362539] cnss: Runtime suspend status: 0
+[ 2074.876339] pmic_arb:pm-adc7(263):72769 
+[ 2074.876347] GICv3:ufshcd(36):65153 
+[ 2084.347229] (virq:irq_count)- GICv3:IPI(1):1907780 GICv3:arch_timer(11):1171714 GICv3:IPI(6):543261 GICv3:IPI(2):130121 GICv3:apps_rsc(24):117946 GICv3:ipcc_0(30):99336 pmic_arb:pm-adc7(263):73103 GICv3:ufshcd(36):65167 ipcc:glink-native-slpi(372):64985 ipcc:glink-native-adsp(373):52761 
+[ 2093.818854] (virq:irq_count)- GICv3:IPI(1):1913974 GICv3:arch_timer(11):1176471 GICv3:IPI(6):544810 GICv3:IPI(2):130416 GICv3:apps_rsc(24):118510 GICv3:ipcc_0(30):99677 pmic_arb:pm-adc7(263):73432 ipcc:glink-native-slpi(372):65235 GICv3:ufshcd(36):65191 ipcc:glink-native-adsp(373):52954 
+[ 2103.294265] pmic_arb:pm-adc7(263):73770 
+[ 2103.294284] GICv3:ufshcd(36):65215 
+[ 2112.762663] (virq:irq_count)- GICv3:IPI(1):1925932 GICv3:arch_timer(11):1185880 GICv3:IPI(6):547916 GICv3:IPI(2):131020 GICv3:apps_rsc(24):119523 GICv3:ipcc_0(30):100504 pmic_arb:pm-adc7(263):74094 ipcc:glink-native-slpi(372):65735 GICv3:ufshcd(36):65243 ipcc:glink-native-adsp(373):53471 
+[ 2122.234734] pmic_arb:pm-adc7(263):74427 
+[ 2122.234752] GICv3:ufshcd(36):65265 
+[ 2131.706735] (virq:irq_count)- GICv3:IPI(1):1938154 GICv3:arch_timer(11):1195275 GICv3:IPI(6):551022 GICv3:IPI(2):131568 GICv3:apps_rsc(24):120502 GICv3:ipcc_0(30):101220 pmic_arb:pm-adc7(263):74757 ipcc:glink-native-slpi(372):66245 GICv3:ufshcd(36):65286 ipcc:glink-native-adsp(373):53901 
+[ 2141.181214] pmic_arb:pm-adc7(263):75088 
+[ 2141.181231] GICv3:ufshcd(36):65310 
+[ 2150.650936] pmic_arb:pm-adc7(263):75422 
+[ 2150.650952] GICv3:ufshcd(36):65337 
+[ 2160.122306] (virq:irq_count)- GICv3:IPI(1):1957034 GICv3:arch_timer(11):1209314 GICv3:IPI(6):556032 GICv3:IPI(2):132574 GICv3:apps_rsc(24):122082 GICv3:ipcc_0(30):102382 pmic_arb:pm-adc7(263):75757 ipcc:glink-native-slpi(372):67006 GICv3:ufshcd(36):65413 ipcc:glink-native-adsp(373):54588 
+[ 2169.594377] pmic_arb:pm-adc7(263):76090 
+[ 2169.594386] GICv3:ufshcd(36):65479 
+[ 2179.066298] pmic_arb:pm-adc7(263):76421 
+[ 2179.066305] GICv3:ufshcd(36):65510 
+[ 2185.638088] cnss: Set PCI link status to: 2
+[ 2185.642053] [kworke][0x9cba0d233][01:35:39.716879] qca6490: [26479:I:PMO] pmo_core_psoc_send_host_wakeup_ind_to_fw: Host wakeup indication sent to fw
+[ 2185.651057] cnss: Runtime resume status: 0
+[ 2185.692648] [schedu][0x9cbafa30c][01:35:39.767451] qca6490: [4312:I:OSIF] scan start scan id 40990
+[ 2186.801947] [schedu][0x9ccf4a185][01:35:40.876764] qca6490: [4312:I:OSIF] vdev 0, scan id 40990 type COMPLETED(1) reason COMPLETED(1) scan found 30 bss
+[ 2186.813891] [wifi@1][0x9ccf821f7][01:35:40.888716] qca6490: [2114:E:OSIF] wlan_hdd_set_station_stats_request_pending: peer is null
+[ 2187.360592] [kworke][0x9cd984b2b][01:35:41.435399] qca6490: [2519:I:PMO] pmo_core_enable_wow_in_fw: drv wow is enabled
+[ 2187.390891] [kworke][0x9cda12bf7][01:35:41.465703] qca6490: [2519:I:HIF] hif_try_complete_tasks: waiting for tasklets 0 grp tasklets 0 work 2
+[ 2187.407274] cnss: Use PCIe DRV suspend
+[ 2187.415313] cnss: Runtime suspend status: 0
+[ 2188.538574] (virq:irq_count)- GICv3:IPI(1):1977031 GICv3:arch_timer(11):1224560 GICv3:IPI(6):561089 GICv3:IPI(2):133472 GICv3:apps_rsc(24):123551 GICv3:ipcc_0(30):103559 pmic_arb:pm-adc7(263):76754 ipcc:glink-native-slpi(372):67766 GICv3:ufshcd(36):65534 ipcc:glink-native-adsp(373):55300 
+[ 2192.377764] [PMICWD]pmicwd_kthread PET wd suspend state 0
+[ 2198.010677] pmic_arb:pm-adc7(263):77086 
+[ 2198.010693] GICv3:ufshcd(36):65559 
+[ 2207.482087] (virq:irq_count)- GICv3:IPI(1):1988724 GICv3:arch_timer(11):1233373 GICv3:IPI(6):564104 GICv3:IPI(2):134069 GICv3:apps_rsc(24):124556 GICv3:ipcc_0(30):104358 pmic_arb:pm-adc7(263):77417 ipcc:glink-native-slpi(372):68262 GICv3:ufshcd(36):65592 ipcc:glink-native-adsp(373):55798 
+[ 2216.958198] pmic_arb:pm-adc7(263):77745 
+[ 2216.958218] GICv3:ufshcd(36):65612 
+[ 2226.426661] pmic_arb:pm-adc7(263):78080 
+[ 2226.426678] GICv3:ufshcd(36):65637 
+[ 2235.898900] pmic_arb:pm-adc7(263):78411 
+[ 2235.898917] GICv3:ufshcd(36):65667 
+[ 2245.370130] (virq:irq_count)- GICv3:IPI(1):2012559 GICv3:arch_timer(11):1251929 GICv3:IPI(6):570368 GICv3:IPI(2):135205 GICv3:apps_rsc(24):126531 GICv3:ipcc_0(30):105870 pmic_arb:pm-adc7(263):78742 ipcc:glink-native-slpi(372):69261 GICv3:ufshcd(36):65697 ipcc:glink-native-adsp(373):56697 
+[ 2254.843011] (virq:irq_count)- GICv3:IPI(1):2018072 GICv3:arch_timer(11):1256097 GICv3:IPI(6):571878 GICv3:IPI(2):135471 GICv3:apps_rsc(24):127003 GICv3:ipcc_0(30):106226 pmic_arb:pm-adc7(263):79070 ipcc:glink-native-slpi(372):69510 GICv3:ufshcd(36):65717 
+[ 2264.314566] (virq:irq_count)- GICv3:IPI(1):2024398 GICv3:arch_timer(11):1261013 GICv3:IPI(6):573505 GICv3:IPI(2):135768 GICv3:apps_rsc(24):127506 GICv3:ipcc_0(30):106642 pmic_arb:pm-adc7(263):79405 ipcc:glink-native-slpi(372):69762 GICv3:ufshcd(36):65737 ipcc:glink-native-adsp(373):57144 
+[ 2273.786527] (virq:irq_count)- GICv3:IPI(1):2030749 GICv3:arch_timer(11):1266015 GICv3:IPI(6):575108 GICv3:IPI(2):136069 GICv3:apps_rsc(24):128071 GICv3:ipcc_0(30):107030 pmic_arb:pm-adc7(263):79738 ipcc:glink-native-slpi(372):70013 GICv3:ufshcd(36):65766 ipcc:glink-native-adsp(373):57393 
+[ 2283.258093] pmic_arb:pm-adc7(263):80076 
+[ 2283.258100] GICv3:ufshcd(36):65793 
+[ 2292.730593] pmic_arb:pm-adc7(263):80403 
+[ 2292.730611] GICv3:ufshcd(36):65812 
+[ 2302.202534] (virq:irq_count)- GICv3:IPI(1):2047680 GICv3:arch_timer(11):1279136 GICv3:IPI(6):579680 GICv3:IPI(2):136871 GICv3:apps_rsc(24):129494 GICv3:ipcc_0(30):108153 pmic_arb:pm-adc7(263):80730 ipcc:glink-native-slpi(372):70752 GICv3:ufshcd(36):65839 ipcc:glink-native-adsp(373):58092 
+[ 2305.727073] cnss: Set PCI link status to: 2
+[ 2305.732880] [kworke][0xa550fad96][01:37:39.807698] qca6490: [15064:I:PMO] pmo_core_psoc_send_host_wakeup_ind_to_fw: Host wakeup indication sent to fw
+[ 2305.740452] cnss: Runtime resume status: 0
+[ 2305.776424] [schedu][0xa551c6eb8][01:37:39.851233] qca6490: [4312:I:OSIF] scan start scan id 40991
+[ 2306.891644] [schedu][0xa56632821][01:37:40.966452] qca6490: [4312:I:OSIF] vdev 0, scan id 40991 type COMPLETED(1) reason COMPLETED(1) scan found 21 bss
+[ 2306.917071] [wifi@1][0xa566a9c24][01:37:40.991892] qca6490: [2114:E:OSIF] wlan_hdd_set_station_stats_request_pending: peer is null
+[ 2307.461080] [kworke][0xa5709fc5b][01:37:41.535895] qca6490: [19728:I:PMO] pmo_core_enable_wow_in_fw: drv wow is enabled
+[ 2307.494564] [kworke][0xa5713cabc][01:37:41.569367] qca6490: [19728:I:HIF] hif_try_complete_tasks: waiting for tasklets 0 grp tasklets 0 work 2
+[ 2307.510782] cnss: Use PCIe DRV suspend
+[ 2307.521331] cnss: Runtime suspend status: 0
+[ 2311.674582] (virq:irq_count)- GICv3:IPI(1):2054304 GICv3:arch_timer(11):1284244 GICv3:IPI(6):581263 GICv3:IPI(2):137152 GICv3:apps_rsc(24):129996 GICv3:ipcc_0(30):108520 pmic_arb:pm-adc7(263):81063 ipcc:glink-native-slpi(372):70996 GICv3:ufshcd(36):65868 ipcc:glink-native-adsp(373):58296 
+[ 2321.150105] pmic_arb:pm-adc7(263):81397 
+[ 2321.150120] GICv3:ufshcd(36):65886 
+[ 2321.402043] [PMICWD]pmicwd_kthread PET wd suspend state 0
+[ 2330.619958] pmic_arb:pm-adc7(263):81727 
+[ 2330.619974] GICv3:ufshcd(36):65917 
+[ 2340.093113] pmic_arb:pm-adc7(263):82060 
+[ 2340.093131] GICv3:ufshcd(36):65944 
+[ 2349.562666] pmic_arb:pm-adc7(263):82392 
+[ 2349.562683] GICv3:ufshcd(36):65975 
+[ 2359.036995] (virq:irq_count)- GICv3:IPI(1):2083978 GICv3:arch_timer(11):1307256 GICv3:IPI(6):589038 GICv3:IPI(2):138574 GICv3:apps_rsc(24):132478 GICv3:ipcc_0(30):110446 pmic_arb:pm-adc7(263):82721 ipcc:glink-native-slpi(372):72252 GICv3:ufshcd(36):65999 ipcc:glink-native-adsp(373):59498 
+[ 2368.507962] pmic_arb:pm-adc7(263):83051 
+[ 2368.507982] GICv3:ufshcd(36):66043 
+[ 2377.978387] (virq:irq_count)- GICv3:IPI(1):2095520 GICv3:arch_timer(11):1316181 GICv3:IPI(6):592153 GICv3:IPI(2):139154 GICv3:apps_rsc(24):133438 GICv3:ipcc_0(30):111185 pmic_arb:pm-adc7(263):83379 ipcc:glink-native-slpi(372):72745 GICv3:ufshcd(36):66064 ipcc:glink-native-adsp(373):59927 
+[ 2387.454087] pmic_arb:pm-adc7(263):83710 
+[ 2387.454093] GICv3:ufshcd(36):66098 
+[ 2396.923786] pmic_arb:pm-adc7(263):84044 
+[ 2396.923802] GICv3:ufshcd(36):66118 
+[ 2406.398149] (virq:irq_count)- GICv3:IPI(1):2113778 GICv3:arch_timer(11):1330158 GICv3:IPI(6):596820 GICv3:IPI(2):139997 GICv3:apps_rsc(24):135016 GICv3:ipcc_0(30):112338 pmic_arb:pm-adc7(263):84381 ipcc:glink-native-slpi(372):73497 GICv3:ufshcd(36):66137 ipcc:glink-native-adsp(373):60606 
+[ 2415.867244] pmic_arb:pm-adc7(263):84716 
+[ 2415.867262] GICv3:ufshcd(36):66174 
+[ 2425.338762] pmic_arb:pm-adc7(263):85042 
+[ 2425.338781] GICv3:ufshcd(36):66205 
+[ 2425.763771] cnss: Set PCI link status to: 2
+[ 2425.768549] [kworke][0xade6e60a6][01:39:39.843365] qca6490: [15064:I:PMO] pmo_core_psoc_send_host_wakeup_ind_to_fw: Host wakeup indication sent to fw
+[ 2425.776641] cnss: Runtime resume status: 0
+[ 2425.811565] [schedu][0xade7afa59][01:39:39.886375] qca6490: [4312:I:OSIF] scan start scan id 40992
+[ 2426.922609] [schedu][0xadfc07a1f][01:39:40.997412] qca6490: [4312:I:OSIF] vdev 0, scan id 40992 type COMPLETED(1) reason COMPLETED(1) scan found 26 bss
+[ 2426.953348] [wifi@1][0xadfc97c8e][01:39:41.028164] qca6490: [2114:E:OSIF] wlan_hdd_set_station_stats_request_pending: peer is null
+[ 2427.481520] [kworke][0xae0643849][01:39:41.556321] qca6490: [15064:I:PMO] pmo_core_enable_wow_in_fw: drv wow is enabled
+[ 2427.515064] [kworke][0xae06e0172][01:39:41.589723] qca6490: [15064:I:HIF] hif_try_complete_tasks: waiting for tasklets 0 grp tasklets 0 work 2
+[ 2427.531825] cnss: Use PCIe DRV suspend
+[ 2427.535987] cnss: Runtime suspend status: 0
+[ 2434.810654] pmic_arb:pm-adc7(263):85376 
+[ 2434.810672] GICv3:ufshcd(36):66233 
+[ 2444.282837] (virq:irq_count)- GICv3:IPI(1):2138005 GICv3:arch_timer(11):1349034 GICv3:IPI(6):603043 GICv3:IPI(2):141114 GICv3:apps_rsc(24):136960 GICv3:ipcc_0(30):113906 pmic_arb:pm-adc7(263):85709 ipcc:glink-native-slpi(372):74501 GICv3:ufshcd(36):66255 ipcc:glink-native-adsp(373):61557 
+[ 2450.428310] [PMICWD]pmicwd_kthread PET wd suspend state 0
+[ 2453.755049] pmic_arb:pm-adc7(263):86043 
+[ 2453.755065] GICv3:ufshcd(36):66281 
+[ 2463.228210] (virq:irq_count)- GICv3:IPI(1):2150456 GICv3:arch_timer(11):1358674 GICv3:IPI(6):606237 GICv3:IPI(2):141704 GICv3:apps_rsc(24):138039 GICv3:ipcc_0(30):114700 pmic_arb:pm-adc7(263):86379 ipcc:glink-native-slpi(372):75004 GICv3:ufshcd(36):66300 ipcc:glink-native-adsp(373):62053 
+[ 2467.479800] cnss: Set PCI link status to: 2
+[ 2467.484020] [kworke][0xb0e2bb556][01:40:21.558841] qca6490: [2630:I:PMO] pmo_core_psoc_send_host_wakeup_ind_to_fw: Host wakeup indication sent to fw
+[ 2467.490991] cnss: Runtime resume status: 0
+[ 2467.525256] [schedu][0xb0e37c9a9][01:40:21.600072] qca6490: [4312:I:OSIF] scan start scan id 40993
+[ 2468.639142] [schedu][0xb0f7e1e2c][01:40:22.713946] qca6490: [4312:I:OSIF] vdev 0, scan id 40993 type COMPLETED(1) reason COMPLETED(1) scan found 27 bss
+[ 2468.665131] [wifi@1][0xb0f85bcd8][01:40:22.739954] qca6490: [2114:E:OSIF] wlan_hdd_set_station_stats_request_pending: peer is null
+[ 2469.284370] [kworke][0xb103b272c][01:40:23.359186] qca6490: [19728:I:PMO] pmo_core_enable_wow_in_fw: drv wow is enabled
+[ 2469.319662] [kworke][0xb10457d32][01:40:23.394466] qca6490: [19728:I:HIF] hif_try_complete_tasks: waiting for tasklets 0 grp tasklets 0 work 2
+[ 2469.335102] cnss: Use PCIe DRV suspend
+[ 2469.341074] cnss: Runtime suspend status: 0
+[ 2472.699491] pmic_arb:pm-adc7(263):86706 
+[ 2472.699507] GICv3:ufshcd(36):66360 
+[ 2482.171418] pmic_arb:pm-adc7(263):87040 
+[ 2482.171439] GICv3:ufshcd(36):66383 
+[ 2491.642764] pmic_arb:pm-adc7(263):87368 
+[ 2491.642781] GICv3:ufshcd(36):66410 
+[ 2501.115683] pmic_arb:pm-adc7(263):87702 
+[ 2501.115698] GICv3:ufshcd(36):66433 
+[ 2510.590346] (virq:irq_count)- GICv3:IPI(1):2181471 GICv3:arch_timer(11):1382183 GICv3:IPI(6):614195 GICv3:IPI(2):143102 GICv3:apps_rsc(24):140529 GICv3:ipcc_0(30):116575 pmic_arb:pm-adc7(263):88032 ipcc:glink-native-slpi(372):76271 GICv3:ufshcd(36):66459 ipcc:glink-native-adsp(373):63157 
+[ 2520.059342] pmic_arb:pm-adc7(263):88365 
+[ 2520.059358] GICv3:ufshcd(36):66482 
+[ 2529.534615] pmic_arb:pm-adc7(263):88699 
+[ 2529.534635] GICv3:ufshcd(36):66500 
+[ 2539.005216] (virq:irq_count)- GICv3:IPI(1):2199529 GICv3:arch_timer(11):1396311 GICv3:IPI(6):618907 GICv3:IPI(2):143938 GICv3:apps_rsc(24):142056 GICv3:ipcc_0(30):117770 pmic_arb:pm-adc7(263):89030 ipcc:glink-native-slpi(372):77035 GICv3:ufshcd(36):66532 ipcc:glink-native-adsp(373):63927 
+[ 2545.840831] cnss: Set PCI link status to: 2
+[ 2545.845011] [kworke][0xb67d907ce][01:41:39.919834] qca6490: [26472:I:PMO] pmo_core_psoc_send_host_wakeup_ind_to_fw: Host wakeup indication sent to fw
+[ 2545.854329] cnss: Runtime resume status: 0
+[ 2545.888742] [schedu][0xb67e5d60d][01:41:39.963544] qca6490: [4312:I:OSIF] scan start scan id 40994
+[ 2547.003395] [schedu][0xb692c65b7][01:41:41.078206] qca6490: [4312:I:OSIF] vdev 0, scan id 40994 type COMPLETED(1) reason COMPLETED(1) scan found 21 bss
+[ 2547.016799] [wifi@1][0xb693053e9][01:41:41.091622] qca6490: [2114:E:OSIF] wlan_hdd_set_station_stats_request_pending: peer is null
+[ 2547.538790] [kworke][0xb69c93f89][01:41:41.613591] qca6490: [2630:I:PMO] pmo_core_enable_wow_in_fw: drv wow is enabled
+[ 2547.569995] [kworke][0xb69d263bb][01:41:41.644793] qca6490: [2630:I:HIF] hif_try_complete_tasks: waiting for tasklets 0 grp tasklets 0 work 2
+[ 2547.585969] cnss: Use PCIe DRV suspend
+[ 2547.593261] cnss: Runtime suspend status: 0
+[ 2548.474710] pmic_arb:pm-adc7(263):89362 
+[ 2548.474726] GICv3:ufshcd(36):66548 
+[ 2557.946750] pmic_arb:pm-adc7(263):89690 
+[ 2557.946768] GICv3:ufshcd(36):66574 
+[ 2567.420782] pmic_arb:pm-adc7(263):90022 
+[ 2567.420798] GICv3:ufshcd(36):66598 
+[ 2576.890630] pmic_arb:pm-adc7(263):90358 
+[ 2576.890648] GICv3:ufshcd(36):66630 
+[ 2579.450547] [PMICWD]pmicwd_kthread PET wd suspend state 0
+[ 2586.362733] (virq:irq_count)- GICv3:IPI(1):2230654 GICv3:arch_timer(11):1420348 GICv3:IPI(6):626797 GICv3:IPI(2):145359 GICv3:apps_rsc(24):144610 GICv3:ipcc_0(30):119622 pmic_arb:pm-adc7(263):90695 ipcc:glink-native-slpi(372):78301 GICv3:ufshcd(36):66659 ipcc:glink-native-adsp(373):65058 
+[ 2595.837444] pmic_arb:pm-adc7(263):91027 
+[ 2595.837463] GICv3:ufshcd(36):66679 
+[ 2605.307255] pmic_arb:pm-adc7(263):91356 
+[ 2605.307271] GICv3:ufshcd(36):66711 
+[ 2614.782006] pmic_arb:pm-adc7(263):91685 
+[ 2614.782024] GICv3:ufshcd(36):66738 
+[ 2624.250236] pmic_arb:pm-adc7(263):92016 
+[ 2624.250243] GICv3:ufshcd(36):66768 
+[ 2633.722694] pmic_arb:pm-adc7(263):92358 
+[ 2633.722712] GICv3:ufshcd(36):67043 
+[ 2643.194291] pmic_arb:pm-adc7(263):92708 
+[ 2643.194302] GICv3:ufshcd(36):67063 

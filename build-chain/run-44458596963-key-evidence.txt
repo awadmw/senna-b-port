@@ -1,0 +1,10 @@
+140:2026-11-19T04:28:53.6647490Z [36;1m    echo "KC_INPUT=${kernel_path}"[0m
+141:2026-11-19T04:28:53.6648470Z [36;1m    echo "KC_KDK=${KDKROOT}"[0m
+142:2026-11-19T04:28:53.6649490Z [36;1m    echo "KC_OUTPUT=${output_path}"[0m
+275041:2026-11-19T04:38:08.5672170Z + kmutil create -v -V development -a arm64 -n boot -s none --kdk /Library/Developer/KDKs/KDK_13.5_22G74.kdk -B /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/oss-xnu.macOS.13.5.kc.sweet -k /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet
+275057:2026-11-19T04:38:08.7128950Z Error Domain=KMErrorDomain Code=34 "Missing Developer Kit: As of macOS 13.0, you will need to install a KDK matching your build 24H232 to rebuild kernel collections." UserInfo={NSLocalizedDescription=Missing Developer Kit: As of macOS 13.0, you will need to install a KDK matching your build 24H232 to rebuild kernel collections.}
+275131:2026-11-19T04:38:09.4584110Z   🎉 XNU Build Done!
+275132:2026-11-19T04:38:09.4685470Z KC_INPUT=/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet
+275133:2026-11-19T04:38:09.4787390Z KC_KDK=/Library/Developer/KDKs/KDK_13.5_22G74.kdk
+275134:2026-11-19T04:38:09.4890400Z KC_OUTPUT=/Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/oss-xnu.macOS.13.5.kc.sweet
+275136:2026-11-19T04:38:09.5066290Z ##[error]Process completed with exit code 34.

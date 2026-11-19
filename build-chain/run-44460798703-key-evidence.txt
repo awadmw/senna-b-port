@@ -1,0 +1,212 @@
+140: 2026-11-19T04:48:24.1466410Z [36;1m    echo "KC_INPUT=${kernel_path}"[0m
+141: 2026-11-19T04:48:24.1467140Z [36;1m    echo "KC_KDK=${KDKROOT}"[0m
+142: 2026-11-19T04:48:24.1467780Z [36;1m    echo "KC_OUTPUT=${output_path}"[0m
+145: 2026-11-19T04:48:24.1469750Z [36;1m    kmutil create -v -V "${KC_VARIANT}" -a arm64 -n boot -s none \[0m
+412: 2026-11-19T04:48:45.6457340Z [36;1msudo installer -pkg '/Volumes/Kernel Debug Kit/KernelDebugKit.pkg' -target /[0m
+413: 2026-11-19T04:48:45.6458930Z [36;1mhdiutil detach '/Volumes/Kernel Debug Kit'[0m
+414: 2026-11-19T04:48:45.6459790Z [36;1mtest -d /Library/Developer/KDKs/KDK_15.8.2_24H232.kdk[0m
+472: 2026-11-19T04:49:10.4585690Z /dev/disk5s1        	Apple_HFS                      	/Volumes/Kernel Debug Kit
+473: 2026-11-19T04:50:27.6322490Z installer: Package name is Kernel Debug Kit
+494: 2026-11-19T04:50:33.7611900Z [35;01m ⇒ [39;49;00mDownloading 'Kernel Debug Kit 13.5 build 22G74' to /tmp
+603: 2026-11-19T04:50:46.3301830Z /dev/disk5s1        	Apple_HFS                      	/Volumes/Kernel Debug Kit
+604: 2026-11-19T04:51:35.0631050Z installer: Package name is Kernel Debug Kit
+612: 2026-11-19T04:51:35.3331340Z drwxr-xr-x  5 root  wheel   160B Nov 19 04:50 KDK_15.8.2_24H232.kdk
+786: 2026-11-19T04:51:56.8607480Z [33;01m[warning] [39;49;00mSkipping patch /Users/runner/work/ios-sweet/ios-sweet/dxb/patches/iobuffermemd_monterey.patch (already upstream, previously applied, or malformed): error: patch failed: iokit/Kernel/IOBufferMemoryDescriptor.cpp:332
+787: 2026-11-19T04:51:56.8620560Z error: iokit/Kernel/IOBufferMemoryDescriptor.cpp: patch does not apply
+790: 2026-11-19T04:51:56.9147990Z [33;01m[warning] [39;49;00mSkipping patch /Users/runner/work/ios-sweet/ios-sweet/dxb/patches/skywalk_sonoma.patch (already upstream, previously applied, or malformed): error: patch failed: bsd/skywalk/packet/os_packet.h:883
+791: 2026-11-19T04:51:56.9150580Z error: bsd/skywalk/packet/os_packet.h: patch does not apply
+796: 2026-11-19T04:51:56.9420590Z [33;01m[warning] [39;49;00mSkipping patch /Users/runner/work/ios-sweet/ios-sweet/dxb/patches/syntax_checker_sonoma.patch (already upstream, previously applied, or malformed): error: patch failed: tools/lldbmacros/core/syntax_checker.py:1
+797: 2026-11-19T04:51:56.9422350Z error: tools/lldbmacros/core/syntax_checker.py: patch does not apply
+799: 2026-11-19T04:51:56.9720990Z [33;01m[warning] [39;49;00mSkipping patch /Users/runner/work/ios-sweet/ios-sweet/dxb/patches/TrustCache.patch (already upstream, previously applied, or malformed): error: EXTERNAL_HEADERS/TrustCache/API.h: already exists in working directory
+800: 2026-11-19T04:51:56.9723850Z error: EXTERNAL_HEADERS/TrustCache/RawTypes.h: already exists in working directory
+801: 2026-11-19T04:51:56.9726750Z error: EXTERNAL_HEADERS/TrustCache/Return.h: already exists in working directory
+802: 2026-11-19T04:51:56.9728280Z error: EXTERNAL_HEADERS/TrustCache/Types.h: already exists in working directory
+803: 2026-11-19T04:51:56.9729700Z error: EXTERNAL_HEADERS/TrustCache/TypesConfig.h: already exists in working directory
+275094: 2026-11-19T04:58:18.9876280Z + kmutil create -v -V development -a arm64 -n boot -s none --kdk /Library/Developer/KDKs/KDK_13.5_22G74.kdk -B /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/oss-xnu.macOS.13.5.kc.sweet -k /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet
+275289: 2026-11-19T04:58:19.0641820Z   🎉 XNU Build Done!
+275290: 2026-11-19T04:58:19.0642140Z KC_INPUT=/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet
+275291: 2026-11-19T04:58:19.0642530Z KC_KDK=/Library/Developer/KDKs/KDK_13.5_22G74.kdk
+275292: 2026-11-19T04:58:19.0642930Z KC_OUTPUT=/Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/oss-xnu.macOS.13.5.kc.sweet
+275294: 2026-11-19T04:58:33.0455090Z Error Domain=KMErrorDomain Code=71 "Unable to resolve dependencies: 'com.apple.driver.AppleRTC' names a dependency on 'com.apple.iokit.IOACPIFamily', which was not found." UserInfo={NSLocalizedDescription=Unable to resolve dependencies: 'com.apple.driver.AppleRTC' names a dependency on 'com.apple.iokit.IOACPIFamily', which was not found.}
+275295: 2026-11-19T04:58:33.0602180Z ##[error]Process completed with exit code 71.
+---TAIL---
+275258: 2026-11-19T04:58:19.0574630Z /bin/mkdir -p /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/BSDKernel.kext
+275259: 2026-11-19T04:58:19.0575590Z /bin/mkdir -p /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/IOKit.kext
+275260: 2026-11-19T04:58:19.0576420Z [1m                       INSTALL[m [mkextplist System.kext/PlugIns/IOSystemManagement.kext/Info.plist[m
+275261: 2026-11-19T04:58:19.0577150Z [1m                       INSTALL[m [mkextplist System.kext/PlugIns/BSDKernel.kext/Info.plist[m
+275262: 2026-11-19T04:58:19.0586170Z /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/SETUP/installfile/installfile -c -S -m 0644 /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.sym/System.kext/PlugIns/BSDKernel.kext/Info.plist /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/BSDKernel.kext/Info.plist
+275263: 2026-11-19T04:58:19.0603130Z /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/SETUP/installfile/installfile -c -S -m 0644 /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.sym/System.kext/PlugIns/IOSystemManagement.kext/Info.plist /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/IOSystemManagement.kext/Info.plist
+275264: 2026-11-19T04:58:19.0604840Z /bin/mkdir -p /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/Libkern.kext
+275265: 2026-11-19T04:58:19.0605710Z [1m                       INSTALL[m [mkextplist System.kext/PlugIns/IOKit.kext/Info.plist[m
+275266: 2026-11-19T04:58:19.0607060Z /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/SETUP/installfile/installfile -c -S -m 0644 /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.sym/System.kext/PlugIns/IOKit.kext/Info.plist /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/IOKit.kext/Info.plist
+275267: 2026-11-19T04:58:19.0608770Z /bin/mkdir -p /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/Mach.kext
+275268: 2026-11-19T04:58:19.0609530Z /bin/mkdir -p /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/MACFramework.kext
+275269: 2026-11-19T04:58:19.0610240Z [1m                       INSTALL[m [mkextplist System.kext/PlugIns/Libkern.kext/Info.plist[m
+275270: 2026-11-19T04:58:19.0611410Z /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/SETUP/installfile/installfile -c -S -m 0644 /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.sym/System.kext/PlugIns/Libkern.kext/Info.plist /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Info.plist
+275271: 2026-11-19T04:58:19.0612730Z /bin/mkdir -p /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/Unsupported.kext
+275272: 2026-11-19T04:58:19.0613460Z [1m                       INSTALL[m [mkextplist System.kext/PlugIns/Mach.kext/Info.plist[m
+275273: 2026-11-19T04:58:19.0614660Z /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/SETUP/installfile/installfile -c -S -m 0644 /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.sym/System.kext/PlugIns/Mach.kext/Info.plist /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/Mach.kext/Info.plist
+275274: 2026-11-19T04:58:19.0615980Z [1m                       INSTALL[m [mkextplist System.kext/PlugIns/MACFramework.kext/Info.plist[m
+275275: 2026-11-19T04:58:19.0617180Z /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/SETUP/installfile/installfile -c -S -m 0644 /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.sym/System.kext/PlugIns/MACFramework.kext/Info.plist /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/MACFramework.kext/Info.plist
+275276: 2026-11-19T04:58:19.0618490Z /bin/mkdir -p /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/Private.kext
+275277: 2026-11-19T04:58:19.0619120Z [1m                       INSTALL[m [mkextplist System.kext/PlugIns/Unsupported.kext/Info.plist[m
+275278: 2026-11-19T04:58:19.0620310Z /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/SETUP/installfile/installfile -c -S -m 0644 /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.sym/System.kext/PlugIns/Unsupported.kext/Info.plist /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/Unsupported.kext/Info.plist
+275279: 2026-11-19T04:58:19.0623010Z make -C "/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET" -f /Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/Makefile CURRENT_KERNEL_CONFIG=DEVELOPMENT CURRENT_ARCH_CONFIG=ARM64 CURRENT_MACHINE_CONFIG=SWEET CURRENT_BUILD_CONFIG=DEVELOPMENT^ARM64^SWEET SOURCE=/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/ RELATIVE_SOURCE_PATH=. TARGET=/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET/ OBJPATH=/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET do_config_install_primary;
+275280: 2026-11-19T04:58:19.0624910Z [1m                       INSTALL[m [mkextplist System.kext/PlugIns/Private.kext/Info.plist[m
+275281: 2026-11-19T04:58:19.0626090Z /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/SETUP/installfile/installfile -c -S -m 0644 /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.sym/System.kext/PlugIns/Private.kext/Info.plist /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/System/Library/Extensions/System.kext/PlugIns/Private.kext/Info.plist
+275282: 2026-11-19T04:58:19.0627420Z /bin/mkdir -p /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot//System/Library/Frameworks/Kernel.framework/Versions/A/Resources
+275283: 2026-11-19T04:58:19.0627990Z [1m                       INSTALL[m SupportedKPIs-all-archs.txt[m
+275284: 2026-11-19T04:58:19.0629190Z /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/SETUP/installfile/installfile -c -S -m 0444 /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET/SupportedKPIs-all-archs.txt /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot//System/Library/Frameworks/Kernel.framework/Versions/A/Resources/SupportedKPIs-all-archs.txt
+275285: 2026-11-19T04:58:19.0631880Z make -C "/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET" -f /Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/Makefile CURRENT_KERNEL_CONFIG=DEVELOPMENT CURRENT_ARCH_CONFIG=ARM64 CURRENT_MACHINE_CONFIG=SWEET CURRENT_BUILD_CONFIG=DEVELOPMENT^ARM64^SWEET SOURCE=/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/ RELATIVE_SOURCE_PATH=. TARGET=/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET/ OBJPATH=/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET do_config_install;
+275286: 2026-11-19T04:58:19.0635330Z make -C "/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET/san" -f /Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/san/Makefile CURRENT_KERNEL_CONFIG=DEVELOPMENT CURRENT_ARCH_CONFIG=ARM64 CURRENT_MACHINE_CONFIG=SWEET CURRENT_BUILD_CONFIG=DEVELOPMENT^ARM64^SWEET SOURCE=/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/san/ RELATIVE_SOURCE_PATH=./san TARGET=/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET/. OBJPATH=/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET do_config_install_variant;
+275287: 2026-11-19T04:58:19.0638930Z make -C "/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET" -f /Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/Makefile CURRENT_KERNEL_CONFIG=DEVELOPMENT CURRENT_ARCH_CONFIG=ARM64 CURRENT_MACHINE_CONFIG=SWEET CURRENT_BUILD_CONFIG=DEVELOPMENT^ARM64^SWEET SOURCE=/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/ RELATIVE_SOURCE_PATH=. TARGET=/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET/ OBJPATH=/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/DEVELOPMENT_ARM64_SWEET do_config_install_variant;
+275288: 2026-11-19T04:58:19.0640820Z /usr/bin/touch /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/.symbolset.timestamp
+275289: 2026-11-19T04:58:19.0641820Z   🎉 XNU Build Done!
+275290: 2026-11-19T04:58:19.0642140Z KC_INPUT=/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet
+275291: 2026-11-19T04:58:19.0642530Z KC_KDK=/Library/Developer/KDKs/KDK_13.5_22G74.kdk
+275292: 2026-11-19T04:58:19.0642930Z KC_OUTPUT=/Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/oss-xnu.macOS.13.5.kc.sweet
+275293: 2026-11-19T04:58:19.0643510Z /Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet: Mach-O 64-bit executable arm64
+275294: 2026-11-19T04:58:33.0455090Z Error Domain=KMErrorDomain Code=71 "Unable to resolve dependencies: 'com.apple.driver.AppleRTC' names a dependency on 'com.apple.iokit.IOACPIFamily', which was not found." UserInfo={NSLocalizedDescription=Unable to resolve dependencies: 'com.apple.driver.AppleRTC' names a dependency on 'com.apple.iokit.IOACPIFamily', which was not found.}
+275295: 2026-11-19T04:58:33.0602180Z ##[error]Process completed with exit code 71.
+275296: 2026-11-19T04:58:33.0862410Z ##[group]Run SDK=$(xcrun --sdk macosx --show-sdk-path)
+275297: 2026-11-19T04:58:33.0863030Z [36;1mSDK=$(xcrun --sdk macosx --show-sdk-path)[0m
+275298: 2026-11-19T04:58:33.0863330Z [36;1mmkdir -p sdk-kernel-platform[0m
+275299: 2026-11-19T04:58:33.0863930Z [36;1mcp -R "$SDK/System/Library/Frameworks/Kernel.framework/Versions/A/PrivateHeaders/platform" sdk-kernel-platform/ || true[0m
+275300: 2026-11-19T04:58:33.0864460Z [36;1mtar czf buildtree.tgz \[0m
+275301: 2026-11-19T04:58:33.0864920Z [36;1m  --exclude='*.o' --exclude='*.cpo' --exclude='*.a' --exclude='*.dSYM' --exclude='*.unstripped' \[0m
+275302: 2026-11-19T04:58:33.0865490Z [36;1m  --exclude='kernel.development.*' --exclude='.git' \[0m
+275303: 2026-11-19T04:58:33.0865850Z [36;1m  -C dxb build/xnu.obj fakeroot/usr/local/include xnu \[0m
+275304: 2026-11-19T04:58:33.0866200Z [36;1m  -C .. sdk-kernel-platform[0m
+275305: 2026-11-19T04:58:33.0866460Z [36;1mls -la buildtree.tgz[0m
+275306: 2026-11-19T04:58:33.2113820Z shell: /opt/homebrew/bin/bash -e {0}
+275307: 2026-11-19T04:58:33.2114260Z env:
+275308: 2026-11-19T04:58:33.2115050Z   DXB_REPO: https://github.com/blacktop/darwin-xnu-build
+275309: 2026-11-19T04:58:33.2115450Z   DXB_SHA: 663906528d1cd5ea8fde7de6f16de73db9511549
+275310: 2026-11-19T04:58:33.2115740Z   MACOS_VERSION: 13.5
+275311: 2026-11-19T04:58:33.2116010Z   KERNEL_CONFIG: DEVELOPMENT
+275312: 2026-11-19T04:58:33.2116240Z   MACHINE_CONFIG: SWEET
+275313: 2026-11-19T04:58:33.2116510Z   MACHINE_LOWER: sweet
+275314: 2026-11-19T04:58:33.2116780Z   DEVELOPER_DIR: /Applications/Xcode_16.app/Contents/Developer
+275315: 2026-11-19T04:58:33.2117180Z ##[endgroup]
+275316: 2026-11-19T04:58:33.6102200Z cp: /Applications/Xcode_16.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/PrivateHeaders/platform: No such file or directory
+275317: 2026-11-19T04:58:40.5858980Z -rw-r--r--  1 runner  staff  23301062 Nov 19 04:58 buildtree.tgz
+275318: 2026-11-19T04:58:40.6010320Z ##[group]Run actions/upload-artifact@v4
+275319: 2026-11-19T04:58:40.6010700Z with:
+275320: 2026-11-19T04:58:40.6010970Z   name: xnu-buildtree-SWEET
+275321: 2026-11-19T04:58:40.6011410Z   path: buildtree.tgz
+275322: 2026-11-19T04:58:40.6035470Z   retention-days: 7
+275323: 2026-11-19T04:58:40.6035880Z   if-no-files-found: warn
+275324: 2026-11-19T04:58:40.6036200Z   compression-level: 6
+275325: 2026-11-19T04:58:40.6036650Z   overwrite: false
+275326: 2026-11-19T04:58:40.6037110Z   include-hidden-files: false
+275327: 2026-11-19T04:58:40.6037520Z env:
+275328: 2026-11-19T04:58:40.6043490Z   DXB_REPO: https://github.com/blacktop/darwin-xnu-build
+275329: 2026-11-19T04:58:40.6044000Z   DXB_SHA: 663906528d1cd5ea8fde7de6f16de73db9511549
+275330: 2026-11-19T04:58:40.6044380Z   MACOS_VERSION: 13.5
+275331: 2026-11-19T04:58:40.6044720Z   KERNEL_CONFIG: DEVELOPMENT
+275332: 2026-11-19T04:58:40.6044990Z   MACHINE_CONFIG: SWEET
+275333: 2026-11-19T04:58:40.6045350Z   MACHINE_LOWER: sweet
+275334: 2026-11-19T04:58:40.6045710Z   DEVELOPER_DIR: /Applications/Xcode_16.app/Contents/Developer
+275335: 2026-11-19T04:58:40.6046110Z ##[endgroup]
+275336: 2026-11-19T04:58:41.1706790Z (node:95283) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+275337: 2026-11-19T04:58:41.1738550Z (Use `node --trace-deprecation ...` to show where the warning was created)
+275338: 2026-11-19T04:58:41.1771550Z With the provided path, there will be 1 file uploaded
+275339: 2026-11-19T04:58:41.1780980Z Artifact name is valid!
+275340: 2026-11-19T04:58:41.1781760Z Root directory input is valid!
+275341: 2026-11-19T04:58:41.6113240Z Beginning upload of artifact content to blob storage
+275342: 2026-11-19T04:58:41.8765590Z (node:95283) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+275343: 2026-11-19T04:58:42.9677670Z Uploaded bytes 8388608
+275344: 2026-11-19T04:58:43.0681850Z Uploaded bytes 16777216
+275345: 2026-11-19T04:58:43.3121760Z Uploaded bytes 23184339
+275346: 2026-11-19T04:58:43.3879230Z Finished uploading artifact content to blob storage!
+275347: 2026-11-19T04:58:43.3887080Z SHA256 digest of uploaded artifact zip is c631f09ae4f9182047d46574370b4e1aed0e2b32ef408a7b3863132b7f2d0a37
+275348: 2026-11-19T04:58:43.3887800Z Finalizing artifact upload
+275349: 2026-11-19T04:58:43.8118000Z Artifact xnu-buildtree-SWEET.zip successfully finalized. Artifact ID 14500690359
+275350: 2026-11-19T04:58:43.8118900Z Artifact xnu-buildtree-SWEET has been successfully uploaded! Final size is 23184339 bytes. Artifact ID is 14500690359
+275351: 2026-11-19T04:58:43.8124620Z Artifact download URL: https://github.com/awadmw/ios-sweet/actions/runs/44460798703/artifacts/14500690359
+275352: 2026-11-19T04:58:43.8252270Z ##[group]Run mkdir -p out/kdk-libs
+275353: 2026-11-19T04:58:43.8252570Z [36;1mmkdir -p out/kdk-libs[0m
+275354: 2026-11-19T04:58:43.8252910Z [36;1mfor lib in /Library/Developer/KDKs/*/System/Library/KernelSupport/lib*.a; do[0m
+275355: 2026-11-19T04:58:43.8253490Z [36;1m  b=$(basename "$lib" .a)[0m
+275356: 2026-11-19T04:58:43.8253830Z [36;1m  ar t "$lib" > "out/kdk-libs/$b.members.txt" 2>&1 || true[0m
+275357: 2026-11-19T04:58:43.8254170Z [36;1m  nm -m "$lib" > "out/kdk-libs/$b.nm.txt" 2>&1 || true[0m
+275358: 2026-11-19T04:58:43.8254540Z [36;1m  lipo -info "$lib" >> out/kdk-libs/arch.txt 2>&1 || true[0m
+275359: 2026-11-19T04:58:43.8255860Z [36;1mdone[0m
+275360: 2026-11-19T04:58:43.8256050Z [36;1mls -la out/kdk-libs[0m
+275361: 2026-11-19T04:58:43.8326700Z shell: /opt/homebrew/bin/bash -e {0}
+275362: 2026-11-19T04:58:43.8327000Z env:
+275363: 2026-11-19T04:58:43.8327250Z   DXB_REPO: https://github.com/blacktop/darwin-xnu-build
+275364: 2026-11-19T04:58:43.8327600Z   DXB_SHA: 663906528d1cd5ea8fde7de6f16de73db9511549
+275365: 2026-11-19T04:58:43.8327890Z   MACOS_VERSION: 13.5
+275366: 2026-11-19T04:58:43.8328270Z   KERNEL_CONFIG: DEVELOPMENT
+275367: 2026-11-19T04:58:43.8328510Z   MACHINE_CONFIG: SWEET
+275368: 2026-11-19T04:58:43.8328750Z   MACHINE_LOWER: sweet
+275369: 2026-11-19T04:58:43.8329030Z   DEVELOPER_DIR: /Applications/Xcode_16.app/Contents/Developer
+275370: 2026-11-19T04:58:43.8329350Z ##[endgroup]
+275371: 2026-11-19T04:58:47.9706020Z total 14080
+275372: 2026-11-19T04:58:47.9707030Z drwxr-xr-x  49 runner  staff    1568 Nov 19 04:58 .
+275373: 2026-11-19T04:58:47.9707870Z drwxr-xr-x   3 runner  staff      96 Nov 19 04:58 ..
+275374: 2026-11-19T04:58:47.9709830Z -rw-r--r--   1 runner  staff    3958 Nov 19 04:58 arch.txt
+275375: 2026-11-19T04:58:47.9710560Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT6000.os.DEVELOPMENT.members.txt
+275376: 2026-11-19T04:58:47.9711200Z -rw-r--r--   1 runner  staff  396637 Nov 19 04:58 libT6000.os.DEVELOPMENT.nm.txt
+275377: 2026-11-19T04:58:47.9711970Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT6000.os.RELEASE.members.txt
+275378: 2026-11-19T04:58:47.9718480Z -rw-r--r--   1 runner  staff  279071 Nov 19 04:58 libT6000.os.RELEASE.nm.txt
+275379: 2026-11-19T04:58:47.9720770Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT6020.os.DEVELOPMENT.members.txt
+275380: 2026-11-19T04:58:47.9721440Z -rw-r--r--   1 runner  staff  395728 Nov 19 04:58 libT6020.os.DEVELOPMENT.nm.txt
+275381: 2026-11-19T04:58:47.9721920Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT6020.os.RELEASE.members.txt
+275382: 2026-11-19T04:58:47.9722450Z -rw-r--r--   1 runner  staff  278403 Nov 19 04:58 libT6020.os.RELEASE.nm.txt
+275383: 2026-11-19T04:58:47.9723040Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT6030.os.DEVELOPMENT.members.txt
+275384: 2026-11-19T04:58:47.9723520Z -rw-r--r--   1 runner  staff  385262 Nov 19 04:58 libT6030.os.DEVELOPMENT.nm.txt
+275385: 2026-11-19T04:58:47.9724050Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT6030.os.RELEASE.members.txt
+275386: 2026-11-19T04:58:47.9724500Z -rw-r--r--   1 runner  staff  268216 Nov 19 04:58 libT6030.os.RELEASE.nm.txt
+275387: 2026-11-19T04:58:47.9725020Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT6031.os.DEVELOPMENT.members.txt
+275388: 2026-11-19T04:58:47.9725550Z -rw-r--r--   1 runner  staff  395507 Nov 19 04:58 libT6031.os.DEVELOPMENT.nm.txt
+275389: 2026-11-19T04:58:47.9726020Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT6031.os.RELEASE.members.txt
+275390: 2026-11-19T04:58:47.9726520Z -rw-r--r--   1 runner  staff  278039 Nov 19 04:58 libT6031.os.RELEASE.nm.txt
+275391: 2026-11-19T04:58:47.9727030Z -rw-r--r--   1 runner  staff     414 Nov 19 04:58 libT6041.os.DEVELOPMENT.members.txt
+275392: 2026-11-19T04:58:47.9727520Z -rw-r--r--   1 runner  staff  298428 Nov 19 04:58 libT6041.os.DEVELOPMENT.nm.txt
+275393: 2026-11-19T04:58:47.9728020Z -rw-r--r--   1 runner  staff     414 Nov 19 04:58 libT6041.os.RELEASE.members.txt
+275394: 2026-11-19T04:58:47.9728550Z -rw-r--r--   1 runner  staff  191171 Nov 19 04:58 libT6041.os.RELEASE.nm.txt
+275395: 2026-11-19T04:58:47.9729020Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT8101.os.DEVELOPMENT.members.txt
+275396: 2026-11-19T04:58:47.9729550Z -rw-r--r--   1 runner  staff  381156 Nov 19 04:58 libT8101.os.DEVELOPMENT.nm.txt
+275397: 2026-11-19T04:58:47.9730600Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT8101.os.RELEASE.members.txt
+275398: 2026-11-19T04:58:47.9731150Z -rw-r--r--   1 runner  staff  264338 Nov 19 04:58 libT8101.os.RELEASE.nm.txt
+275399: 2026-11-19T04:58:47.9731670Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT8103.os.DEVELOPMENT.members.txt
+275400: 2026-11-19T04:58:47.9732160Z -rw-r--r--   1 runner  staff  381156 Nov 19 04:58 libT8103.os.DEVELOPMENT.nm.txt
+275401: 2026-11-19T04:58:47.9732690Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT8103.os.RELEASE.members.txt
+275402: 2026-11-19T04:58:47.9733230Z -rw-r--r--   1 runner  staff  264338 Nov 19 04:58 libT8103.os.RELEASE.nm.txt
+275403: 2026-11-19T04:58:47.9733820Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT8112.os.DEVELOPMENT.members.txt
+275404: 2026-11-19T04:58:47.9734350Z -rw-r--r--   1 runner  staff  385725 Nov 19 04:58 libT8112.os.DEVELOPMENT.nm.txt
+275405: 2026-11-19T04:58:47.9734880Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT8112.os.RELEASE.members.txt
+275406: 2026-11-19T04:58:47.9735340Z -rw-r--r--   1 runner  staff  268822 Nov 19 04:58 libT8112.os.RELEASE.nm.txt
+275407: 2026-11-19T04:58:47.9735840Z -rw-r--r--   1 runner  staff     414 Nov 19 04:58 libT8112.os.SPTM.members.txt
+275408: 2026-11-19T04:58:47.9736300Z -rw-r--r--   1 runner  staff  293379 Nov 19 04:58 libT8112.os.SPTM.nm.txt
+275409: 2026-11-19T04:58:47.9736830Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT8122.os.DEVELOPMENT.members.txt
+275410: 2026-11-19T04:58:47.9737370Z -rw-r--r--   1 runner  staff  385262 Nov 19 04:58 libT8122.os.DEVELOPMENT.nm.txt
+275411: 2026-11-19T04:58:47.9737840Z -rw-r--r--   1 runner  staff     459 Nov 19 04:58 libT8122.os.RELEASE.members.txt
+275412: 2026-11-19T04:58:47.9738410Z -rw-r--r--   1 runner  staff  268216 Nov 19 04:58 libT8122.os.RELEASE.nm.txt
+275413: 2026-11-19T04:58:47.9739010Z -rw-r--r--   1 runner  staff     414 Nov 19 04:58 libT8132.os.DEVELOPMENT.members.txt
+275414: 2026-11-19T04:58:47.9739600Z -rw-r--r--   1 runner  staff  298542 Nov 19 04:58 libT8132.os.DEVELOPMENT.nm.txt
+275415: 2026-11-19T04:58:47.9740070Z -rw-r--r--   1 runner  staff     414 Nov 19 04:58 libT8132.os.RELEASE.members.txt
+275416: 2026-11-19T04:58:47.9740810Z -rw-r--r--   1 runner  staff  191285 Nov 19 04:58 libT8132.os.RELEASE.nm.txt
+275417: 2026-11-19T04:58:47.9741300Z -rw-r--r--   1 runner  staff     433 Nov 19 04:58 libVMAPPLE.os.DEVELOPMENT.members.txt
+275418: 2026-11-19T04:58:47.9741870Z -rw-r--r--   1 runner  staff  246639 Nov 19 04:58 libVMAPPLE.os.DEVELOPMENT.nm.txt
+275419: 2026-11-19T04:58:47.9742410Z -rw-r--r--   1 runner  staff     433 Nov 19 04:58 libVMAPPLE.os.RELEASE.members.txt
+275420: 2026-11-19T04:58:47.9742920Z -rw-r--r--   1 runner  staff  160742 Nov 19 04:58 libVMAPPLE.os.RELEASE.nm.txt
+275421: 2026-11-19T04:58:47.9927480Z Post job cleanup.
+275422: 2026-11-19T04:58:48.1926570Z [command]/opt/homebrew/bin/git version
+275423: 2026-11-19T04:58:48.2266830Z git version 2.56.1
+275424: 2026-11-19T04:58:48.2287890Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/4215d22c-c1f3-4699-8175-945a6a1a9348/.gitconfig'
+275425: 2026-11-19T04:58:48.2295870Z Temporarily overriding HOME='/Users/runner/work/_temp/4215d22c-c1f3-4699-8175-945a6a1a9348' before making global git config changes
+275426: 2026-11-19T04:58:48.2298030Z Adding repository directory to the temporary git global config as a safe directory
+275427: 2026-11-19T04:58:48.2299760Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/ios-sweet/ios-sweet
+275428: 2026-11-19T04:58:48.2453230Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+275429: 2026-11-19T04:58:48.2527320Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+275430: 2026-11-19T04:58:48.3803570Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+275431: 2026-11-19T04:58:48.3854330Z http.https://github.com/.extraheader
+275432: 2026-11-19T04:58:48.3861910Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+275433: 2026-11-19T04:58:48.3945120Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+275434: 2026-11-19T04:58:48.4784780Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+275435: 2026-11-19T04:58:48.4842380Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+275436: 2026-11-19T04:58:48.5670530Z Cleaning up orphan processes
+275437: 2026-11-19T04:58:50.2959590Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

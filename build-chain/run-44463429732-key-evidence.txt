@@ -1,0 +1,10 @@
+140: 2026-11-19T05:11:36.5071670Z [36;1m    echo "KC_INPUT=${kernel_path}"[0m
+141: 2026-11-19T05:11:36.5072860Z [36;1m    echo "KC_KDK=${KDKROOT}"[0m
+142: 2026-11-19T05:11:36.5073960Z [36;1m    echo "KC_OUTPUT=${output_path}"[0m
+275311: 2026-11-19T05:23:12.9937830Z   🎉 XNU Build Done!
+275326: 2026-11-19T05:23:21.1384010Z KC_INPUT=/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/kernel.development.sweet
+275327: 2026-11-19T05:23:21.1384650Z KC_KDK=/Library/Developer/KDKs/KDK_13.5_22G74.kdk
+275328: 2026-11-19T05:23:21.1385120Z KC_OUTPUT=/Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/oss-xnu.macOS.13.5.kc.sweet
+275330: 2026-11-19T05:23:21.1514180Z ++ ipsw kernel kmutil inspect -x --filter 'com.apple.driver.SEPHibernation|com.apple.driver.ExclavesAudioKext|com.apple.driver.AppleH11ANEInterface|com.apple.driver.AppleFirmwareKit|com.apple.driver.AppleARMWatchdogTimer'
+275333: 2026-11-19T05:23:36.2009860Z Error Domain=KMErrorDomain Code=31 "Error occurred while building a collection: in /System/Library/Extensions/AppleStorageDrivers.kext/Contents/PlugIns/AppleUSBTDM.kext/Contents/MacOS/AppleUSBTDM: missing compatible arch in /System/Library/Extensions/AppleStorageDrivers.kext/Contents/PlugIns/AppleUSBTDM.kext/Contents/MacOS/AppleUSBTDM" UserInfo={NSLocalizedDescription=Error occurred while building a collection: in /System/Library/Extensions/AppleStorageDrivers.kext/Contents/PlugIns/AppleUSBTDM.kext/Contents/MacOS/AppleUSBTDM: missing compatible arch in /System/Library/Extensions/AppleStorageDrivers.kext/Contents/PlugIns/AppleUSBTDM.kext/Contents/MacOS/AppleUSBTDM}
+275334: 2026-11-19T05:23:36.2117870Z ##[error]Process completed with exit code 31.

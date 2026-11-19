@@ -1,0 +1,137 @@
+{
+  "overall_pass": true,
+  "passed": 26,
+  "total": 26,
+  "checks": [
+    {
+      "name": "DTB magic and exact length",
+      "pass": true,
+      "detail": "1118143"
+    },
+    {
+      "name": "DTB hash matches structured facts",
+      "pass": true,
+      "detail": "7A290B13563A058464FA01287FA801687B76E55A85A80867DDA76AAC73743094"
+    },
+    {
+      "name": "DT model",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "complete device-tree archive extraction",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "DTS generated",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "132 unique positive partitions",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "every partition appears in DEVICE",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "55 reserved entries",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "every reserved node appears in DEVICE",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "PMIC USIDs",
+      "pass": true,
+      "detail": "{'qcom,pmk8350@0': 0, 'qcom,pm8350@1': 1, 'qcom,pm8350c@2': 2, 'qcom,pm8350b@3': 3, 'qcom,pmr735a@4': 4, 'qcom,pmr735b@5': 5, 'qcom,pm8450@7': 7, 'qcom,pm8010i@8': 8, 'qcom,pm8010j@9': 9}"
+    },
+    {
+      "name": "touch SPI0 CS0 evidence",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "five selected panel timings",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "panel selection",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "UFS manufacturer_id",
+      "pass": true,
+      "detail": "0x012C"
+    },
+    {
+      "name": "UFS device_version",
+      "pass": true,
+      "detail": "0x0011"
+    },
+    {
+      "name": "UFS specification_version",
+      "pass": true,
+      "detail": "0x0310"
+    },
+    {
+      "name": "UFS unipro_version",
+      "pass": true,
+      "detail": "0x0180"
+    },
+    {
+      "name": "UFS mphy_version",
+      "pass": true,
+      "detail": "0x0410"
+    },
+    {
+      "name": "UFS SCSI product",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "QCA6490 Wi-Fi and BT",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "GICD/GICR raw decode",
+      "pass": true,
+      "detail": "[[386924544, 65536], [387448832, 2097152]]"
+    },
+    {
+      "name": "ITS raw decode",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "old GICR typo removed",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "UniXNU limitation explicit",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "rootfs modifier forbidden",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "read-only collection scripts",
+      "pass": true,
+      "detail": ""
+    }
+  ]
+}

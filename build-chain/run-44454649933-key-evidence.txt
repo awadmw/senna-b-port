@@ -1,0 +1,12 @@
+RUN 44454649933 / SWEET / bash build.sh -k
+Result: XNU compile passed; kernelcache creation failed.
+Root cause: DXB ran ipsw against the host KernelManagement cache; macOS 15.8.2 host build 24H232 KDK was missing.
+Fix in subsequent workflow: remove host ipsw inspection and install_ipsw; use pinned KDK 13.5 for a kernel-only boot KC.
+The run-5 artifact named xnu-kernelcache-SWEET is NOT acceptance evidence: Verify was skipped and no kernelcache.sweet was produced.
+
+275148: 2026-11-19T04:02:42.8058760Z   🎉 XNU Build Done!
+275161: 2026-11-19T04:02:51.2298200Z [35;01m ⇒ [39;49;00m📦 Building kernel collection for kernel.development.sweet
+275163: 2026-11-19T04:02:51.6475970Z Error Domain=KMErrorDomain Code=34 "Missing Developer Kit: As of macOS 13.0, you will need to install a KDK matching your build 24H232 to rebuild kernel collections." UserInfo={NSLocalizedDescription=Missing Developer Kit: As of macOS 13.0, you will need to install a KDK matching your build 24H232 to rebuild kernel collections.}
+275164: 2026-11-19T04:02:51.6504490Z ##[error]Process completed with exit code 34.
+275219: 2026-11-19T04:02:59.8724790Z Artifact xnu-buildtree-SWEET has been successfully uploaded! Final size is 23182287 bytes. Artifact ID is 14498500299
+275315: 2026-11-19T04:03:09.0453680Z Artifact xnu-kernelcache-SWEET has been successfully uploaded! Final size is 60548757 bytes. Artifact ID is 14496763785

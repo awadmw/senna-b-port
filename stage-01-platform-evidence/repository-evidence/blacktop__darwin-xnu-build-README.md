@@ -1,0 +1,305 @@
+# darwin-xnu-build
+
+[![XNU CodeQL](https://github.com/blacktop/darwin-xnu-build/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/blacktop/darwin-xnu-build/actions/workflows/c-cpp.yml) ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/blacktop/darwin-xnu-build/total)
+ [![LICENSE](https://img.shields.io/:license-mit-blue.svg)](https://doge.mit-license.org)
+
+
+
+
+> This repository contains scripts to build [xnu](https://github.com/apple-oss-distributions/xnu) as well as generate a kernel collection and [CodeQL](https://codeql.github.com) databases.
+
+---
+
+## Supported OS Versions
+
+| Version    | Compiles |                                          CodeQL                                           | Boots *(arm64/x86_64)* |
+| ---------- | :------: | :---------------------------------------------------------------------------------------: | :--------------------: |
+| macOS 12.5 |    ✅     |                                             ❔                                            |    ❔       /     ✅     |
+| macOS 13.0 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v13.0/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 13.1 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v13.1/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 13.2 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v13.2/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 13.3 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v13.3/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 13.4 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v13.4/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 13.5 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v13.5/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 14.0 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v14.0/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 14.1 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v14.1/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 14.2 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v14.2/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 14.3 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v14.3/xnu-codeql.zip) |    ✅       /     ✅     |
+| macOS 14.4 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v14.4/xnu-codeql.zip) |    ✅       /     ✅     |
+| macOS 14.5 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v14.5/xnu-codeql.zip) |    ✅       /     ✅     |
+| macOS 14.6 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v14.6/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 15.0 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v15.0/xnu-codeql.zip) |    ✅       /     ✅     |
+| macOS 15.1 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v15.1/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 15.2 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v15.2/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 15.3 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v15.3/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 15.4 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v15.4/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 15.5 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v15.5/xnu-codeql.zip) |    ❔       /     ❔     |
+| macOS 15.6 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v15.6/xnu-codeql.zip) |    ✅       /     ❔     |
+| macOS 26.0 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v26.0/xnu-codeql-26.0.zip) |    ❔       /     ✅     |
+| macOS 26.1 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v26.1/xnu-codeql-26.1.zip) |    ❔       /     ❔     |
+| macOS 26.2 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v26.2/xnu-codeql-26.2.zip) |    ❔       /     ❔     |
+| macOS 26.3 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v26.3/xnu-codeql-26.3.zip) |    ❔       /     ❔     |
+| macOS 26.4 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v26.4/xnu-codeql-26.4.zip) |    ❔       /     ❔     |
+| macOS 26.5 |    ✅     | [DB](https://github.com/blacktop/darwin-xnu-build/releases/download/v26.5/xnu-codeql-26.5.zip) |    ❔       /     ❔     |
+
+> [!NOTE]
+> CodeQL DBs built with `MACHINE_CONFIG=VMAPPLE`
+> MacOS `14.3` booted:
+> - via Virtualization.framework with `MACHINE_CONFIG=VMAPPLE`
+> - via qemu with `ARCH_CONFIG=x86_64`
+> - via ASi tested with `MACHINE_CONFIG=T8101` and `MACHINE_CONFIG=T6000`
+
+### Known Issue ⚠️
+
+Currently `MACHINE_CONFIG=T8103` is not correctly building for at least `14.3`
+
+> [!NOTE]
+> When attempting to boot try adding the boot-arg: `sudo nvram boot-args="-unsafe_kernel_text"`
+
+## Why? 🤔
+
+I'm hoping to patch and build the xnu source in interesting ways to aid in research and development of macOS/iOS security research tools as well as generate [CodeQL](https://securitylab.github.com/tools/codeql) databases for the community to use.
+
+## Getting Started
+
+### Dependencies
+
+- [homebrew](https://brew.sh)
+  - [jq](https://stedolan.github.io/jq/)
+  - [gum](https://github.com/charmbracelet/gum)
+  - [xcodes](https://github.com/RobotsAndPencils/xcodes)
+  - [ipsw](https://github.com/blacktop/ipsw)
+  - [cmake](https://cmake.org)
+  - [ninja](https://ninja-build.org)
+- XCode
+- python3
+- [codeql CLI](https://codeql.github.com/docs/codeql-cli/)
+
+> [!NOTE]
+> The `build.sh` script will install all these for you if you are connected to the internet.
+
+### Clone the repo
+
+```bash
+git clone https://github.com/blacktop/darwin-xnu-build.git
+cd darwin-xnu-build
+```
+
+```bash
+❯ ./build.sh --help
+
+Usage: build.sh [-h] [--clean] [--kc]
+
+This script builds the macOS XNU kernel
+
+Where:
+    -h|--help       show this help text
+    -c|--clean      cleans build artifacts and cloned repos
+    -k|--kc         create kernel collection (via kmutil create)
+```
+
+### Build the kernel and kernel Collection
+
+```bash
+KERNEL_CONFIG=RELEASE ARCH_CONFIG=ARM64 MACHINE_CONFIG=VMAPPLE ./build.sh --kc
+```
+
+> [!NOTE]
+> Supported `KERNEL_CONFIG` include:
+> - `RELEASE`
+> - `DEVELOPMENT`
+>
+> Supported `MACHINE_CONFIG` include:
+> - `T8101`
+> - `T8103`
+> - `T6000`
+> - `VMAPPLE`
+>
+> Optional environment overrides: `DEVELOPER_DIR` (Xcode to use), `KDKROOT` (KDK to build against instead of the one matching `MACOS_VERSION`), `KERNEL_BUILD_DATE` and `KERNEL_BUILD_OBJROOT` (the version banner defaults to the xnu tag's commit date in UTC and the tag name, so identical sources produce identical kernels).
+
+```bash
+<SNIP>
+ ⇒ 📦 Building kernel collection for 'kernel.release.t6000'
+   • Decompressing KernelManagement kernelcache
+Merged LINKEDIT:
+  weak bindings size:          0KB
+  exports info size:           0KB
+  bindings size:               0KB
+  lazy bindings size:          0KB
+  function starts size:       41KB
+  data in code size:           0KB
+  symbol table size:        3702KB (85348 exports, 87979 imports)
+  symbol string pool size:  6465KB
+LINKEDITS optimized from 30MB to 10MB
+time to layout cache: 0ms
+time to copy cached dylibs into buffer: 1ms
+time to adjust segments for new split locations: 2ms
+time to bind all images: 8ms
+time to optimize Objective-C: 0ms
+time to do stub elimination: 0ms
+time to optimize LINKEDITs: 2ms
+time to compute slide info: 1ms
+time to compute UUID and codesign cache file: 1ms
+  🎉 XNU Build Done!
+```
+
+The kernel collection is written to `fakeroot/oss-xnu.macOS.<MACOS_VERSION>.kc.<machine_config>.<kernel_config>`. Check that it contains all the KEXTs
+
+```bash
+❯ ipsw macho info fakeroot/oss-xnu.macOS.26.5.kc.vmapple.development | head
+Magic         = 64-bit MachO
+Type          = FILESET
+CPU           = AARCH64, ARM64e
+Commands      = 241 (Size: 17160)
+Flags         = None
+000: LC_UUID                     67DF7148-8EEC-B1A6-5F51-7502DADF2264
+001: LC_BUILD_VERSION            Platform: unknown, SDK: 0.0
+002: LC_UNIXTHREAD               Threads: 1, ARM64 EntryPoint: 0xfffffe0007ad1488
+003: LC_DYLD_CHAINED_FIXUPS      offset=0x003690000  size=0x444
+004: LC_SEGMENT_64 sz=0x00008000 off=0x00000000-0x00008000 addr=0xfffffe0007004000-0xfffffe000700c000 r--/r--   __TEXT
+<SNIP>
+```
+
+### Boot the kernel collection in a VM
+
+`kmutil configure-boot` only runs from recoveryOS, and the guest's boot policy must allow custom boot objects (Permissive Security). Virtualization.framework guests need macOS 14.4 or newer to boot a custom kernel (see [#16](https://github.com/blacktop/darwin-xnu-build/issues/16)).
+
+1. Build the kernel collection for the VM:
+
+   ```bash
+   MACOS_VERSION='26.5' KERNEL_CONFIG=DEVELOPMENT ARCH_CONFIG=ARM64 MACHINE_CONFIG=VMAPPLE ./build.sh --kc
+   ```
+
+2. Put `fakeroot/oss-xnu.macOS.26.5.kc.vmapple.development` on the guest's data volume, e.g. in `~/Desktop/` (build inside the guest, or copy the file in).
+3. Shut the guest down and start it in recoveryOS: `tart run --recovery <vm>` for Tart; UTM and other Virtualization.framework front-ends expose the same `startUpFromMacOSRecovery` option.
+4. In recoveryOS open Utilities > Terminal and lower the security policy. Answer `y` when asked to drop to "permissive":
+
+   ```bash
+   csrutil disable
+   ```
+
+   If `kmutil configure-boot` later refuses because of the policy, set Reduced Security in Startup Security Utility (Utilities menu) first and run it again.
+
+5. Point the boot policy at the KC. recoveryOS mounts the guest's system volume under `/Volumes/Macintosh HD`:
+
+   ```bash
+   kmutil configure-boot -v "/Volumes/Macintosh HD" -c "/Volumes/Macintosh HD/Users/<you>/Desktop/oss-xnu.macOS.26.5.kc.vmapple.development"
+   reboot
+   ```
+
+6. After the reboot, `uname -v` reports the `DEVELOPMENT_ARM64_VMAPPLE` config and your build path instead of Apple's release kernel string.
+
+To return to the stock kernel, boot recoveryOS again and raise the policy back to Full Security (`csrutil enable`, accepting the prompt, or Startup Security Utility). Full Security does not permit custom boot objects, so Apple's kernel collection boots again.
+
+### Build the XNU library (macOS 26.0+)
+
+```bash
+MACOS_VERSION='26.1' KERNEL_CONFIG=RELEASE ARCH_CONFIG=ARM64 MACHINE_CONFIG=VMAPPLE ./build.sh --lib
+```
+
+This toggles Apple's `RC_ProjectName=xnu_libraries` path and drops the archive plus metadata into `build/xnu-lib.obj/`:
+
+- `build/xnu-lib.obj/libkernel.release.vmapple.a`
+- `build/xnu-lib.obj/RELEASE_ARM64_VMAPPLE/*.libfilelist`
+- `build/xnu-lib.obj/RELEASE_ARM64_VMAPPLE/all-{alias,kpi}.exp`
+
+> [!WARNING]
+> By default the archive holds only the sources Apple tags `xnu-library` in `conf/files` (currently just `bsd/kern/qsort.c`) plus `version.o`, and the `.libfilelist`s are empty. The export lists and generated headers are real, but there is no kernel code to link against.
+
+Every GitHub release also publishes a pre-packed `xnu-lib-<version>.tar.gz` bundle mirroring the default layout above (export lists and generated headers, not a linkable kernel).
+
+### Clean rebuild the kernel and kernel collection
+
+```bash
+MACOS_VERSION='15.0' KERNEL_CONFIG=RELEASE ARCH_CONFIG=ARM64 MACHINE_CONFIG=VMAPPLE ./build.sh --clean --kc
+```
+
+### Generate a CodeQL database
+
+```bash
+MACOS_VERSION='15.0' KERNEL_CONFIG=RELEASE ARCH_CONFIG=ARM64 MACHINE_CONFIG=VMAPPLE ./codeql.sh
+```
+```bash
+<SNIP>
+[2023-03-03 22:33:20] [build-stdout]   🎉 XNU Build Done!
+Finalizing database at darwin-xnu-build/xnu-codeql.
+Running TRAP import for CodeQL database at darwin-xnu-build/xnu-codeql...
+TRAP import complete (1m46s).
+Successfully created database at darwin-xnu-build/xnu-codeql.
+[info] Deleting log files...
+[info] Zipping the CodeQL database...
+  🎉 CodeQL Database Create Done!
+```
+
+Script builds and zips up the CodeQL database
+
+```bash
+❯ ll xnu-codeql-<macOS_version>.zip
+-rw-r--r--@ 1 blacktop  staff   219M Mar  3 22:35 xnu-codeql-<macOS_version>.zip
+```
+
+### Generate a CodeQL database *(in a `local` **Tart** VM)*
+
+Install deps: *[packer](https://developer.hashicorp.com/packer), [tart](https://tart.ru) and [cirrus](https://github.com/cirruslabs/cirrus-cli)*
+
+```bash
+make deps
+```
+
+Build VM image
+
+```bash
+make build-vm
+```
+
+Create CodeQL DB
+
+```bash
+make codeql-db
+```
+
+```bash
+ > Building CodeQL Database
+🕓 'Build' Task 08:22
+   ✅ pull virtual machine 0.0s
+✅ 'Build' Task 47:59
+ 🎉 Done! 🎉
+🕒 'Build' Task 46:28
+✅ 'Build' Task 48:15
+```
+
+```bash
+❯ tree artifacts/
+
+artifacts/
+└── Build
+    └── binary
+        └── xnu-codeql.zip
+
+3 directories, 1 file
+```
+
+## TODO
+
+- [x] ~~Auto build xnu with Github Actions~~
+- [x] ~~Auto generate CodeQL database with Github Actions~~
+
+## NOTES
+
+Kernels carry CTF type data in a `__CTF` section, generated at link time with the `ctfconvert`/`ctfmerge`/`ctfdump` tools that `build.sh` builds from Apple's dtrace sources. DTrace scripts that use kernel types (`args[0]->p_pid`, casts to kernel structs) and lldb's type-aware kernel macros depend on it. Verify with:
+
+```bash
+otool -l build/xnu.obj/DEVELOPMENT_ARM64_VMAPPLE/kernel.development.vmapple | grep -c __CTF
+```
+
+To see kernel logs
+
+```bash
+log show --debug --last boot --predicate 'process == "kernel"'
+```
+
+## Credit
+
+- <https://github.com/pwn0rz/xnu-build>
+- <https://kernelshaman.blogspot.com/2021/02/building-xnu-for-macos-112-intel-apple.html>
+- <https://github.com/jonhermansen/darnix> (spotted that the CTF tools were never wired into the kernel build)

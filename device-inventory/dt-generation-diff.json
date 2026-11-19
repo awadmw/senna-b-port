@@ -1,0 +1,10 @@
+[
+  {
+    "path": "/hypervisor/qcom,resource-manager-rpc@90bf8a419a6a0539",
+    "change": "added"
+  },
+  {
+    "path": "/hypervisor/qcom,resource-manager-rpc@e94eda277245c3e8",
+    "change": "removed"
+  }
+]

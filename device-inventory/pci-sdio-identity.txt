@@ -1,0 +1,14 @@
+--- /sys/bus/pci/devices/0000:00:00.0
+vendor=0x17cb
+device=0x0110
+subsystem_vendor=0x0000
+subsystem_device=0x0000
+class=0x060400
+modalias=pci:v000017CBd00000110sv00000000sd00000000bc06sc04i00
+--- /sys/bus/pci/devices/0000:01:00.0
+vendor=0x17cb
+device=0x1103
+subsystem_vendor=0x17cb
+subsystem_device=0x0108
+class=0x028000
+modalias=pci:v000017CBd00001103sv000017CBsd00000108bc02sc80i00

@@ -1,0 +1,21 @@
+# 大体积二进制与可再生文件（不入库）
+*.img
+*.bin
+*.tar
+*.dtb
+*.dts.txt
+*.log
+_github-staging/
+device-inventory/device-tree/
+build-chain/dxb/
+build-chain/upstream/
+build-chain/xnu-upstream/
+*.zip
+*.7z
+*.pyc
+__pycache__/
+*.exe
+*.dmg
+*.iso
+*.xz
+*.gz

@@ -1,0 +1,988 @@
+﻿
+NODE /memory
+  device_type strings=['memory'] u32=None  
+  reg   decoded=[{'address': 2147483648, 'size': 1778384896, 'address_cells': 2, 'size_cells': 2}, {'address': 4047503360, 'size': 247463936, 'address_cells': 2, 'size_cells': 2}, {'address': 34359738368, 'size': 965738496, 'address_cells': 2, 'size_cells': 2}, {'address': 38654705664, 'size': 6442450944, 'address_cells': 2, 'size_cells': 2}, {'address': 35433480192, 'size': 3221225472, 'address_cells': 2, 'size_cells': 2}] 
+
+NODE /firmware
+
+NODE /firmware/qcom_scm
+  compatible strings=['qcom,scm-v1.1', 'qcom,scm'] u32=None  
+  interrupts  u32=[0, 930, 1]  
+
+NODE /firmware/qtee_shmbridge
+  compatible strings=['qcom,tee-shared-memory-bridge'] u32=None  
+
+NODE /firmware/qcom_smcinvoke
+  compatible strings=['qcom,smcinvoke'] u32=None  
+
+NODE /firmware/android
+  compatible strings=['android,firmware'] u32=None  
+
+NODE /firmware/android/vbmeta
+  compatible strings=['android,vbmeta'] u32=None  
+
+NODE /firmware/android/fstab
+  compatible strings=['android,fstab'] u32=None  
+
+NODE /firmware/android/fstab/vendor
+  compatible strings=['android,vendor'] u32=None  
+  status strings=['disabled'] u32=None  
+
+NODE /cpus
+
+NODE /cpus/cpu@0
+  compatible strings=['qcom,kryo'] u32=None  
+  device_type strings=['cpu'] u32=[1668314368]  
+  reg   decoded=[{'address': 0, 'size': 0, 'address_cells': 2, 'size_cells': 0}] 
+  enable-method strings=['psci'] u32=None  
+
+NODE /cpus/cpu@0/l2-cache
+  compatible strings=['arm,arch-cache'] u32=None  
+
+NODE /cpus/cpu@0/l2-cache/l3-cache
+  compatible strings=['arm,arch-cache'] u32=None  
+
+NODE /cpus/cpu@100
+  compatible strings=['qcom,kryo'] u32=None  
+  device_type strings=['cpu'] u32=[1668314368]  
+  reg   decoded=[{'address': 256, 'size': 0, 'address_cells': 2, 'size_cells': 0}] 
+  enable-method strings=['psci'] u32=None  
+
+NODE /cpus/cpu@200
+  compatible strings=['qcom,kryo'] u32=None  
+  device_type strings=['cpu'] u32=[1668314368]  
+  reg   decoded=[{'address': 512, 'size': 0, 'address_cells': 2, 'size_cells': 0}] 
+  enable-method strings=['psci'] u32=None  
+
+NODE /cpus/cpu@200/l2-cache
+  compatible strings=['arm,arch-cache'] u32=None  
+
+NODE /cpus/cpu@300
+  compatible strings=['qcom,kryo'] u32=None  
+  device_type strings=['cpu'] u32=[1668314368]  
+  reg   decoded=[{'address': 768, 'size': 0, 'address_cells': 2, 'size_cells': 0}] 
+  enable-method strings=['psci'] u32=None  
+
+NODE /cpus/cpu@400
+  compatible strings=['qcom,kryo'] u32=None  
+  device_type strings=['cpu'] u32=[1668314368]  
+  reg   decoded=[{'address': 1024, 'size': 0, 'address_cells': 2, 'size_cells': 0}] 
+  enable-method strings=['psci'] u32=None  
+
+NODE /cpus/cpu@400/l2-cache
+  compatible strings=['arm,arch-cache'] u32=None  
+
+NODE /cpus/cpu@500
+  compatible strings=['qcom,kryo'] u32=None  
+  device_type strings=['cpu'] u32=[1668314368]  
+  reg   decoded=[{'address': 1280, 'size': 0, 'address_cells': 2, 'size_cells': 0}] 
+  enable-method strings=['psci'] u32=None  
+
+NODE /cpus/cpu@500/l2-cache
+  compatible strings=['arm,arch-cache'] u32=None  
+
+NODE /cpus/cpu@600
+  compatible strings=['qcom,kryo'] u32=None  
+  device_type strings=['cpu'] u32=[1668314368]  
+  reg   decoded=[{'address': 1536, 'size': 0, 'address_cells': 2, 'size_cells': 0}] 
+  enable-method strings=['psci'] u32=None  
+
+NODE /cpus/cpu@600/l2-cache
+  compatible strings=['arm,arch-cache'] u32=None  
+
+NODE /cpus/cpu@700
+  compatible strings=['qcom,kryo'] u32=None  
+  device_type strings=['cpu'] u32=[1668314368]  
+  reg   decoded=[{'address': 1792, 'size': 0, 'address_cells': 2, 'size_cells': 0}] 
+  enable-method strings=['psci'] u32=None  
+
+NODE /cpus/cpu@700/l2-cache
+  compatible strings=['arm,arch-cache'] u32=None  
+
+NODE /soc/psci
+  compatible strings=['arm,psci-1.0'] u32=None  
+  method strings=['smc'] u32=[1936548608]  
+
+NODE /soc/interrupt-controller@17100000
+  compatible strings=['arm,gic-v3'] u32=None  
+  reg   decoded=[{'address': 386924544, 'size': 65536, 'address_cells': 1, 'size_cells': 1}, {'address': 387448832, 'size': 2097152, 'address_cells': 1, 'size_cells': 1}] 
+  interrupts  u32=[1, 9, 8]  
+  #interrupt-cells  u32=[3]  
+
+NODE /soc/interrupt-controller@17100000/msi-controller@17140000
+  compatible strings=['arm,gic-v3-its'] u32=None  
+  reg   decoded=[{'address': 387186688, 'size': 131072, 'address_cells': 1, 'size_cells': 1}] 
+
+NODE /soc/pinctrl@f000000/qupv3_se7_2uart_pins
+
+NODE /soc/pinctrl@f000000/qupv3_se7_2uart_pins/qupv3_se7_2uart_active
+
+NODE /soc/pinctrl@f000000/qupv3_se7_2uart_pins/qupv3_se7_2uart_active/mux
+
+NODE /soc/pinctrl@f000000/qupv3_se7_2uart_pins/qupv3_se7_2uart_active/config
+
+NODE /soc/pinctrl@f000000/qupv3_se7_2uart_pins/qupv3_se7_2uart_sleep
+
+NODE /soc/pinctrl@f000000/qupv3_se7_2uart_pins/qupv3_se7_2uart_sleep/mux
+
+NODE /soc/pinctrl@f000000/qupv3_se7_2uart_pins/qupv3_se7_2uart_sleep/config
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_default_cts
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_default_cts/mux
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_default_cts/config
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_default_rtsrx
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_default_rtsrx/mux
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_default_rtsrx/config
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_default_tx
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_default_tx/mux
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_default_tx/config
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_cts
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_cts/mux
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_cts/config
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_rts
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_rts/mux
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_rts/config
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_tx
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_tx/mux
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_tx/config
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_rx_wake
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_rx_wake/mux
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_rx_wake/config
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_rx_active
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_rx_active/mux
+
+NODE /soc/pinctrl@f000000/qupv3_se20_4uart_pins/qupv3_se20_rx_active/config
+
+NODE /soc/interrupt-controller@b220000
+  compatible strings=['qcom,pdc', 'qcom,cape-pdc'] u32=None  
+  reg   decoded=[{'address': 186777600, 'size': 196608, 'address_cells': 1, 'size_cells': 1}, {'address': 390070512, 'size': 100, 'address_cells': 1, 'size_cells': 1}] 
+  reg-names strings=['pdc-interrupt-base', 'apss-shared-spi-cfg'] u32=None  
+  interrupt-parent  u32=[1]  hex=00000001
+  #interrupt-cells  u32=[2]  
+
+NODE /soc/ufshc@1d84000
+  compatible strings=['qcom,ufshc'] u32=None  
+  reg   decoded=[{'address': 30949376, 'size': 12288, 'address_cells': 1, 'size_cells': 1}, {'address': 30965760, 'size': 32768, 'address_cells': 1, 'size_cells': 1}, {'address': 30998528, 'size': 36864, 'address_cells': 1, 'size_cells': 1}] 
+  reg-names strings=['ufs_mem', 'ufs_ice', 'ufs_ice_hwkm'] u32=None  
+  interrupts  u32=[0, 265, 4]  
+  status strings=['ok'] u32=None  
+
+NODE /soc/ufshc@1d84000/qos0
+
+NODE /soc/ufshc@1d84000/qos1
+
+NODE /soc/qcom,qup_uart@99c000
+  compatible strings=['qcom,msm-geni-console'] u32=None  
+  reg   decoded=[{'address': 10076160, 'size': 16384, 'address_cells': 1, 'size_cells': 1}] 
+  reg-names strings=['se_phys'] u32=[1936023408, 1752789760]  
+  interrupts  u32=[0, 608, 4]  
+  status strings=['ok'] u32=None  
+
+NODE /soc/spi@990000/synaptics_tcm@0
+  compatible strings=['synaptics-s3910'] u32=[1937337953, 1886677347, 1932358451, 959524864]  
+  reg   decoded=[{'address': 0, 'size': 0, 'address_cells': 1, 'size_cells': 0}] 
+  interrupts  u32=[21, 8200]  
+  interrupt-parent  u32=[60]  hex=0000003c
+  status strings=['okay'] u32=None  
+
+NODE /soc/spi@890000/synaptics_tcm@0
+
+NODE /soc/qcom,qup_uart@894000
+  compatible strings=['qcom,msm-geni-serial-hs'] u32=[1902341997, 745370477, 761750894, 1764586341, 1919508844, 761819904]  
+  reg   decoded=[{'address': 8994816, 'size': 16384, 'address_cells': 1, 'size_cells': 1}] 
+  reg-names strings=['se_phys'] u32=[1936023408, 1752789760]  
+  interrupts-extended  u32=[1, 0, 587, 4, 60, 79, 4]  
+  status strings=['ok'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000
+  compatible strings=['qcom,sde-kms'] u32=None  
+  reg   decoded=[{'address': 182452224, 'size': 540672, 'address_cells': 1, 'size_cells': 1}, {'address': 183173120, 'size': 8200, 'address_cells': 1, 'size_cells': 1}, {'address': 183156736, 'size': 2048, 'address_cells': 1, 'size_cells': 1}] 
+  reg-names strings=['mdp_phys', 'vbif_phys', 'regdma_phys'] u32=None  
+  interrupts  u32=[0, 83, 4]  
+  #interrupt-cells  u32=[1]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,sde-sspp-vig-blocks
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,sde-sspp-vig-blocks/vcm@0
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,sde-sspp-vig-blocks/vcm@1
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,sde-sspp-dma-blocks
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,sde-sspp-dma-blocks/dgm@0
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,sde-sspp-dma-blocks/dgm@1
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,sde-dspp-blocks
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,platform-supply-entries
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,platform-supply-entries/qcom,platform-supply-entry@0
+  reg   decoded=[{'address': 0, 'size': 0, 'address_cells': 1, 'size_cells': 0}] 
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sharp_qhd_plus_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['Sharp qhd cmd mode dsi panel'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sharp_qhd_plus_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sharp_qhd_plus_dsc_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[720]  
+  qcom,mdss-dsi-panel-height  u32=[3120]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sharp_qhd_plus_dsc_cmd/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[720]  
+  qcom,mdss-dsi-panel-height  u32=[3120]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_visionox_r66451_fhd_plus_60hz_video
+  qcom,mdss-dsi-panel-name strings=['r66451 amoled video mode dsi visionox panel with DSC'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_visionox_r66451_fhd_plus_60hz_video/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_visionox_r66451_fhd_plus_60hz_video/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_cphy_vid
+  qcom,mdss-dsi-panel-name strings=['r66451 amoled video mode dsi visionox panel with DSC'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_cphy_vid/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_cphy_vid/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_cphy_cmd
+  qcom,mdss-dsi-panel-name strings=['r66451 amoled cmd mode dsi visionox panel with DSC'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_cphy_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_cphy_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_144hz_cphy_cmd
+  qcom,mdss-dsi-panel-name strings=['r66451 amoled cmd mode dsi visionox panel with DSC'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_144hz_cphy_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_144hz_cphy_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_144hz_cphy_cmd/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_144hz_cphy_cmd/qcom,mdss-dsi-display-timings/timing@2
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_144hz_cphy_cmd/qcom,mdss-dsi-display-timings/timing@3
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_visionox_r66451_fhd_plus_video
+  qcom,mdss-dsi-panel-name strings=['r66451 amoled video mode dsi visionox panel with DSC'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_visionox_r66451_fhd_plus_video/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_visionox_r66451_fhd_plus_video/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_visionox_r66451_fhd_plus_cmd
+  qcom,mdss-dsi-panel-name strings=['r66451 amoled cmd mode dsi visionox panel with DSC'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_visionox_r66451_fhd_plus_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_visionox_r66451_fhd_plus_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_visionox_r66451_fhd_plus_cmd/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_visionox_r66451_fhd_plus_cmd/qcom,mdss-dsi-display-timings/timing@2
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_144hz_cmd
+  qcom,mdss-dsi-panel-name strings=['r66451 amoled cmd mode dsi visionox panel with DSC'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_144hz_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_144hz_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_cphy_144hz_vid
+  qcom,mdss-dsi-panel-name strings=['r66451 amoled video mode dsi visionox panel with DSC'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_cphy_144hz_vid/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_cphy_144hz_vid/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_120hz_cphy_cmd
+  qcom,mdss-dsi-panel-name strings=['r66451 amoled cmd mode dsi visionox panel with DSC'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_120hz_cphy_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_120hz_cphy_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_120hz_cphy_cmd/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_120hz_cphy_cmd/qcom,mdss-dsi-display-timings/timing@2
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_90hz_cphy_nodsc_cmd
+  qcom,mdss-dsi-panel-name strings=['r66451 amoled cmd mode dsi visionox panel without DSC'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_90hz_cphy_nodsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_90hz_cphy_nodsc_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_90hz_cphy_nodsc_video
+  qcom,mdss-dsi-panel-name strings=['r66451 amoled video mode dsi visionox panel without DSC'] u32=[1916155444, 892412001, 1836018789, 1679849065, 1684369184, 1836016741, 543454057, 544631155, 1768910447, 2015391841, 1852140576, 2003399784, 1869968416, 1146307328]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_90hz_cphy_nodsc_video/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_90hz_cphy_nodsc_video/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_cphy_120hz_vid
+  qcom,mdss-dsi-panel-name strings=['r66451 amoled video mode dsi visionox panel with DSC'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_cphy_120hz_vid/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_r66451_fhd_plus_cphy_120hz_vid/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_cmd
+  qcom,mdss-dsi-panel-name strings=['Simulator cmd mode dsi panel'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1440]  
+  qcom,mdss-dsi-panel-height  u32=[2560]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_cmd/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1440]  
+  qcom,mdss-dsi-panel-height  u32=[2560]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_cmd/qcom,mdss-dsi-display-timings/timing@2
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_cmd/qcom,mdss-dsi-display-timings/timing@3
+  qcom,mdss-dsi-panel-width  u32=[720]  
+  qcom,mdss-dsi-panel-height  u32=[1280]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_cmd/qcom,mdss-dsi-display-timings/timing@4
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_cmd/qcom,mdss-dsi-display-timings/timing@5
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_cmd/qcom,mdss-dsi-display-timings/timing@6
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_cmd/qcom,mdss-dsi-display-timings/timing@7
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_video
+  qcom,mdss-dsi-panel-name strings=['Simulator video mode dsi panel'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_video/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_video/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[640]  
+  qcom,mdss-dsi-panel-height  u32=[480]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_dual_sim_cmd
+  qcom,mdss-dsi-panel-name strings=['Sim dual cmd mode dsi panel'] u32=[1399418144, 1685414252, 543386980, 544042852, 1696621683, 1763733601, 1852140544]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_dual_sim_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_dual_sim_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[540]  
+  qcom,mdss-dsi-panel-height  u32=[1920]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_dual_sim_cmd/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[3840]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_dual_sim_cmd/qcom,mdss-dsi-display-timings/timing@2
+  qcom,mdss-dsi-panel-width  u32=[720]  
+  qcom,mdss-dsi-panel-height  u32=[3120]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_dual_sim_video
+  qcom,mdss-dsi-panel-name strings=['Sim dual video mode dsi panel'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_dual_sim_video/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_dual_sim_video/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1280]  
+  qcom,mdss-dsi-panel-height  u32=[1440]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_dsc_10b_cmd
+  qcom,mdss-dsi-panel-name strings=['Simulator cmd mode DSC3:1 10bit dsi panel'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_dsc_10b_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_dsc_10b_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1440]  
+  qcom,mdss-dsi-panel-height  u32=[2560]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_dsc_10b_cmd/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_dsc_10b_cmd/qcom,mdss-dsi-display-timings/timing@2
+  qcom,mdss-dsi-panel-width  u32=[1440]  
+  qcom,mdss-dsi-panel-height  u32=[2560]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_dsc_10b_cmd/qcom,mdss-dsi-display-timings/timing@3
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_dsc_10b_cmd/qcom,mdss-dsi-display-timings/timing@4
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_dsc_10b_cmd/qcom,mdss-dsi-display-timings/timing@5
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_dsc_375_cmd
+  qcom,mdss-dsi-panel-name strings=['Simulator cmd mode DSC 3.75:1 dsi panel'] u32=[1399418229, 1818326127, 1914725229, 1679846767, 1684348996, 1396908083, 775370042, 824206451, 1763733601, 1852140544]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_dsc_375_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_dsc_375_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1440]  
+  qcom,mdss-dsi-panel-height  u32=[2560]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_dsc_375_cmd/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[1920]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_fhd_plus_120hz_video_cphy
+  qcom,mdss-dsi-panel-name strings=['simulator r66451 amoled video mode dsi visionox panel with DSC'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_fhd_plus_120hz_video_cphy/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_sim_fhd_plus_120hz_video_cphy/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2340]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3_1792_1920_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['22001 samsung S6E3XA1 dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['S6E3XA1'] u32=[1396065587, 1480667392]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3_1792_1920_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3_1792_1920_dsc_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1792]  
+  qcom,mdss-dsi-panel-height  u32=[1920]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3_1792_1920_dsc_cmd/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1792]  
+  qcom,mdss-dsi-panel-height  u32=[1920]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3_1792_1920_dsc_cmd/qcom,mdss-dsi-display-timings/timing@2
+  qcom,mdss-dsi-panel-width  u32=[1792]  
+  qcom,mdss-dsi-panel-height  u32=[1920]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_samsung_ams662zs01_1080_2400_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['22001 samsung ams662zs01 fhd cmd mode dsc dsi panel'] u32=[842149936, 824210273, 1836283246, 1730175341, 1932932658, 2054369329, 543582308, 543386980, 544042852, 1696621683, 1663067251, 1763733601, 1852140544]  
+  oplus,mdss-dsi-vendor-name strings=['AMS662ZS01'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_samsung_ams662zs01_1080_2400_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_samsung_ams662zs01_1080_2400_dsc_cmd/qcom,mdss-dsi-display-timings/timing0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2400]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_samsung_ams662zs01_1080_2400_dsc_cmd/qcom,mdss-dsi-display-timings/timing1
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2400]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3_1792_1920_dsc_vid
+  qcom,mdss-dsi-panel-name strings=['22001 samsung S6E3XA1 dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['S6E3XA1'] u32=[1396065587, 1480667392]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3_1792_1920_dsc_vid/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3_1792_1920_dsc_vid/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1792]  
+  qcom,mdss-dsi-panel-height  u32=[1920]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3_1792_1920_dsc_vid/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1792]  
+  qcom,mdss-dsi-panel-height  u32=[1920]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3_1792_1920_dsc_vid/qcom,mdss-dsi-display-timings/timing@2
+  qcom,mdss-dsi-panel-width  u32=[1792]  
+  qcom,mdss-dsi-panel-height  u32=[1920]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3xa2_1792_1920_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['22001 samsung S6E3XA2 dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['S6E3XA2'] u32=[1396065587, 1480667648]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3xa2_1792_1920_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3xa2_1792_1920_dsc_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1792]  
+  qcom,mdss-dsi-panel-height  u32=[1920]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3xa2_1792_1920_dsc_cmd/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1792]  
+  qcom,mdss-dsi-panel-height  u32=[1920]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3xa2_1792_1920_dsc_cmd/qcom,mdss-dsi-display-timings/timing@2
+  qcom,mdss-dsi-panel-width  u32=[1792]  
+  qcom,mdss-dsi-panel-height  u32=[1920]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3fac_1080_2120_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['22001 samsung s6e3fac fhd cmd mode dsc dsi panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['S6E3FAC'] u32=[1396065587, 1178682112]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3fac_1080_2120_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3fac_1080_2120_dsc_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2120]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3fac_1080_2120_dsc_cmd/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2120]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3fac_1080_2120_dsc_cmd/qcom,mdss-dsi-display-timings/timing@2
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2120]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3fac_1080_2120_dsc_cmd_wdte
+  qcom,mdss-dsi-panel-name strings=['22001 samsung s6e3fac fhd cmd mode dsc dsi panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['S6E3FAC2'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3fac_1080_2120_dsc_cmd_wdte/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3fac_1080_2120_dsc_cmd_wdte/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2120]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3fac_1080_2120_dsc_cmd_wdte/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2120]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_samsung_s6e3fac_1080_2120_dsc_cmd_wdte/qcom,mdss-dsi-display-timings/timing@2
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2120]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_panel_lvzhou_ab241_ili7838a_1080_2412_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['tianma ili7838a dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['ILI7838A'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_panel_lvzhou_ab241_ili7838a_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_panel_lvzhou_ab241_ili7838a_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_panel_lvzhou_ab241_ili7838a_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_panel_lvzhou_ab241_ili7838a_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@2
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_boe_rm692e5_1080_2412_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['boe rm692e5 dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['RM692E5'] u32=[1380791865, 843396352]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_boe_rm692e5_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_boe_rm692e5_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@sdc_fhd_120
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_boe_rm692e5_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@sdc_fhd_90
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_boe_rm692e5_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@sdc_fhd_60
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_ovaltine_boe_nt37705_1080_2412_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['boe nt37705 dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['NT37705'] u32=[1314140983, 925906176]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_ovaltine_boe_nt37705_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_ovaltine_boe_nt37705_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@sdc_fhd_120
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_ovaltine_boe_nt37705_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@sdc_fhd_90
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_ovaltine_boe_nt37705_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@sdc_fhd_60
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_panel_tianma_ab389_ili7838a_1080_2412_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['tianma ili7838a dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['ILI7838A'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_panel_tianma_ab389_ili7838a_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_panel_tianma_ab389_ili7838a_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_panel_tianma_ab389_ili7838a_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_panel_tianma_ab389_ili7838a_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@2
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus21606_nt37701b_1080_2412_dsc_cmd_udc
+  qcom,mdss-dsi-panel-name strings=['BOE AB319 NT37701B UDC'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['BF088_AB319'] u32=[1111896120, 945766722, 858863872]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus21606_nt37701b_1080_2412_dsc_cmd_udc/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus21606_nt37701b_1080_2412_dsc_cmd_udc/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus21606_nt37701b_1080_2412_dsc_cmd_udc/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus21605_nt37701a_1080_2412_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['BOE AB241 NT37701A'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['BF092_AB241'] u32=[1111896121, 845103426, 842281216]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus21605_nt37701a_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus21605_nt37701a_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@0
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus21605_nt37701a_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@1
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus21605_nt37701a_1080_2412_dsc_cmd/qcom,mdss-dsi-display-timings/timing@2
+  qcom,mdss-dsi-panel-width  u32=[1080]  
+  qcom,mdss-dsi-panel-height  u32=[2412]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['senna ab575 tm nt37705 dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['TM_NT37705_DVT'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_90
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_60
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_144
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_oplus_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd_04
+  qcom,mdss-dsi-panel-name strings=['senna ab575 04id tm nt37705 dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['TM_NT37705_DVT'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd_04/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd_04/qcom,mdss-dsi-display-timings/timing@fhd_sdc_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd_04/qcom,mdss-dsi-display-timings/timing@fhd_sdc_90
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd_04/qcom,mdss-dsi-display-timings/timing@fhd_sdc_60
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd_04/qcom,mdss-dsi-display-timings/timing@fhd_sdc_144
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd_04/qcom,mdss-dsi-display-timings/timing@fhd_oplus_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_06_1240_2772_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['senna ab575 tm nt37705 dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['TM_NT37705_DVT'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_06_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_06_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_06_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_90
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_06_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_60
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_06_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_144
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_06_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_oplus_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd_evt
+  qcom,mdss-dsi-panel-name strings=['senna ab575 tm nt37705 dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['TM_NT37705'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd_evt/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd_evt/qcom,mdss-dsi-display-timings/timing@fhd_sdc_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd_evt/qcom,mdss-dsi-display-timings/timing@fhd_sdc_90
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd_evt/qcom,mdss-dsi-display-timings/timing@fhd_sdc_60
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd_evt/qcom,mdss-dsi-display-timings/timing@fhd_sdc_144
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd_evt/qcom,mdss-dsi-display-timings/timing@fhd_oplus_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['senna22623 ab575 tm nt37705 dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['TM_NT37705_DVT'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_90
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_60
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_144
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_oplus_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd_04
+  qcom,mdss-dsi-panel-name strings=['senna22623 ab575 tm nt37705 dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['TM_NT37705_DVT'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd_04/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd_04/qcom,mdss-dsi-display-timings/timing@fhd_sdc_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd_04/qcom,mdss-dsi-display-timings/timing@fhd_sdc_90
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd_04/qcom,mdss-dsi-display-timings/timing@fhd_sdc_60
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd_04/qcom,mdss-dsi-display-timings/timing@fhd_sdc_144
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd_04/qcom,mdss-dsi-display-timings/timing@fhd_oplus_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_06_1240_2772_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['senna22623 ab575 tm nt37705 dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['TM_NT37705_DVT'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_06_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_06_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_06_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_90
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_06_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_60
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_06_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_sdc_144
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_06_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@fhd_oplus_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd_evt
+  qcom,mdss-dsi-panel-name strings=['senna22623 ab575 tm nt37705 dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['TM_NT37705'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd_evt/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd_evt/qcom,mdss-dsi-display-timings/timing@fhd_sdc_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd_evt/qcom,mdss-dsi-display-timings/timing@fhd_sdc_90
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd_evt/qcom,mdss-dsi-display-timings/timing@fhd_sdc_60
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd_evt/qcom,mdss-dsi-display-timings/timing@fhd_sdc_144
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna22623_nt37705_1240_2772_dsc_cmd_evt/qcom,mdss-dsi-display-timings/timing@fhd_oplus_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus22803_nt37705_1240_2772_dsc_cmd
+  qcom,mdss-dsi-panel-name strings=['tianma nt37705 dsc cmd mode panel'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['NT37705'] u32=[1314140983, 925906176]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus22803_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus22803_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@sdc_fhd_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus22803_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@sdc_fhd_90
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus22803_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@sdc_fhd_60
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus22803_nt37705_1240_2772_dsc_cmd/qcom,mdss-dsi-display-timings/timing@oplus_fhd_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_ab575_nt37705_1240_2772_dsc_cmd_2nd
+  qcom,mdss-dsi-panel-name strings=['senna ab575 tm nt37705 dsc cmd mode panel 2nd'] u32=None  
+  oplus,mdss-dsi-vendor-name strings=['TM_NT37705 2nd'] u32=None  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_ab575_nt37705_1240_2772_dsc_cmd_2nd/qcom,mdss-dsi-display-timings
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_ab575_nt37705_1240_2772_dsc_cmd_2nd/qcom,mdss-dsi-display-timings/timing@sdc_fhd_120
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_ab575_nt37705_1240_2772_dsc_cmd_2nd/qcom,mdss-dsi-display-timings/timing@sdc_fhd_90
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_ab575_nt37705_1240_2772_dsc_cmd_2nd/qcom,mdss-dsi-display-timings/timing@sdc_fhd_60
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+NODE /soc/qcom,mdss_mdp@ae00000/qcom,mdss_dsi_oplus_senna_ab575_nt37705_1240_2772_dsc_cmd_2nd/qcom,mdss-dsi-display-timings/timing@sdc_fhd_144
+  qcom,mdss-dsi-panel-width  u32=[1240]  
+  qcom,mdss-dsi-panel-height  u32=[2772]  
+
+ROOT PROPERTIES
+model ['Qualcomm Technologies, Inc. Cape MTP, Senna B']
+compatible ['qcom,cape-mtp', 'qcom,cape', 'qcom,mtp']
+qcom,msm-id [531, 65536, 540, 65536, 530, 65536]
+interrupt-parent [1]
+#address-cells [2]
+#size-cells [2]
+qcom,board-id [65544, 0]
+
+RESERVED MEMORY COUNT 55

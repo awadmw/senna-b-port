@@ -1,0 +1,90 @@
+--- /sys/class/scsi_device/0:0:0:0/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=0
+state=running
+--- /sys/class/scsi_device/0:0:0:1/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=0
+state=running
+--- /sys/class/scsi_device/0:0:0:2/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=0
+state=running
+--- /sys/class/scsi_device/0:0:0:3/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=0
+state=running
+--- /sys/class/scsi_device/0:0:0:4/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=0
+state=running
+--- /sys/class/scsi_device/0:0:0:49456/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=30
+state=running
+--- /sys/class/scsi_device/0:0:0:49476/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=30
+state=running
+--- /sys/class/scsi_device/0:0:0:49488/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=30
+state=running
+--- /sys/class/scsi_device/0:0:0:5/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=0
+state=running
+--- /sys/block/sda/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=0
+state=running
+--- /sys/block/sdb/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=0
+state=running
+--- /sys/block/sdc/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=0
+state=running
+--- /sys/block/sdd/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=0
+state=running
+--- /sys/block/sde/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=0
+state=running
+--- /sys/block/sdf/device
+vendor=MICRON  
+model=MT256GAXAT4U31  
+rev=0107
+type=0
+state=running
