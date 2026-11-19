@@ -1,0 +1,34 @@
+147:[33;01m[warning] [39;49;00mSkipping patch /Users/runner/work/ios-sweet/ios-sweet/dxb/patches/iobuffermemd_monterey.patch (already upstream, previously applied, or malformed): error: patch failed: iokit/Kernel/IOBufferMemoryDescriptor.cpp:332
+148:error: iokit/Kernel/IOBufferMemoryDescriptor.cpp: patch does not apply
+151:[33;01m[warning] [39;49;00mSkipping patch /Users/runner/work/ios-sweet/ios-sweet/dxb/patches/skywalk_sonoma.patch (already upstream, previously applied, or malformed): error: patch failed: bsd/skywalk/packet/os_packet.h:883
+152:error: bsd/skywalk/packet/os_packet.h: patch does not apply
+157:[33;01m[warning] [39;49;00mSkipping patch /Users/runner/work/ios-sweet/ios-sweet/dxb/patches/syntax_checker_sonoma.patch (already upstream, previously applied, or malformed): error: patch failed: tools/lldbmacros/core/syntax_checker.py:1
+158:error: tools/lldbmacros/core/syntax_checker.py: patch does not apply
+160:[33;01m[warning] [39;49;00mSkipping patch /Users/runner/work/ios-sweet/ios-sweet/dxb/patches/TrustCache.patch (already upstream, previously applied, or malformed): error: EXTERNAL_HEADERS/TrustCache/API.h: already exists in working directory
+161:error: EXTERNAL_HEADERS/TrustCache/RawTypes.h: already exists in working directory
+162:error: EXTERNAL_HEADERS/TrustCache/Return.h: already exists in working directory
+163:error: EXTERNAL_HEADERS/TrustCache/Types.h: already exists in working directory
+164:error: EXTERNAL_HEADERS/TrustCache/TypesConfig.h: already exists in working directory
+48045:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/symcipher/aes_ct.c:25:10: fatal error: 'inner.h' file not found
+48146:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/symcipher/aes_ct_enc.c:25:10: fatal error: 'inner.h' file not found
+48175:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/symcipher/aes_ct_dec.c:25:10: fatal error: 'inner.h' file not found
+48187:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/symcipher/aes_ct_cbcenc.c:25:10: fatal error: 'inner.h' file not found
+48250:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/symcipher/aes_ct_cbcdec.c:25:10: fatal error: 'inner.h' file not found
+48281:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/hash/md5.c:25:10: fatal error: 'inner.h' file not found
+48291:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/codec/dec32le.c:25:10: fatal error: 'inner.h' file not found
+48364:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/codec/enc32le.c:25:10: fatal error: 'inner.h' file not found
+48391:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/hash/sha1.c:25:10: fatal error: 'inner.h' file not found
+48407:1In file included from /Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/osfmk/arm/machine_cpuid.c:32 error:
+48487:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/codec/dec32be.c:25:10: fatal error: 'inner.h' file not found
+48569:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/codec/enc32be.c:25:10: fatal error: 'inner.h' file not found
+48589:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/hash/sha2big.c:25:10: fatal error: 'inner.h' file not found
+48607:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/codec/dec64be.c:25:10: fatal error: 'inner.h' file not found
+48620:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/codec/enc64be.c:25:10: fatal error: 'inner.h' file not found
+119277: SY  729 |             rankS,C T_L_,S TSATRATRUTPU_PF_URNACN_KC_ASSETC(OfNuDn,c ,s yas)c,t lb_,r e\g
+146427:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/osfmk/kern/socd_client.c:92:1: warning: cast from 'void (*)(void)' to 'typeof (socd_client_set_primary_kernelcache_uuid()) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+146428:   92 | STARTUP(EARLY_BOOT, 0, socd_client_set_primary_kernelcache_uuid);
+203123:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/kern/kern_sysctl.c:2189:1: warning: cast from 'void (*)(struct sysctl_oid *)' to 'typeof (sysctl_register_oid_early(&sysctl__kern_kernelcacheuuid)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+203124: 2189 | SYSCTL_PROC(_kern, OID_AUTO, kernelcacheuuid,
+203128: 2191 |     kernelcache_uuid_string, sizeof(kernelcache_uuid_string),
+203130: 2192 |     sysctl_kernelcacheuuid, "A", "");
+208920:    417729 |  |                         SrYaSnCkT,L ,_ _SSTTAARRTTUUPP__RFAUNNKC__SCEACSOTN(Df,u nscy,s cat)l,_ rbegister, \

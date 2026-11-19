@@ -1,0 +1,73 @@
+146:[33;01m[warning] [39;49;00mSkipping patch /Users/runner/work/ios-sweet/ios-sweet/dxb/patches/iobuffermemd_monterey.patch (already upstream, previously applied, or malformed): error: patch failed: iokit/Kernel/IOBufferMemoryDescriptor.cpp:332
+147:error: iokit/Kernel/IOBufferMemoryDescriptor.cpp: patch does not apply
+150:[33;01m[warning] [39;49;00mSkipping patch /Users/runner/work/ios-sweet/ios-sweet/dxb/patches/skywalk_sonoma.patch (already upstream, previously applied, or malformed): error: patch failed: bsd/skywalk/packet/os_packet.h:883
+151:error: bsd/skywalk/packet/os_packet.h: patch does not apply
+156:[33;01m[warning] [39;49;00mSkipping patch /Users/runner/work/ios-sweet/ios-sweet/dxb/patches/syntax_checker_sonoma.patch (already upstream, previously applied, or malformed): error: patch failed: tools/lldbmacros/core/syntax_checker.py:1
+157:error: tools/lldbmacros/core/syntax_checker.py: patch does not apply
+159:[33;01m[warning] [39;49;00mSkipping patch /Users/runner/work/ios-sweet/ios-sweet/dxb/patches/TrustCache.patch (already upstream, previously applied, or malformed): error: EXTERNAL_HEADERS/TrustCache/API.h: already exists in working directory
+160:error: EXTERNAL_HEADERS/TrustCache/RawTypes.h: already exists in working directory
+161:error: EXTERNAL_HEADERS/TrustCache/Return.h: already exists in working directory
+162:error: EXTERNAL_HEADERS/TrustCache/Types.h: already exists in working directory
+163:error: EXTERNAL_HEADERS/TrustCache/TypesConfig.h: already exists in working directory
+35046:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/symcipher/aes_ct.c:25:10: fatal error: 'inner.h' file not found
+35067:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/symcipher/aes_ct_enc.c:25:10: fatal error: 'inner.h' file not found
+35088:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/symcipher/aes_ct_dec.c:25:10: fatal error: 'inner.h' file not found
+35257:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/symcipher/aes_ct_cbcenc.c:25:10: fatal error: 'inner.h' file not found
+35273:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/symcipher/aes_ct_cbcdec.c:25:10: fatal error: 'inner.h' file not found
+35310:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/hash/md5.c:25:10: fatal error: 'inner.h' file not found
+35387:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/codec/dec32le.c:25:10: fatal error: 'inner.h' file not found
+35502:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/codec/enc32le.c:25:10: fatal error: 'inner.h' file not found
+35522:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/hash/sha1.c:25:10: fatal error: 'inner.h' file not found
+35558:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/codec/dec32be.c:25:10: fatal error: 'inner.h' file not found
+35584:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/codec/enc32be.c:25:10: fatal error: 'inner.h' file not found
+35737:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/hash/sha2big.c:25:10: fatal error: 'inner.h' file not found
+35776:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/codec/dec64be.c:25:10: fatal error: 'inner.h' file not found
+35806:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/libkern/crypto/sweet_bearssl/src/codec/enc64be.c:25:10: fatal error: 'inner.h' file not found
+143752:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/osfmk/kern/socd_client.c:92:1: warning: cast from 'void (*)(void)' to 'typeof (socd_client_set_primary_kernelcache_uuid()) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+143753:   92 | STARTUP(EARLY_BOOT, 0, socd_client_set_primary_kernelcache_uuid);
+175112:/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/EXPORT_HDRS/osfmk/kern/debug.h:43:10: fatal error: 'TargetConditionals.h' file not found
+175225:/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/EXPORT_HDRS/osfmk/kern/debug.h:43:10: fatal error: 'TargetConditionals.h' file not found
+175286:/Users/runner/work/ios-sweet/ios-sweet/dxb/build/xnu.obj/EXPORT_HDRS/osfmk/kern/debug.h:43:10: fatal error: 'TargetConditionals.h' file not found
+187246:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_attrlist.c:233:20: error: call to undeclared function 'hfs_file_is_compressed'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+188540:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_iokit.h:34:10: fatal error: 'AppleKeyStore/AppleKeyStoreFSServices.h' file not found
+190444:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_journal.c:1555:3: error: call to undeclared function 'sysctlbyname'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+191763:  637 | #define os_atomic_xchg(p, v, m)     _os_atomic_c11_op_o  rig(p, v,270 |         return (/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:198:16: error: call to undeclared function 'cp_handle_vnop'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+191802:  431 |         int64_t/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c i = bi:198:36: error: use of undeclared identifier 'CP_READ_ACCESS'
+191814:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:417:16: error: call to undeclared function 'cp_handle_vnop'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+191881:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:417:36: error: use of undeclared identifier 'CP_WRITE_ACCESS'
+192264:  550 | #define os_atomi/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:1553:11: error: call to undeclared function 'decmpfs_update_attributes'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+192267:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:1706:16: error: call to undeclared function 'cp_handle_vnop'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+192307:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:1706:35: error: use of undeclared identifier 'CP_WRITE_ACCESS'
+192788:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:3059:10: error: call to undeclared function 'cp_vnode_transcode'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+193239: 1080 |                 IOFreeType(/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:3062:10: error: call to undeclared function 'cp_get_root_major_vers'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+193333:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:3065:10: error: call to undeclared function 'cp_get_default_level'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+193382:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:3417:3: error: use of undeclared identifier 'cp_io_params_t'
+193499:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:3418:3: error: call to undeclared function 'cp_io_params'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+193502:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:3419:7: error: call to undeclared function 'off_rsrc_make'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+193505:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:3420:19: error: use of undeclared identifier 'io_params'; did you mean 'cp_io_params'?
+193512:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:3422:7: error: use of undeclared identifier 'io_params'
+193515:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:3423:21: error: use of undeclared identifier 'io_params'
+193518:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:3425:7: error: use of undeclared identifier 'io_params'
+193521:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:3426:19: error: use of undeclared identifier 'io_params'
+193604:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_search.c:590:9: error: incomplete definition of type 'struct vnode'
+193619:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:3673:10: error: call to undeclared function 'cp_handle_strategy'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+193703:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:4604:15: error: call to undeclared function 'cp_handle_vnop'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+193735:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:4604:34: error: use of undeclared identifier 'CP_READ_ACCESS'
+193738:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:4604:51: error: use of undeclared identifier 'CP_WRITE_ACCESS'
+193762:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:4616:4: error: call to undeclared function 'ubc_create_upl'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+193765:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:4698:9: error: call to undeclared function 'ubc_create_upl'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+193786:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:5004:10: error: call to undeclared function 'ubc_create_upl'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+193843:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:5481:6: error: call to undeclared function 'cp_fs_protected'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+193885:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:5719:15: error: call to undeclared function 'cp_handle_vnop'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+193946:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_readwrite.c:5719:34: error: use of undeclared identifier 'CP_WRITE_ACCESS'
+193997:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_iokit.h:34:10: fatal error: 'AppleKeyStore/AppleKeyStoreFSServices.h' file not found
+194753:      /Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_iokit.h:34:10: fatal error: 'AppleKeyStore/AppleKeyStoreFSServices.h' file not found
+195794:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_vnops.c:1534:14: error: use of undeclared identifier 'decmpfs_reset_state'
+196104:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_vnops.c:2724:20: error: call to undeclared function 'hfs_file_is_compressed'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+196319:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_vnops.c:5735:20: error: call to undeclared function 'hfs_file_is_compressed'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+196333:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/core/hfs_vnops.c:5736:7: error: call to undeclared function 'VTOCMP'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+197210:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/sweet_hfs/sweet_hfs_iokit.c:21:10: fatal error: 'hfs.h' file not found
+204925:/Users/runner/work/ios-sweet/ios-sweet/dxb/xnu/bsd/kern/kern_sysctl.c:2189:1: warning: cast from 'void (*)(struct sysctl_oid *)' to 'typeof (sysctl_register_oid_early(&sysctl__kern_kernelcacheuuid)) (*)(const void *)' (aka 'void (*)(const void *)') converts to incompatible function type [-Wcast-function-type-strict]
+204926: 2189 | SYSCTL_PROC(_kern, OID_AUTO, kernelcacheuuid,
+204930: 2191 |     kernelcache_uuid_string, sizeof(kernelcache_uuid_string),
+204932: 2192 |     sysctl_kernelcacheuuid, "A", "");

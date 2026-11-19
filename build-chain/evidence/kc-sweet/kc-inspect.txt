@@ -1,0 +1,4 @@
+boot kernel collection at /Users/runner/work/ios-sweet/ios-sweet/dxb/fakeroot/oss-xnu.macOS.13.5.kc.sweet.development (08A074F3-DF8A-CCEF-63BE-53FEB9362B67):
+com.apple.kernel	0	<unknown>	(628D9966-43C4-3A18-8F89-4FF3F4F4D86B)
+Extension Information:
+

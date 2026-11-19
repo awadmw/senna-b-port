@@ -1,0 +1,9 @@
+{
+  "machine_config": "SWEET",
+  "soc": "SM7150",
+  "runtime_support": "sweet-reference-only",
+  "source_commit": "c1c360ddd64f05812b4fdd52ab9defce0bfead5d",
+  "dxb_commit": "663906528d1cd5ea8fde7de6f16de73db9511549",
+  "developer_dir": "/Applications/Xcode_16.app/Contents/Developer",
+  "kernelcache": "kernelcache.sweet"
+}

@@ -80,3 +80,18 @@
 - 入库内容：`README.md`、`DEVICE.md`、`PROGRESS.md`、`REMAINING.md`、`RETROSPECTIVE.md`、`BUILDING.md`、stage-00/stage-01 证据与校验脚本、device-inventory 文本证据与解析器、build-chain 工作流与日志证据摘要。
 - 明确排除（`.gitignore`）：`*.img *.bin *.tar *.dtb *.dts.txt *.log *.zip *.pyc *.exe *.dmg`、`device-inventory/device-tree/`（31,221 个文件的展开目录）、`build-chain/dxb|upstream|xnu-upstream` 第三方快照、`_github-staging/` 暂存区。原始整分区镜像与 45 MB 级 Actions 原始日志仍仅存本机。
 - 边界：仓库只承载证据与流程记录，不含可启动镜像，不含任何 rootfs 修改。
+## 2026-11-19 构建链：SWEET 基线产出真实 kernelcache
+
+- Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649af886399488ddb`），固定 DXB `663906528d1cd5ea8fde7de6f16de73db9511549`。
+- 失败序列（逐次真实日志）：run1 runner 不受支持 → run5/6/7/8/9/10/11 逐步定位到 `kmutil` 宿主 KDK、显式 kext 集、arm64/arm64e 架构、kernel-only 集合和 `Missing split seg v2`（plain arm64 缺 `LDFLAGS_KERNEL_ONLY_SUBARCH_arm64`）；run12–run16 定位到 KC 输出名带 `.<variant>` 后缀。
+- run `44481202871`（提交 `c1c360d`）**success**，8m44s，产出 `xnu-kernelcache-SWEET`（67,562,895 字节，digest `sha256:6084969434F242277F2FAACD051D2ADDFC7671402A1AAC7EBD44E76D06BDBF5B`）与 `xnu-buildtree-SWEET`。
+- 本地校验：下载 zip 的 SHA-256 与 GitHub digest 逐字符一致；解包得 `kernelcache.sweet` 21,184,512 字节（`D1B13A15…`）与 `kernel.development.sweet` 18,388,744 字节（`DD31242D…`）；`kmutil inspect` 显示 boot kernel collection `08A074F3-DF8A-CCEF-63BE-53FEB9362B67`，内含 `com.apple.kernel` `628D9966-43C4-3A18-8F89-4FF3F4F4D86B`。
+- 边界：这是 **kernel-only boot kernel collection**，不是可引导 payload，不能直接 fastboot；机器配置为上游 SWEET（SM7150 参考），与 senna/SM8475 硬件无关。
+- 详见 `build-chain/BUILD-EVIDENCE.md`，原始证据摘要见 `build-chain/evidence/kc-sweet/`。
+
+## 2026-11-19 构建链：SENNA 编译别名
+
+- `xnu/senna/platform.sm8475.conf`：`MACHINE_CONFIG=SENNA`、`SOC=SM8475`、`BASE_MACHINE_CONFIG=SWEET`、`XNU_BOARD_CONFIG=SWEET`、`RUNTIME_SUPPORT=not-implemented`；`xnu/senna/0001-empty.patch` 为纯注释、无 diff，CI 会拒绝任何非注释行。
+- 已修真实阻塞：(1) 提交 `3c466f3` 把 `0019/0020/0026-stage-*.sh` 暂存脚本的 `MACHINE_CONFIG==SWEET` 守卫放宽到 `SWEET|SENNA`（否则 bearssl/libpthread/hfs 源码不落地）；(2) 提交 `19fb11b`/`aea14cd` 在 prepare-senna 阶段把 `*/conf/Makefile.template` 里 `ifeq ($(CURRENT_MACHINE_CONFIG),SWEET)` 守卫放宽到 `SWEET SENNA`（否则 `-include sweet_hfs_compat.h` 与 `SWEET_AES_INC` 不生效）。
+- 失败证据：`build-chain/evidence/run19-senna-kc-guard-errors.txt`、`build-chain/evidence/run20-senna-bearssl-inc-errors.txt`。
+- 状态：SENNA 运行仍在迭代，通过前不宣称已产出 senna kernelcache。
