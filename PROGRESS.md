@@ -72,3 +72,11 @@
 - UniXNU 固定 main `519d80242a5028ee123447b01bc3b809baed565f` 没有 SM8475 机型路径，报告明确禁止虚构对照对象。
 - 采集自动验收 26/26；阶段1回归验收 54/54。阶段1人工转录的 GICR `0x171c0000` 已按原始 DT 更正为 `0x17180000+0x200000`。
 - 交付：`DEVICE.md`、`device-inventory/COLLECTION.md`、`device-inventory/validation-results.json`、`device-inventory/SHA256SUMS.txt`。未开始移植实现或实机启动。
+
+## 2026-11-19 仓库托管与本地工具链
+
+- 本机安装 Git 2.56.0（git-for-windows，`C:\Program Files\Git`）与 GitHub CLI 2.105.0（winget 用户范围），`gh auth login` 设备码流程完成；账号 awadmw，token scopes `repo, workflow, gist, read:org`；`gh auth setup-git` 已写入 `credential.https://github.com.helper`。
+- 远程仓库：https://github.com/awadmw/senna-b-port （Public，默认分支 main）。首个 commit `426d2be`，远程共 279 个文件 / 16 个目录。
+- 入库内容：`README.md`、`DEVICE.md`、`PROGRESS.md`、`REMAINING.md`、`RETROSPECTIVE.md`、`BUILDING.md`、stage-00/stage-01 证据与校验脚本、device-inventory 文本证据与解析器、build-chain 工作流与日志证据摘要。
+- 明确排除（`.gitignore`）：`*.img *.bin *.tar *.dtb *.dts.txt *.log *.zip *.pyc *.exe *.dmg`、`device-inventory/device-tree/`（31,221 个文件的展开目录）、`build-chain/dxb|upstream|xnu-upstream` 第三方快照、`_github-staging/` 暂存区。原始整分区镜像与 45 MB 级 Actions 原始日志仍仅存本机。
+- 边界：仓库只承载证据与流程记录，不含可启动镜像，不含任何 rootfs 修改。
