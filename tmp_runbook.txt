@@ -1,0 +1,13 @@
+<#
+.SYNOPSIS
+  受控 fastboot boot 执行器（只 RAM 引导，不写分区），带镜像哈希校验、设备检查、证据落盘。
+.DESCRIPTION
+  该脚本不改变任何分区状态。它做四件事：
+    1. 校验镜像 SHA-256 与内置表一致（不一致则拒绝执行）；
+    2. 检查 fastboot 设备在线（无设备时只生成计划，不执行）；
+    3. 生成 boot-attempts 证据文件（时间戳 + git rev + 计划 + 结果）；
+    4. 仅在显式 -Confirm 且设备在线时执行 fastboot boot，并捕获输出。
+.EXAMPLE
+  pwsh -File build-chain/tools/boot-attempt.ps1 -Image stock        # 只生成计划（C.1）
+  pwsh -File build-chain/tools/boot-attempt.ps1 -Image shim-v4 -Confirm
+#>

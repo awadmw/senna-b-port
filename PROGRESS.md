@@ -169,6 +169,7 @@
 - CI `.github/workflows/senna-shim.yml`（workflow_dispatch + push 触发，ubuntu-24.04，装 `gcc-aarch64-linux-gnu`，构建后附 `readelf -h/-S` 与入口 `objdump` 便于离线核对）。
 - run **44677167822** 全绿：`out/shim.bin` 81,920 B、`out/shim.elf` 39,792 B、`out/senna-shim-v4.img` 86,016 B、`out/senna-shim-v2.img` 86,016 B。
 - 修补一处真实失败：`objcopy` 不输出栈/BSS 预留区，导致 arm64 头 `image_size 0x14000` > 文件长度 12,433 → `bad Image header`；加 `--pad-image` 按 `image_size` 补齐后通过。
+- 入口离线证据（CI run 44678271929 的 `Disassemble entry point` 步骤）：`readelf` Entry point `0x0`、`.text` @0x0、`.rodata` @0x2660、`.bss` @0x30a0；`objdump` 反汇编 `0: 14000200 b 800 <_start>`，即 arm64 头 code0 无条件跳到 `_start`（0x800），与 `--check-image` 的校验一致。
 
 ### 未完成
 - C.1 机制演练 + C.2 上机：设备未连接（`adb devices`/`fastboot devices` 空），`fastboot boot` 未执行，屏上数据全部未取。
@@ -189,5 +190,7 @@
 ### 环境与推送
 - 本机无 clang/gcc，交叉编译只能走 GitHub Actions；`C:\Android\platform-tools` 有 adb/fastboot。
 - 本机 DNS 把 `github.com` 污染成 `20.6.7.17`，`git push` 连不上（`api.github.com` 正常）→ 新增 `build-chain/tools/push_via_api.py`：用 `gh auth token` 走 Git Data API 建 blob/tree/commit 并更新 `main`，把 remote sha 记到 `.git/remote_main_sha`，之后 `git push` 恢复即可停用。
+- 实机执行器 `build-chain/tools/boot-attempt.ps1`：校验镜像 sha256（内置 v4/v2 基线）→ 探测 fastboot 设备 → 写 `build-chain/evidence/boot-attempts/<UTC>-<image>.md` 计划 → 仅 `-Confirm` 且设备在线时执行 `fastboot boot` 并落盘输出；无 `-Confirm` 只生成计划，不做任何引导。用法见脚本头注释（用 `powershell -File`，本机无 `pwsh`）。
+- 坑：Windows PowerShell 5.1 按 ANSI 解析无 BOM 的 `.ps1`，含中文会报“字符串缺少终止符”→ `.ps1` 必须存成 UTF-8 带 BOM。
 
 

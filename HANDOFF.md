@@ -117,6 +117,7 @@ Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649
 - C.2 未完成：实机 `fastboot boot`（设备未连接）+ 拍屏判读（四组 FB 候选、CNTFRQ、GIC 版本、DTB magic、ramdisk 命中）+ 结果回填 DESIGN §6/REMAINING。
 - C.3 前置未动：`mkadt.py` senna 参数（dram/GIC/UFS/timebase/VTIMER INTID/FB 几何）、`platform.sm8475.conf` 的 `RUNTIME_SUPPORT`、B 段剩余实测。
 - 任何实机动作前：给方案 + 回滚 + 用户确认；只 `fastboot boot`，不刷分区。
+- 实机执行器已备好：`build-chain/tools/boot-attempt.ps1`（校验 sha256 → 探测设备 → 生成证据 → 仅 `-Confirm` 时 `fastboot boot`）；先 `-Image stock`（C.1），再 `-Image shim-v4`（C.2），失败换 `shim-v2`。
 **D. 内核/用户空间**
 - 明确哪些 kext/用户态组件必须注入、哪些由内核补；rootfs 依然一字节不改（只读挂载或 overlay 方案需先论证）。
 
