@@ -27,11 +27,13 @@ mkdir -p "$OUT"
 "$CC" "${CFLAGS[@]}" -c senna.c   -o "$OUT/senna.o"
 "$CC" "${CFLAGS[@]}" -c console.c -o "$OUT/console.o"
 
-"$LD" -T shim.ld -nostdlib -z max-page-size=4096 -o "$OUT/shim.elf" \
+"$LD" -T shim.ld -nostdlib -z max-page-size=4096 --no-warn-rwx-segments \
+	-o "$OUT/shim.elf" \
 	"$OUT/start.o" "$OUT/senna.o" "$OUT/console.o"
 "$OBJCOPY" -O binary "$OUT/shim.elf" "$OUT/shim.bin"
 
 echo "--- raw Image header check ---"
+python3 tools/mkbootimg_img.py --pad-image "$OUT/shim.bin"
 python3 tools/mkbootimg_img.py --check-image "$OUT/shim.bin"
 
 echo "--- boot.img v4 ---"

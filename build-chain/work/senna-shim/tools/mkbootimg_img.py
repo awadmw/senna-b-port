@@ -19,6 +19,30 @@ def align(n, a):
     return (n + a - 1) // a * a
 
 
+def pad_image(path):
+    """Pad the raw Image up to its own image_size.
+
+    objcopy leaves the stack/BSS reservation out of the file (it is not a
+    loaded section), while the arm64 header advertises _end - _text.
+    Linux boot loaders read the file length, so make both agree.
+    """
+    data = bytearray(open(path, "rb").read())
+    if len(data) < 64:
+        sys.exit("image too small: %d bytes" % len(data))
+    image_size = struct.unpack_from("<Q", data, 16)[0]
+    if image_size < len(data):
+        sys.exit("image_size (%d) < file size (%d)" % (image_size, len(data)))
+    if image_size > len(data):
+        orig = len(data)
+        data += b"\x00" * (image_size - orig)
+        with open(path, "wb") as f:
+            f.write(bytes(data))
+        print("  padded %s from %d to image_size %d"
+              % (path, orig, image_size))
+    else:
+        print("  %s already matches image_size %d" % (path, image_size))
+
+
 def check_image(path):
     data = open(path, "rb").read()
     if len(data) < 64:
@@ -120,6 +144,7 @@ def pack_v2(args, kernel, ramdisk, dtb):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check-image")
+    ap.add_argument("--pad-image")
     ap.add_argument("--version", type=int, choices=(2, 4))
     ap.add_argument("--kernel")
     ap.add_argument("--ramdisk", default=None)
@@ -133,6 +158,9 @@ def main():
     ap.add_argument("--dtb-addr", type=lambda s: int(s, 0), default=0x1f00000)
     args = ap.parse_args()
 
+    if args.pad_image:
+        pad_image(args.pad_image)
+        return
     if args.check_image:
         check_image(args.check_image)
         return
