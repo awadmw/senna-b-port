@@ -94,7 +94,31 @@ Artifacts：
 
 结论：senna-b 的 `dtbo`（含 entry 11 overlay）与 `vendor_boot`（base DTB 来源）逐字节等于官方 13.1.0.115 CN01 全量包；设备确为官方系统 + Magisk 补丁 boot。
 
-## 6. 复现命令
+## 6. DTS 往返一致性（dtc round-trip）
+
+目的：证明仓库里的 `device-inventory/senna-live.dts` 不是手抄/推测文本，而是能由原始 DTB 逐节点还原、再由 dtc 编回语义等价树（REMAINING B.1）。
+
+做法：DTB 被 `.gitignore` 排除，因此原始二进制通过 release asset 提供。GitHub Actions（`ubuntu-24.04`，apt 装 `device-tree-compiler` 1.7.0）执行：
+
+1. `gh release download dtb-evidence-v1 -p senna-live.dtb`（GitHub 计算 digest `sha256:7a290b13563a058464fa01287fa801687b76e55a85a80867dda76aac73743094`，与实机 DTB 一致）
+2. `dtc -I dtb -O dts`（原 DTB → dts）→ `dtc -I dts -O dtb`（senna-live.dts → 重建 DTB）→ `dtc -I dtb -O dts`（重建 DTB → dts）
+3. 比对两次渲染的 DTS、节点数、属性数
+
+结果（run 44673153305，job roundtrip id=136078641822，`conclusion=success`；证据 `build-chain/evidence/dts-roundtrip/report.txt`）：
+
+| 项目 | 值 |
+| --- | --- |
+| 输入 DTB | 1,118,143 字节，sha256 `7a290b13…3094` |
+| 输入 DTS | 2,716,184 字节，sha256 `1e371ae715092dd5d7030ad6e27910e423842341ce0561169b77ec00d99cb88f` |
+| 重建 DTB | 1,116,869 字节，sha256 `0dd5478cb529e76d4c3492b352a87bd8fb86c3d1a9c44db4cfe18a7ddd00f142`（体积差异来自字符串表/对齐，非语义差异） |
+| 节点数 | 二进制 4475 = 重建 4475 |
+| 属性数 | 二进制 31220 = 重建 31220 |
+| DTS diff | 0 行（`dts.diff` 为空文件） |
+| 结论 | **PASS — dtc round-trip is identical** |
+
+边界：这只证明 DTS 与 DTB 语义一致，不证明 DTS 里的每个节点在实机可访问（时钟、regulator、PHY 等依赖仍未闭环）。
+
+## 7. 复现命令
 
 ```bash
 gh workflow run xnu.yml -R awadmw/ios-sweet -f machine_config=SWEET -f kernel_config=DEVELOPMENT

@@ -107,7 +107,7 @@ Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649
 - 仍未做（A 段遗留）：`BUILDING.md` 终版同步到远程仓库；KC 归档清单 `SHA256SUMS.txt` 汇总。
 
 **B. 证据补证**
-- **B.1 dtc round-trip（工具已就绪，待 Actions 实跑）**：`device-inventory/verify-dts-roundtrip.sh` + `.github/workflows/verify-dts.yml`（workflow_dispatch，ubuntu-24.04，apt 装 device-tree-compiler）。原始 DTB 不入库（`.gitignore` 有 `*.dtb`），以 release asset 提供：release tag `dtb-evidence-v1`，asset `senna-live.dtb`。计划步骤：`gh release create dtb-evidence-v1` 上传 `device-inventory/senna-live.dtb` → push → `gh workflow run verify-dts.yml` → 取 `dts-roundtrip` artifact 判读。
+- **B.1 dtc round-trip —— 已完成（2026-11-20，run 44673153305 success）**：结果 节点 4475=4475、属性 31220=31220、DTS diff 0 行、`VERDICT: PASS`；报告 `build-chain/evidence/dts-roundtrip/report.txt`，流程见 `build-chain/BUILD-EVIDENCE.md` 第 6 节。原始 DTB 走 release asset：release tag `dtb-evidence-v1`，asset `senna-live.dtb`（digest `7a290b13…3094`）。工具：`device-inventory/verify-dts-roundtrip.sh` + `.github/workflows/verify-dts.yml`（workflow_dispatch，ubuntu-24.04，apt 装 device-tree-compiler）。原始 DTB 不入库（`.gitignore` 有 `*.dtb`），以 release asset 提供：release tag `dtb-evidence-v1`，asset `senna-live.dtb`。计划步骤：`gh release create dtb-evidence-v1` 上传 `device-inventory/senna-live.dtb` → push → `gh workflow run verify-dts.yml` → 取 `dts-roundtrip` artifact 判读。
 - **B.2/B.6 官方 OTA 交叉核对（已完成一半）**：`build-chain/ota-evidence/`。`RMX3706_13.1.0.115_CN01_rollback_4.0.zip`（7,585,057,674 字节）用 payload-dumper-go 抽 `dtbo`(=实机 `4F80DE98…`)、`vendor_boot`(=实机 `4AAB629E…`)、`uefi`（`F4CD52E1…`）、`boot`（`D9162A96…`，实机 `boot_b` 是 Magisk 补丁所以不同）。结论：DTBO 与 vendor_boot 来源已可追溯到官方全量包。**仍缺**：iOS 16.7.16 (20H392) rootfs。
 - 仍缺：vendor_boot base 选择算法的 bootloader 侧证据；活动帧缓冲实际 stride/format；CNTFRQ_EL0 与 GIC 中断实测；EDL 演练。
 
@@ -124,4 +124,8 @@ Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649
 
 ## 8. 下一会话第一件事
 
-按第 7 节 B.1 继续：建 `dtb-evidence-v1` release 并上传 `device-inventory/senna-live.dtb`，然后 `gh workflow run verify-dts.yml -R awadmw/senna-b-port` 跑 dtc round-trip，取回 `dts-roundtrip` artifact 判读；通过后进入 C 段（edk2-msm senna 设备包与引导链设计），任何实机 `fastboot boot` 前必须先给方案 + 回滚 + 用户确认。
+B.1 已 PASS（见第 7 节），A 段与 B 段可做部分都已完成，C 段设计已完成：`build-chain/boot-chain/DESIGN.md`（v1，2026-11-20）已经写好，包含证据表（DTB 行号引用）、boot.img/vendor_boot v4 头解析、`fastboot boot` 支持性无静态证据的结论、C.1/C.2/C.3 三级计划（每级目标/做法/验收/失败日志）、未证项探测方法、回滚与失败日志模板。
+
+**路线已定**：复用 ios-sweet 的 shim（ABL → `fastboot boot` shim → XNU），不 clone edk2-msm；boot.img 目标版本 v4（实机 OTA 已证 v4 可用）。
+
+**下一步（需要用户在场 + 明确同意）**：C.1 机制演练——`fastboot boot build-chain/ota-evidence/boot.img`（官方 stock 镜像，只进 RAM、不写分区），按 DESIGN.md §8 记录日志。若 `FAILED (remote: unknown command)` 则机制不可用，停下汇报。C.1 通过后再做 C.2 senna 诊断 shim（不含 XNU）。任何实机 `fastboot boot` 前必须先给方案 + 回滚 + 用户确认。

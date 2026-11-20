@@ -114,6 +114,52 @@
 ### 本阶段未完成／边界
 
 - SENNA KC 仍是 **kernel-only boot kernel collection**，不是可 `fastboot boot` 的镜像；`runtime_support=not-implemented` 不变。
-- B.1 dtc round-trip：脚本与 workflow 已就绪（`device-inventory/verify-dts-roundtrip.sh`、`.github/workflows/verify-dts.yml`），需 release `dtb-evidence-v1` 提供原始 DTB 后在 Actions 实跑；本地无 dtc，未在本机执行。
+- B.1 dtc round-trip：见下文「2026-11-20 B.1 dtc round-trip 通过」，已完成。
 - iOS 16.7.16 (20H392) rootfs 仍未获取/未做哈希登记；EDL 演练仍未做。
+
+## 2026-11-20 B.1 dtc round-trip 通过（B 段可做部分完成）
+
+- 原始 DTB 走 release asset：release `dtb-evidence-v1`（https://github.com/awadmw/senna-b-port/releases/tag/dtb-evidence-v1），asset `senna-live.dtb` 1,118,143 字节，GitHub 计算 digest `sha256:7a290b13563a058464fa01287fa801687b76e55a85a80867dda76aac73743094`，与实机 DTB 一致；DTB 仍不入库（`.gitignore` 有 `*.dtb`）。
+- workflow `verify-dts.yml` run **44673153305**（head `2cb4118619f018dde2a17ea2408e38c5288e19c8`）`conclusion=success`；ubuntu-24.04 + DTC 1.7.0。
+- 判读（报告 `build-chain/evidence/dts-roundtrip/report.txt`）：节点数 二进制 4475 = 重建 4475；属性数 31220 = 31220；两次 dtc 渲染的 DTS `diff` **0 行**；`VERDICT: PASS - dtc round-trip is identical`。重建 DTB 1,116,869 字节（`0dd5478c…`），与原 1,118,143 字节的差异只是字符串表/对齐，非语义。
+- 边界：证明 `device-inventory/senna-live.dts` 与实机 DTB 语义等价，不证明节点在实机可访问（时钟/regulator/PHY 依赖仍未闭环）。
+
+
+## 2026-11-20 C 段设计完成（DESIGN.md v1）+ 引导链静态证据
+
+### 已完成
+
+- 新增 `build-chain/boot-chain/DESIGN.md`（v1，165 行）：证据表（每条带 `from-binary.dts` 行号）、boot.img/vendor_boot v4 头解析、`fastboot boot` 支持性无静态证据的结论、路线比较（shim vs edk2-msm，选 shim）、C.1/C.2/C.3 三级计划（每级目标/做法/验收/失败日志）、未证项探测方法、回滚、失败日志模板、待办。
+- 路线决策：复用 ios-sweet 的 shim（ABL → `fastboot boot` shim → XNU），不 clone edk2-msm；boot.img 目标版本 **v4**（实机 OTA 已证 v4 可解析），ramdisk 定位加 `0x1000000` 扫描回退，避免依赖 ABL 传 DTB。
+- 静态证据新增（本机 DTB，dtc 反编译件行号）：
+  - IMEM 基址 `0x146aa000` + `restart_reason@65c` → `0x146aa65c`（`from-binary.dts:12935-12950`）；与 sweet 数值相同但有 senna 独立出处。
+  - 控制台 GENI SE `0x99c000+0x4000`，`qcom,msm-geni-console`，SPI 608（`from-binary.dts:13812-13825`）。
+  - UFS host `0x1d84000`，`compatible = "qcom,ufshc"`，PHY `qcom,ufs-phy-qmp-v4-cape`（`from-binary.dts:12729`、`:426`）。
+  - PSCI 1.0 / smc（`:1197-1199`）；8 核（`:492-`）；GICv3 `0x17100000+0x10000`、GICR `0x17180000+0x200000`、stride `0x40000`（`:1323-1330`）。
+  - 架构 timer `0x124f800` = 19,200,000（`:7481-7487`）；splash 区 `0xb8000000+0x2b00000`（`:412-416`）；面板 1240×2772（`:14186`、`:21564-21569`）。
+- bootloader 镜像不可读结论：`abl.img` 熵高（加密/压缩）、`uefi.img` 是 EDK2 LinuxLoader 配置（`DefaultBDSBootApp = "LinuxLoader"`），三者合计 0 条 `fastboot` 字符串 → `fastboot boot` 必须实机验证。
+- `HANDOFF.md` 第 8 节已改写为「设计已完成、路线已定、下一步 C.1 需用户确认」。
+
+### 未完成
+
+- C.1 机制演练（`fastboot boot` 官方 stock `boot.img`）：需设备进 bootloader + 用户在场确认。
+- C.2 senna 诊断 shim：`build-chain/work/senna-shim/` 尚未创建；常量替换、FB/VTIMER 探测、CI 构建均未开始。
+- C.3 XNU 接管：依赖 `mkadt.py` senna 参数、`platform.sm8475.conf` 的 `RUNTIME_SUPPORT`、B 段剩余实测项。
+- B 剩余：帧缓冲 stride/format 实测、CNTFRQ_EL0 与 GIC 中断实测、EDL 演练、iOS 16.7.16 rootfs。
+
+### 关键参数表（senna，均有出处）
+
+| 参数 | 值 | 出处 | 状态 |
+| --- | --- | --- | --- |
+| GICD | `0x17100000+0x10000` | `from-binary.dts:1323-1330` | 证 |
+| GICR | `0x17180000+0x200000`，stride `0x40000` | 同上 | 证 |
+| PSCI | 1.0 / smc，8 核 | `from-binary.dts:1197-1199`、`:492-` | 证 |
+| timer 频率 | 19,200,000（`0x124f800`） | `from-binary.dts:7481-7487` | 证（待 `CNTFRQ_EL0` 复核） |
+| 控制台 UART | GENI `0x99c000`，SPI 608 | `from-binary.dts:13812-13825` | 证（可用性未证） |
+| IMEM restart reason | `0x146aa65c` | `from-binary.dts:12935-12950` | 证 |
+| UFS | `0x1d84000` | `from-binary.dts:12729` | 证 |
+| splash 区 | `0xb8000000+0x2b00000` | `from-binary.dts:412-416` | 证（FB base/stride/format 未证） |
+| boot.img | v4，kernel 46,634,324（arm64 Image）、ramdisk 1,698,305（LZ4） | `ota-evidence/boot.img` | 证 |
+| vendor_boot | v4，`ramdisk_addr 0x1000000`、`tags_addr 0x100` | `ota-evidence/vendor_boot.img` | 证 |
+
 

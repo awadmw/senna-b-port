@@ -1,0 +1,15 @@
+dtc-version: Version: DTC 1.7.0
+host: Linux 7.0.0-1014-aws x86_64
+input-dtb: dtb/senna-live.dtb (1118143 bytes)
+input-dts: device-inventory/senna-live.dts (2716184 bytes)
+sha256-dtb: 7a290b13563a058464fa01287fa801687b76e55a85a80867dda76aac73743094
+sha256-dts: 1e371ae715092dd5d7030ad6e27910e423842341ce0561169b77ec00d99cb88f
+step1 dtc -I dtb -O dts (original) rc=0
+step2 dtc -I dts -O dtb (senna-live.dts) rc=0
+step3 dtc -I dtb -O dts (rebuilt) rc=0
+sha256-rebuilt-dtb: 0dd5478cb529e76d4c3492b352a87bd8fb86c3d1a9c44db4cfe18a7ddd00f142
+size-rebuilt-dtb: 1116869
+nodes: binary=4475 rebuilt=4475
+properties: binary=31220 rebuilt=31220
+diff: identical (0 lines)
+VERDICT: PASS - dtc round-trip is identical
