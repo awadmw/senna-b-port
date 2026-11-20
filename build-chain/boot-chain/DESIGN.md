@@ -95,14 +95,16 @@
 
 ### C.2 senna 诊断 shim（无 XNU，纯探测 + 画屏）
 
+**状态：源码与镜像已就绪（2026-11-20），未上机。**
+
 - **目标**：用我们自己的 boot.img 在 senna 上跑起 shim，验证 §2.1 常量与 §6 未证项。
-- **做法**：
-  1. 新建 `build-chain/work/senna-shim/`（从 ios-sweet `shim/` 复制，保留 git 历史说明），把 GICD/GICR/IMEM/timer 常量换成 §2.1 出处值；
-  2. 控制台先按 splash 区 `0xb8000000` + 1240×2772 + stride 4960 画；若屏不变，按 `6 的候选序列自动轮换（每 3 s 换一组并在左上角画组号）；
-  3. 探测项：`CNTFRQ_EL0`、`PSCI_VERSION`、GICD_PIDR2（确认 GICv3）、GICR_TYPER、DTB magic（x0 是否有效）、ramdisk 是否在 `0x1000000`；
-  4. 画完停 60 s 后 `PSCI_SYSTEM_RESET` 回 Android；不跳 XNU、不写任何 flash。
-- **验收**：屏上出现 shim 输出（版本、8 核、CNTFRQ = 19,200,000、GICv3、DTB magic = 0xd00dfeed、ramdisk 命中）；60 s 后自动重启回 Android；`fastboot getvar all` 无变化。
-- **失败日志**：屏不亮 → 保存 fastboot 输出 + 照片；屏花 → 记录尝试过的 FB 组合序号；设备卡死 → 长按电源 10 s 重启，记录「卡死前屏幕内容」。
+- **已有产物**（`build-chain/work/senna-shim/`，CI run 44677167822）：
+  - `senna-shim-v4.img` 86,016 B（header v4，os_version `0x18000177`，sha256 `c0b8762d…fb23`）；`senna-shim-v2.img`（kernel_addr `0x8000`、ramdisk_addr `0x1000000`、tags `0x100`，sha256 `71c5ab9c…2dbda`）——v4 失败时换 v2 重试；
+  - raw Image 已按 arm64 头 `image_size`（`0x14000`）补齐，入口 `_head` 的 `b _start` 由 `--check-image` 校验；
+  - 源码：`start.S`/`shim.ld`（复用 sweet）、`board.h`（常量带 DTB 行号）、`console.c/h`、`senna.c`（探测 + 画屏 + panic 页 + PSCI 复位）、`tools/mkbootimg_img.py`（v4/v2 打包 + 头校验）。
+- **实机时间线**（shim 内固定）：0-12 s 信息页（PSCI 版本、CNTFRQ、MPIDR/Aff、CurrentEL、GICD/GICR TYPER、DTB magic、ramdisk、IMEM restart reason）→ 12-40 s 四组帧缓冲候选各 7 s（组号 + RED/GREEN/BLUE/WHITE 四色条，用于判 stride 与 R/B 交换）→ 40-70 s 倒计时 → `PSCI_SYSTEM_RESET` 回 Android；任何异常进红底 PANIC 页（slot/ESR/FAR/ELR/SPSR/SP/x0-x7）并停住。
+- **验收**：屏上出现信息页；四组中恰有一组几何与颜色正确（记录组号 → stride/format）；CNTFRQ = 19,200,000、GICv3、DTB magic = `0xd00dfeed`、ramdisk 命中任一项即算补证；70 s 后自动重启回 Android；`fastboot getvar all` 无变化。
+- **失败日志**：屏不亮 → fastboot 输出 + 照片 + 试过的镜像版本；屏花 → 记录组号与候选表；卡死 → 长按电源 10 s，记录卡死前屏幕。
 
 ### C.3 XNU 接管（依赖 B 段剩余项）
 
@@ -157,8 +159,9 @@
 
 ## 10. 待办（按顺序）
 
-1. [C.1] 用户确认 + 设备进 bootloader + `fastboot boot` 官方 boot.img，记录 `8 日志。
-2. [C.2] 建 `build-chain/work/senna-shim/`，替换常量、加 FB/VTIMER 探测与自动重启。
-3. [C.2] 本地交叉编译（aarch64-linux-gnu-gcc + mkbootimg），先跑 host_test 渲染，再 CI 出镜像。
-4. [C.3] `mkadt.py` senna 参数落地（每个值在本文件 §2 有出处）。
-5. [B 剩余] 帧缓冲 stride/format、CNTFRQ、GIC 中断实测结果回填本文件与 `REMAINING.md`。
+1. [C.1] 用户确认 + 设备进 bootloader + `fastboot boot` 官方 boot.img，记录 §8 日志。**阻塞：设备未连接（`adb devices`/`fastboot devices` 空）。**
+2. [C.2] ~~建 `build-chain/work/senna-shim/`，替换常量、加 FB/VTIMER 探测与自动重启~~ 完成（源码见该目录）。
+3. [C.2] ~~交叉编译 + CI 出镜像~~ 完成（run 44677167822，v4/v2 双镜像）。
+4. [C.2] 实机：`fastboot boot` senna-shim（先 v4，失败换 v2），拍屏判读四组候选 → 回填 §6 与 `REMAINING.md`。**阻塞：设备 + 用户确认。**
+5. [C.3] `mkadt.py` senna 参数落地（每个值在本文件 §2 有出处）。
+6. [B 剩余] 帧缓冲 stride/format、CNTFRQ、GIC 中断实测结果回填本文件与 `REMAINING.md`。

@@ -22,3 +22,4 @@ __pycache__/
 *.iso
 *.xz
 *.gz
+build-chain/work/senna-shim/out/

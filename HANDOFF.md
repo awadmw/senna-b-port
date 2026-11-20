@@ -111,11 +111,12 @@ Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649
 - **B.2/B.6 官方 OTA 交叉核对（已完成一半）**：`build-chain/ota-evidence/`。`RMX3706_13.1.0.115_CN01_rollback_4.0.zip`（7,585,057,674 字节）用 payload-dumper-go 抽 `dtbo`(=实机 `4F80DE98…`)、`vendor_boot`(=实机 `4AAB629E…`)、`uefi`（`F4CD52E1…`）、`boot`（`D9162A96…`，实机 `boot_b` 是 Magisk 补丁所以不同）。结论：DTBO 与 vendor_boot 来源已可追溯到官方全量包。**仍缺**：iOS 16.7.16 (20H392) rootfs。
 - 仍缺：vendor_boot base 选择算法的 bootloader 侧证据；活动帧缓冲实际 stride/format；CNTFRQ_EL0 与 GIC 中断实测；EDL 演练。
 
-**C. 引导链（主线，尚未开始）**
-- 明确 senna 的最小引导路径：ABL/UEFI（edk2-msm）与 `fastboot boot` 的限制；`ios-sweet` 的 `tools/mkpayload.py` 生成 raw kernel payload 的流程。
-- 需要补的：SM8475 的 UART、GIC/timer 中断号、内存 map 与 iOS 侧 KASLR/PE 状态位的本机出处。
-- 任何实机动作前：给方案 + 回滚 + 用户确认；只 `fastboot boot`。
-
+**C. 引导链（主线；C.2 源码与镜像已就绪，C.1/上机被设备阻塞）**
+- 设计：`build-chain/boot-chain/DESIGN.md`（v1，2026-11-20），路线 = 复用 ios-sweet shim，boot.img v4（v2 兜底）。
+- C.2 已完成（2026-11-20）：`build-chain/work/senna-shim/` 源码 + CI 出镜像（run 44677167822 全绿）：`out/senna-shim-v4.img` 86,016 B（sha256 `c0b8762d…fb23`）、`out/senna-shim-v2.img`（sha256 `71c5ab9c…2dbda`）；raw Image 已按 `image_size 0x14000` 补齐，入口 `b _start` 有 `--check-image` 校验；CI 附 `readelf`/`objdump` 入口反汇编便于离线核对。
+- C.2 未完成：实机 `fastboot boot`（设备未连接）+ 拍屏判读（四组 FB 候选、CNTFRQ、GIC 版本、DTB magic、ramdisk 命中）+ 结果回填 DESIGN §6/REMAINING。
+- C.3 前置未动：`mkadt.py` senna 参数（dram/GIC/UFS/timebase/VTIMER INTID/FB 几何）、`platform.sm8475.conf` 的 `RUNTIME_SUPPORT`、B 段剩余实测。
+- 任何实机动作前：给方案 + 回滚 + 用户确认；只 `fastboot boot`，不刷分区。
 **D. 内核/用户空间**
 - 明确哪些 kext/用户态组件必须注入、哪些由内核补；rootfs 依然一字节不改（只读挂载或 overlay 方案需先论证）。
 
@@ -128,4 +129,4 @@ B.1 已 PASS（见第 7 节），A 段与 B 段可做部分都已完成，C 段�
 
 **路线已定**：复用 ios-sweet 的 shim（ABL → `fastboot boot` shim → XNU），不 clone edk2-msm；boot.img 目标版本 v4（实机 OTA 已证 v4 可用）。
 
-**下一步（需要用户在场 + 明确同意）**：C.1 机制演练——`fastboot boot build-chain/ota-evidence/boot.img`（官方 stock 镜像，只进 RAM、不写分区），按 DESIGN.md §8 记录日志。若 `FAILED (remote: unknown command)` 则机制不可用，停下汇报。C.1 通过后再做 C.2 senna 诊断 shim（不含 XNU）。任何实机 `fastboot boot` 前必须先给方案 + 回滚 + 用户确认。
+**下一步（需要用户在场 + 明确同意）**：先做 C.1 机制演练——`fastboot boot build-chain/ota-evidence/boot.img`（官方 stock 镜像，只进 RAM、不写分区），按 DESIGN.md §8 记录日志；`FAILED (remote: unknown command)` 则机制不可用，停下汇报。C.1 通过后立刻做 C.2：`fastboot boot build-chain/work/senna-shim/out/senna-shim-v4.img`，失败换 v2，拍屏判读（DESIGN.md §5 C.2 有时间线与验收表）。两个动作都已备好镜像与回滚说明，唯一阻塞是设备未连接（`adb devices`/`fastboot devices` 空）。任何实机 `fastboot boot` 前必须先给方案 + 回滚 + 用户确认。

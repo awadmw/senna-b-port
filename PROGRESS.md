@@ -162,4 +162,32 @@
 | boot.img | v4，kernel 46,634,324（arm64 Image）、ramdisk 1,698,305（LZ4） | `ota-evidence/boot.img` | 证 |
 | vendor_boot | v4，`ramdisk_addr 0x1000000`、`tags_addr 0x100` | `ota-evidence/vendor_boot.img` | 证 |
 
+## 2026-11-20 C.2 senna 诊断 shim：源码 + CI 镜像就绪（未上机）
+
+### 已完成
+- 源码树 `build-chain/work/senna-shim/`：`start.S`（arm64 Image 头 + 16 向量，复用 ios-sweet）、`shim.ld`、`board.h`（senna 常量，逐条带 DTB 行号）、`console.c/h`（splash 上 8×16 字模 ×3 放大，运行期可切 stride/R-B）、`senna.c`（探测 + 4 组帧缓冲候选 + panic 页 + 30 s 倒计时 + `PSCI_SYSTEM_RESET`）、`font.h`、`tools/mkbootimg_img.py`（v4/v2 打包 + `--pad-image`/`--check-image`）、`build.sh`、`README.md`。
+- CI `.github/workflows/senna-shim.yml`（workflow_dispatch + push 触发，ubuntu-24.04，装 `gcc-aarch64-linux-gnu`，构建后附 `readelf -h/-S` 与入口 `objdump` 便于离线核对）。
+- run **44677167822** 全绿：`out/shim.bin` 81,920 B、`out/shim.elf` 39,792 B、`out/senna-shim-v4.img` 86,016 B、`out/senna-shim-v2.img` 86,016 B。
+- 修补一处真实失败：`objcopy` 不输出栈/BSS 预留区，导致 arm64 头 `image_size 0x14000` > 文件长度 12,433 → `bad Image header`；加 `--pad-image` 按 `image_size` 补齐后通过。
+
+### 未完成
+- C.1 机制演练 + C.2 上机：设备未连接（`adb devices`/`fastboot devices` 空），`fastboot boot` 未执行，屏上数据全部未取。
+- C.3：未开始。
+
+### 关键参数表（镜像与入口）
+
+| 项 | 实测值 | 出处 | 状态 |
+| --- | --- | --- | --- |
+| v4 镜像 | magic `ANDROID!`、header_size 1584、header_version 4、kernel 81,920 @0x1000、ramdisk_size 0、os_version `0x18000177` | `out/senna-shim-v4.img` | 证 |
+| v4 sha256 | `c0b8762d053b1ad678447d3b707a11540cda16b34dd7210b3623834e63e0fb23` | 同上 | 证 |
+| v2 镜像 | kernel_addr `0x8000`、ramdisk_addr `0x1000000`、tags `0x100`、page 4096、header_version 2、dtb_size 0 | `out/senna-shim-v2.img` | 证 |
+| v2 sha256 | `71c5ab9c1c915ec2772608ba37f1012d32e4f18403fa55bb341eef0e9012dbda` | 同上 | 证 |
+| 入口 | arm64 头 code0 `0x14000200`（`b _start`）、`image_size 0x14000`、flags `0xa`、magic `ARMd` | `--check-image` + `objdump` | 证 |
+| FB 候选 | stride 4960/R-B 正常、4960/R-B 交换、5120、4992；各 7 s | `senna.c cands[]` | 待实机判读 |
+| 探测项 | PSCI 版本、`CNTFRQ_EL0`、GICD/GICR TYPER、DTB magic、`0x1000000` ramdisk、IMEM restart reason | `senna.c probe_all()` | 待实机判读 |
+
+### 环境与推送
+- 本机无 clang/gcc，交叉编译只能走 GitHub Actions；`C:\Android\platform-tools` 有 adb/fastboot。
+- 本机 DNS 把 `github.com` 污染成 `20.6.7.17`，`git push` 连不上（`api.github.com` 正常）→ 新增 `build-chain/tools/push_via_api.py`：用 `gh auth token` 走 Git Data API 建 blob/tree/commit 并更新 `main`，把 remote sha 记到 `.git/remote_main_sha`，之后 `git push` 恢复即可停用。
+
 
