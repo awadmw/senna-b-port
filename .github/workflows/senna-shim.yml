@@ -31,6 +31,13 @@ jobs:
         working-directory: build-chain/work/senna-shim
         run: bash build.sh
 
+      - name: Disassemble entry point
+        working-directory: build-chain/work/senna-shim
+        run: |
+          aarch64-linux-gnu-readelf -h out/shim.elf | grep -E "Entry|Machine|Flags"
+          aarch64-linux-gnu-readelf -S out/shim.elf | grep -E "\.text|\.rodata|\.data|\.bss"
+          aarch64-linux-gnu-objdump -d --start-address=0 --stop-address=0x60 out/shim.elf | tail -n 24
+
       - name: Show artifact inventory
         working-directory: build-chain/work/senna-shim
         run: |
