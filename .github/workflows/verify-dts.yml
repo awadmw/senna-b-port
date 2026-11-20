@@ -1,0 +1,56 @@
+name: verify-dts
+
+# Independent check for REMAINING.md B.1: compile device-inventory/senna-live.dts
+# with upstream dtc and compare the result against the original device blob.
+# The original blob is not committed (see .gitignore); it is attached to the
+# dtb-evidence-v1 release as senna-live.dtb.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dtb_asset:
+        description: "Release asset name of the original senna-live.dtb"
+        required: false
+        default: "senna-live.dtb"
+      release_tag:
+        description: "Release tag that holds the original DTB"
+        required: false
+        default: "dtb-evidence-v1"
+
+permissions:
+  contents: read
+
+jobs:
+  roundtrip:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install device-tree-compiler
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq device-tree-compiler
+          dtc --version
+
+      - name: Fetch original DTB from release asset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p dtb
+          gh release download "${{ inputs.release_tag }}" -R "${GITHUB_REPOSITORY}" -p "${{ inputs.dtb_asset }}" -D dtb
+          ls -l dtb
+          sha256sum dtb/*
+
+      - name: dtc round-trip of senna-live.dts
+        run: |
+          bash device-inventory/verify-dts-roundtrip.sh dtb/senna-live.dtb device-inventory/senna-live.dts dts-roundtrip
+          echo "--- report ---"
+          cat dts-roundtrip/report.txt
+
+      - name: Upload round-trip evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dts-roundtrip
+          path: dts-roundtrip
+          if-no-files-found: warn

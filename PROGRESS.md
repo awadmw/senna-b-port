@@ -95,3 +95,25 @@
 - 已修真实阻塞：(1) 提交 `3c466f3` 把 `0019/0020/0026-stage-*.sh` 暂存脚本的 `MACHINE_CONFIG==SWEET` 守卫放宽到 `SWEET|SENNA`（否则 bearssl/libpthread/hfs 源码不落地）；(2) 提交 `19fb11b`/`aea14cd` 在 prepare-senna 阶段把 `*/conf/Makefile.template` 里 `ifeq ($(CURRENT_MACHINE_CONFIG),SWEET)` 守卫放宽到 `SWEET SENNA`（否则 `-include sweet_hfs_compat.h` 与 `SWEET_AES_INC` 不生效）。
 - 失败证据：`build-chain/evidence/run19-senna-kc-guard-errors.txt`、`build-chain/evidence/run20-senna-bearssl-inc-errors.txt`。
 - 状态：SENNA 运行仍在迭代，通过前不宣称已产出 senna kernelcache。
+## 2026-11-20 构建链收尾：SENNA kernelcache 产出并通过本地校验（A 段完成）
+
+- run `44489106397`（head `aea14cdc9f45289803caa76c02673a71c64253e3`）**success**，08:37–08:47Z，全部步骤通过；artifact `xnu-kernelcache-SENNA` id=14512706375，67,563,990 字节，digest `sha256:ae380407d52993b7611310fb424f8468ec50ce7e65792fb408da1cd6b1bda332`；`xnu-buildtree-SENNA` id=14512860694，23,196,244 字节。
+- 本地校验：`build-chain/artifacts/kc-senna-artifact/xnu-kernelcache-SENNA.zip` = 67,563,990 字节，SHA-256 `AE380407D52993B7611310FB424F8468EC50CE7E65792FB408DA1CD6B1BDA332`，与 GitHub digest 逐字符一致；解包得 `kernelcache.senna` 21,184,512 字节（`3F04B42B…`）、`kernel.development.senna` 18,388,744 字节（`1BE4BDD1…`）；`kmutil inspect` 显示 boot KC `BD57BEA7-2F30-1A64-7A68-88AA0EC28235` 含 `com.apple.kernel F84769AE-DEF9-3BB1-BAE4-0A9C0F66BC22`；`build-metadata.json` 为 machine_config=SENNA、soc=SM8475、runtime_support=not-implemented。
+- 与 SWEET 的产物大小相同但 SHA-256 不同，说明 SENNA 配置确实进入产物，不是重复打包。
+- 本地 work 副本 `build-chain/work/ios-sweet` 已按远程 `aea14cd` 更新 5 个文件（`xnu.yml`、`0019/0020/0026-stage-*.sh`、`xnu/senna/platform.sm8475.conf`），与 fork HEAD 对齐。
+- 下载踩坑（写进 HANDOFF）：`gh run download` 在本机会长时间 0 字节假死；artifact 走 Azure blob，单连接约 60 KB/s，SAS URL 约 10 分钟过期；必须用 `curl -r` 分段 + 过期后重取 302 只补缺失区间 + 按偏移拼接，最后用尺寸与 digest 双重校验。
+
+## 2026-11-20 官方 OTA 交叉核对（B.6 第一半完成）
+
+- 本机已有官方全量包 `downloads/RMX3706_13.1.0.115_CN01_rollback_4.0.zip`（7,585,057,674 字节，payload 7,585,052,078 字节，full payload，45 分区）与 `RMX3706_14.0.0.903_CN01_rollback.zip`（7,898,448,731 字节）。
+- 用 `payload-dumper-go` 2.1.0 抽取 `dtbo/vendor_boot/uefi/boot` 到 `build-chain/ota-evidence/`：`dtbo.img` SHA-256 `4F80DE98…` = 实机 `dtbo_b.img`；`vendor_boot.img` `4AAB629E…` = 实机 `vendor_boot_b.img`（均逐字节一致）。
+- `boot.img`（`D9162A96…`）与实机 `boot_b.img`（`5B470B39…`）**不一致**：实机 boot 在偏移 47,679,313 含 `MAGISK`、47,673,873 含 `androidboot`，是 Magisk 补丁镜像；本项目不使用 boot_b 作为证据。
+- `uefi.img` 3,153,920 字节 `F4CD52E1…`，仅作阶段 3 对照，不刷写。
+- 结论：DTBO（含 senna-b overlay entry 11）与 vendor_boot base DTB 的来源已从“只读采集推断”升级为“官方全量包逐字节一致”。
+
+### 本阶段未完成／边界
+
+- SENNA KC 仍是 **kernel-only boot kernel collection**，不是可 `fastboot boot` 的镜像；`runtime_support=not-implemented` 不变。
+- B.1 dtc round-trip：脚本与 workflow 已就绪（`device-inventory/verify-dts-roundtrip.sh`、`.github/workflows/verify-dts.yml`），需 release `dtb-evidence-v1` 提供原始 DTB 后在 Actions 实跑；本地无 dtc，未在本机执行。
+- iOS 16.7.16 (20H392) rootfs 仍未获取/未做哈希登记；EDL 演练仍未做。
+

@@ -60,9 +60,12 @@ Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649
 | SWEET（SM7150 参考） | 44481202871（提交 `c1c360d`） | **success** 8m44s | `xnu-kernelcache-SWEET` id=14509386243，67,562,895 字节，digest `sha256:6084969434F242277F2FAACD051D2ADDFC7671402A1AAC7EBD44E76D06BDBF5B`；`xnu-buildtree-SWEET` id=14509246494 |
 | SENNA（SM8475 编译别名） | 44489106397（提交 `aea14cd`） | **success** | `xnu-kernelcache-SENNA` id=14512706375，67,563,990 字节，digest `sha256:ae380407d52993b7611310fb424f8468ec50ce7e65792fb408da1cd6b1bda332`；`xnu-buildtree-SENNA` id=14512860694 |
 
-SWEET 产物已本地校验：下载 zip 的 SHA-256 与 GitHub digest 一致；`kernelcache.sweet` 21,184,512 字节（`D1B13A15B78E54E3CC7E19E54725C633E989D5CCAE007B2B37A3AE669B8B6BC1`），`kernel.development.sweet` 18,388,744 字节（`DD31242D…`）；`kmutil inspect` → boot kernel collection `08A074F3-DF8A-CCEF-63BE-53FEB9362B67`，内含 `com.apple.kernel 628D9966-43C4-3A18-8F89-4FF3F4F4D86B`。
+两份产物均已本地校验（zip SHA-256 与 GitHub digest 逐字符一致）：
 
-**边界（必须一起说）**：这是 `kmutil create -a arm64 -x` 的 **kernel-only boot kernel collection**，不是可引导 payload，不能直接 `fastboot boot`；机器配置是 SWEET（SM7150）参考，未做任何 senna 硬件适配；rootfs 未改。
+- SWEET：`kernelcache.sweet` 21,184,512 字节（`D1B13A15…`），`kernel.development.sweet` 18,388,744 字节（`DD31242D…`）；`kmutil inspect` → boot KC `08A074F3-DF8A-CCEF-63BE-53FEB9362B67` 含 `com.apple.kernel 628D9966-43C4-3A18-8F89-4FF3F4F4D86B`；`build-metadata.json` machine_config=SWEET。
+- SENNA（2026-11-20 完成）：zip 67,563,990 字节 SHA-256 `AE380407D52993B7611310FB424F8468EC50CE7E65792FB408DA1CD6B1BDA332`；`kernelcache.senna` 21,184,512 字节（`3F04B42B716A7F1B29B6A2F73192EF3E14E015E761AA346DB4C8D7DE9ED8E294`），`kernel.development.senna` 18,388,744 字节（`1BE4BDD1603326F0280C079BC0EC723DDDCE3D53E6FC6AB5B73210092549919C`）；`kmutil inspect` → boot KC `BD57BEA7-2F30-1A64-7A68-88AA0EC28235` 含 `com.apple.kernel F84769AE-DEF9-3BB1-BAE4-0A9C0F66BC22`（Extension Information 为空）；`build-metadata.json` 为 machine_config=SENNA、soc=SM8475、runtime_support=not-implemented、dxb_commit=66390652…。SENNA 与 SWEET 大小相同但哈希不同 → 配置确实进入产物。
+
+**边界（必须一起说）**：这是 `kmutil create -a arm64 -x` 的 **kernel-only boot kernel collection**，不是可引导 payload，不能直接 `fastboot boot`；SENNA 只是编译别名（SOC=SM8475、BASE_MACHINE_CONFIG=SWEET、runtime_support=not-implemented），未做任何 senna 硬件适配；rootfs 未改。
 
 ### 已修掉的真实失败（别再重复踩）
 1. runner `macos-14-arm64-us-default` 已退役 → 改 macos-15。
@@ -78,6 +81,7 @@ SWEET 产物已本地校验：下载 zip 的 SHA-256 与 GitHub digest 一致；
 ### 诊断方法（有效，别退回抓 47MB 日志）
 - workflow 失败时上传 `build-failure-<CONFIG>` artifact（`fail-errors.log` + `fail-tail.log`），用 `gh run download <run> -R awadmw/ios-sweet -n build-failure-SENNA -D <dir>` 取回，秒级。
 - `gh run view --log` 会 `stream error: stream ID 1; CANCEL`；blob URL 不支持 Range，47MB 拉不动。**不要再用 Chrome 抓 raw 日志。**
+- `gh run download` 也不稳：本机两次出现目标文件长时间 0 字节、约 13 分钟无进展。artifact 走 `productionresultssa19.blob.core.windows.net`，单连接约 60 KB/s。实测可行做法：`gh auth token` → `curl -s -o NUL -D - -H "Authorization: token $tok" https://api.github.com/repos/awadmw/ios-sweet/actions/artifacts/<id>/zip` 取 302 `Location`，再 `curl -r start-end` 分段并发；**SAS URL 约 10 分钟过期**，过期连接会挂起，须重取 `Location` 只补缺失区间（注意 `-C -` 是从文件长度续传整个对象，不是补该段偏移，别用），最后按偏移拼接、用总尺寸 + SHA-256 双重校验。
 
 ## 5. 主机环境
 
@@ -95,15 +99,17 @@ SWEET 产物已本地校验：下载 zip 的 SHA-256 与 GitHub digest 一致；
 
 ## 7. 未完成任务（按优先级）
 
-**A. 构建链收尾（最快可完成）**
-1. 下载 SENNA 产物并校验：`gh run download 44489106397 -R awadmw/ios-sweet -n xnu-kernelcache-SENNA -D build-chain\artifacts\kc-senna-artifact`（约 20 分钟，64 MB）。校验 zip SHA-256 必须等于 `ae380407d52993b7611310fb424f8468ec50ce7e65792fb408da1cd6b1bda332`；解包后记录 `kernelcache.senna` 大小/哈希与 `kmutil inspect` 输出。
-2. 把 SENNA 结果补进 `build-chain/BUILD-EVIDENCE.md` 与 `PROGRESS.md`（替换现在的"进行中"表述），把证据 JSON/文本放进 `build-chain/evidence/`。
-3. `git add` + `commit` + `push` 到 `senna-b-port`。
-4. 把此前只在本地的 `xnu/senna/*`、workflow 变更与远程 `awadmw/ios-sweet` 对齐（远程已是 `aea14cd`）。
+**A. 构建链收尾 —— 已完成（2026-11-20）**
+- A.1 ~~下载 SENNA 产物并校验~~：见第 4 节，zip 67,563,990 字节 / SHA-256 `AE380407…` 与 digest 一致，`kernelcache.senna`、`kernel.development.senna`、`kc-inspect.txt`、`build-metadata.json` 均已登记。
+- A.2 ~~补进 BUILD-EVIDENCE.md 与 PROGRESS.md~~：已写入（BUILD-EVIDENCE 第 4 节改为“通过”）。
+- A.3 ~~commit + push~~：见第 5 节提交记录。
+- A.4 ~~本地 work 副本与远程对齐~~：`build-chain/work/ios-sweet` 的 5 个文件已按 `aea14cd` 覆盖（`xnu.yml`、`0019/0020/0026-stage-*.sh`、`xnu/senna/platform.sm8475.conf`）。
+- 仍未做（A 段遗留）：`BUILDING.md` 终版同步到远程仓库；KC 归档清单 `SHA256SUMS.txt` 汇总。
 
 **B. 证据补证**
-- 用 `dtc` 对 `device-inventory/senna-live.dts` 做 round-trip 校验（本机无 dtc，可用 Actions 或 WSL）。
-- 官方 OTA `RMX3706_11.A.45_0450_202308171956` 的 payload 里提取 dtb/dtbo 与本机 DT 交叉比对（尚未做）。
+- **B.1 dtc round-trip（工具已就绪，待 Actions 实跑）**：`device-inventory/verify-dts-roundtrip.sh` + `.github/workflows/verify-dts.yml`（workflow_dispatch，ubuntu-24.04，apt 装 device-tree-compiler）。原始 DTB 不入库（`.gitignore` 有 `*.dtb`），以 release asset 提供：release tag `dtb-evidence-v1`，asset `senna-live.dtb`。计划步骤：`gh release create dtb-evidence-v1` 上传 `device-inventory/senna-live.dtb` → push → `gh workflow run verify-dts.yml` → 取 `dts-roundtrip` artifact 判读。
+- **B.2/B.6 官方 OTA 交叉核对（已完成一半）**：`build-chain/ota-evidence/`。`RMX3706_13.1.0.115_CN01_rollback_4.0.zip`（7,585,057,674 字节）用 payload-dumper-go 抽 `dtbo`(=实机 `4F80DE98…`)、`vendor_boot`(=实机 `4AAB629E…`)、`uefi`（`F4CD52E1…`）、`boot`（`D9162A96…`，实机 `boot_b` 是 Magisk 补丁所以不同）。结论：DTBO 与 vendor_boot 来源已可追溯到官方全量包。**仍缺**：iOS 16.7.16 (20H392) rootfs。
+- 仍缺：vendor_boot base 选择算法的 bootloader 侧证据；活动帧缓冲实际 stride/format；CNTFRQ_EL0 与 GIC 中断实测；EDL 演练。
 
 **C. 引导链（主线，尚未开始）**
 - 明确 senna 的最小引导路径：ABL/UEFI（edk2-msm）与 `fastboot boot` 的限制；`ios-sweet` 的 `tools/mkpayload.py` 生成 raw kernel payload 的流程。
@@ -118,4 +124,4 @@ SWEET 产物已本地校验：下载 zip 的 SHA-256 与 GitHub digest 一致；
 
 ## 8. 下一会话第一件事
 
-按第 7 节 A.1 开始：下载并校验 SENNA 内核集合，然后把结果写进 `BUILD-EVIDENCE.md`/`PROGRESS.md` 并 push。
+按第 7 节 B.1 继续：建 `dtb-evidence-v1` release 并上传 `device-inventory/senna-live.dtb`，然后 `gh workflow run verify-dts.yml -R awadmw/senna-b-port` 跑 dtc round-trip，取回 `dts-roundtrip` artifact 判读；通过后进入 C 段（edk2-msm senna 设备包与引导链设计），任何实机 `fastboot boot` 前必须先给方案 + 回滚 + 用户确认。

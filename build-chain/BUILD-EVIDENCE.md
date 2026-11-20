@@ -1,6 +1,6 @@
-# 构建链证据：SWEET kernelcache（GitHub Actions）
+# 构建链证据：SWEET / SENNA kernelcache（GitHub Actions）
 
-记录时间：2026-11-19。全部证据来自 GitHub Actions 运行产物与本地校验，**未连接实机、未刷写、未修改 rootfs**。
+记录时间：2026-11-19（SWEET）、2026-11-20（SENNA 下载校验与官方 OTA 交叉核对）。全部证据来自 GitHub Actions 运行产物与本地校验，**未连接实机、未刷写、未修改 rootfs**。
 
 ## 1. SWEET 基线（通过）
 
@@ -47,7 +47,7 @@ Extension Information:
 - 机器配置是上游 SWEET（SM7150 参考），与 senna/SM8475 硬件无关；内核仍是 plain arm64，未做任何 senna 硬件适配。
 - 上游 ios-sweet 的真实启动链用 `tools/mkpayload.py` 生成 raw kernel payload 而不经 kmutil；本 KC 仅用于证明“独立构建链能产出内核集合”。
 
-## 4. SENNA 目标（编译别名，进行中）
+## 4. SENNA 目标（通过）
 
 SENNA 目标定义在 `xnu/senna/platform.sm8475.conf`：MACHINE_CONFIG=SENNA、SOC=SM8475、BASE_MACHINE_CONFIG=SWEET、XNU_BOARD_CONFIG=SWEET、RUNTIME_SUPPORT=not-implemented；`xnu/senna/0001-empty.patch` 为纯注释空补丁。它**只是编译别名**，不代表 SM8475 已适配。
 
@@ -55,12 +55,57 @@ SENNA 目标定义在 `xnu/senna/platform.sm8475.conf`：MACHINE_CONFIG=SENNA、
 
 1. run 44483651048：`fatal error: 'sweet_bearssl/src/symcipher/aes_ct_enc.c' file not found`、`'sweet_libpthread/kern/kern_init.c' file not found`、`'hfs.h' file not found`。根因：`xnu/patches/0019-stage-libpthread.sh`、`0020-stage-bearssl.sh`、`0026-stage-hfs.sh` 首行都是 `[[ "${MACHINE_CONFIG:-}" == SWEET ]] || exit 0`，SENNA 下直接跳过暂存。修复：提交 3c466f3，将判断改为 `case "${MACHINE_CONFIG:-}" in SWEET|SENNA) ;; *) … exit 0 ;; esac`。
 2. run 44485081625：bearssl/libpthread 已暂存，但 HFS 报 `cp_fs_protected`、`VTOCMP`、`AppleKeyStore/AppleKeyStoreFSServices.h`、`hfs.h` 未声明/找不到。根因：`bsd/conf/Makefile.template` 里 `ifeq ($(CURRENT_MACHINE_CONFIG),SWEET)` 把 `-include sweet_hfs_compat.h -I$(SWEET_HFS_ROOT)` 等开关限制在 SWEET，SENNA 编 HFS 时按内核视图编译。修复：提交 19fb11b，在 prepare-senna.sh 中把该守卫放宽为 `ifneq ($(filter $(CURRENT_MACHINE_CONFIG),SWEET SENNA),)`。
-3. 当前：run 44486857317（head 19fb11b）进行中；结果以实际日志为准，未完成前不宣称 SENNA 通过。
+3. run 44486857317（head 19fb11b）：failure，暴露出 kmutil 步骤缺少失败诊断、`conf/Makefile.template` 守卫只覆盖 prepare 阶段的问题。
+4. run 44489106397（head aea14cdc9f45289803caa76c02673a71c64253e3）：**success**，08:37–08:47Z，全部步骤通过。
 
-## 5. 复现命令
+Artifacts：
+
+- `xnu-kernelcache-SENNA` id=14512706375，67,563,990 字节，GitHub digest `sha256:ae380407d52993b7611310fb424f8468ec50ce7e65792fb408da1cd6b1bda332`
+- `xnu-buildtree-SENNA` id=14512860694，23,196,244 字节，digest `sha256:288407ec89c72012794b0fdaf08e04847e7aa529336ec27667298fcc14acb2af`
+
+本地校验（`build-chain/artifacts/kc-senna-artifact/`）：
+
+- 下载：`gh run download` 在本机两次卡死（目标文件长时间 0 字节，约 13 分钟无进展）；改用 `curl -r` 分段并行。观测：单连接约 60 KB/s，SAS URL 约 10 分钟过期，过期后连接挂起到 0 字节；补救方式是重取 302 `Location` 后只补缺失的 byte range，并用脚本按偏移顺序拼接。
+- `xnu-kernelcache-SENNA.zip` = 67,563,990 字节，SHA-256 `AE380407D52993B7611310FB424F8468EC50CE7E65792FB408DA1CD6B1BDA332`，与 artifact digest **逐字符一致**。
+
+| 文件 | 大小（字节） | SHA256 |
+| --- | --- | --- |
+| kernelcache.senna | 21,184,512 | 3F04B42B716A7F1B29B6A2F73192EF3E14E015E761AA346DB4C8D7DE9ED8E294 |
+| kernel.development.senna | 18,388,744 | 1BE4BDD1603326F0280C079BC0EC723DDDCE3D53E6FC6AB5B73210092549919C |
+| kernel.development.senna.link/kernel.development.senna.a | 137,241,240 | 未单独登记（链接输入，体积大） |
+
+- `kmutil inspect`（kc-inspect.txt）：boot kernel collection `oss-xnu.macOS.13.5.kc.senna.development (BD57BEA7-2F30-1A64-7A68-88AA0EC28235)`，`com.apple.kernel 0 <unknown> (F84769AE-DEF9-3BB1-BAE4-0A9C0F66BC22)`，Extension Information 为空（kernel-only）。
+- `build-metadata.json`：machine_config=SENNA、soc=SM8475、runtime_support=not-implemented、source_commit=aea14cdc9f45289803caa76c02673a71c64253e3、dxb_commit=663906528d1cd5ea8fde7de6f16de73db9511549、developer_dir=/Applications/Xcode_16.app/Contents/Developer、kernelcache=kernelcache.senna。
+- 与 SWEET 对比：大小完全相同（21,184,512 / 18,388,744），但 SHA-256 不同（SWEET 为 D1B13A15… / DD31242D…）→ SENNA 配置确实改变了产物字节，不是重复打包同一份 KC。
+- 原始运行 JSON：`build-chain/evidence/run21-senna-artifacts.json`。
+
+## 5. 官方 OTA 与实机分区交叉核对
+
+目的：把阶段 2 依赖的 DTBO / vendor_boot 来源从“只读采集推断”升级为“与官方全量包逐字节一致”。详细记录见 `build-chain/ota-evidence/README.md`。
+
+来源：本机 `downloads/RMX3706_13.1.0.115_CN01_rollback_4.0.zip`（7,585,057,674 字节；payload.bin 7,585,052,078 字节；Payload Version 2 full payload，`no source images required`，45 个分区），用 `payload-dumper-go` 2.1.0 抽取 `dtbo,vendor_boot,uefi,boot` 到 `build-chain/ota-evidence/`。
+
+| 分区 | OTA 抽取 SHA-256 | 实机备份 SHA-256（stage-00） | 结论 |
+| --- | --- | --- | --- |
+| dtbo（25,165,824） | 4F80DE98FAF3BD9881A252AE4FE3C17C151D45AB27FDB0E4AF9CFD43C03C2169 | 4F80DE98…（`dtbo_b.img`） | 一致 |
+| vendor_boot（201,326,592） | 4AAB629EEB33DCFFFD6448FBFD5C2A8AA93B7EB13953C94063DC34392DF1B6CB | 4AAB629E…（`vendor_boot_b.img`） | 一致 |
+| boot（201,326,592） | D9162A96950A0FD683395968359136EA925B32381D42582BB15DB95341617ED7 | 5B470B39…（`boot_b.img`） | 不一致：实机 boot 在偏移 47,679,313 含 `MAGISK`、47,673,873 含 `androidboot`，是 Magisk 补丁镜像；本项目不使用 boot_b |
+| uefi（3,153,920） | F4CD52E174902A71BDFFA9FB7462CAABB87AA9000B7B731CA57513393C9518C2 | 无实机备份 | 仅作阶段 3 对照，不刷写 |
+
+结论：senna-b 的 `dtbo`（含 entry 11 overlay）与 `vendor_boot`（base DTB 来源）逐字节等于官方 13.1.0.115 CN01 全量包；设备确为官方系统 + Magisk 补丁 boot。
+
+## 6. 复现命令
 
 ```bash
 gh workflow run xnu.yml -R awadmw/ios-sweet -f machine_config=SWEET -f kernel_config=DEVELOPMENT
 gh workflow run xnu.yml -R awadmw/ios-sweet -f machine_config=SENNA -f kernel_config=DEVELOPMENT
-gh run download <run-id> -R awadmw/ios-sweet -n xnu-kernelcache-SWEET
+gh run download <run-id> -R awadmw/ios-sweet -n xnu-kernelcache-SENNA   # 本机实测会挂起，见 4 节下载说明
+```
+
+```powershell
+# 分段下载（SAS URL 约 10 分钟过期，过期后重取 302 Location 只补缺失区间）
+$tok = gh auth token
+$h = curl.exe -s -o NUL -D - -H "Authorization: token $tok" https://api.github.com/repos/awadmw/ios-sweet/actions/artifacts/14512706375/zip
+$url = (($h | Select-String '^location:').ToString() -replace '^location:\s*','').Trim()
+curl.exe -sS --retry 8 -r <start>-<end> -o partNN.bin $url
 ```

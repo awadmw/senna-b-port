@@ -6,6 +6,9 @@
 *.dts.txt
 *.log
 _github-staging/
+build-chain/artifacts/
+build-chain/remote/
+*.err
 device-inventory/device-tree/
 build-chain/dxb/
 build-chain/upstream/

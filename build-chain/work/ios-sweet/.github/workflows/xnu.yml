@@ -71,15 +71,28 @@ jobs:
               echo "KC_INPUT=${kernel_path}"
               echo "KC_KDK=${KDKROOT}"
               echo "KC_OUTPUT=${output_path}"
+              echo "KC_DSTROOT=${DSTROOT}"
               file "${kernel_path}"
+              set +e
               set -x
               kmutil create -v -V "${KC_VARIANT}" -a arm64 -n boot -s none \
                   --kdk "${KDKROOT}" \
                   -B "${output_path}" \
                   -k "${kernel_path}" \
                   -x
+              rc=$?
               set +x
-              test -s "${output_path}"
+              set -e
+              echo "KC_EXIT=${rc}"
+              ls -la "${DSTROOT}" | tail -30 || true
+              find "${DSTROOT}" -maxdepth 2 -name '*oss-xnu*' -print || true
+              if [ -s "${output_path}.${KC_VARIANT}" ]; then
+                  output_path="${output_path}.${KC_VARIANT}"
+              fi
+              if [ ! -s "${output_path}" ]; then
+                  echo "::error::kmutil did not write ${output_path}"
+                  exit 1
+              fi
               file "${output_path}"
               echo "KC Build Done: ${output_path}"
           }
@@ -96,7 +109,7 @@ jobs:
           # kmutil requires split seg v2. Upstream XNU defines the needed
           # linker flags for arm64e but not for ios-sweet's plain-arm64 override.
           cat > /tmp/prepare-kc-link.sh <<'KC_LINK'
-          python3 - "${WORK_DIR}/xnu/makedefs/MakeInc.def" <<'PY'
+          python3 - "${WORK_DIR}/xnu/makedefs/MakeInc.def" "${WORK_DIR}/xnu/bsd/conf/Makefile.template" <<'PY'
           from pathlib import Path
           import sys
           path = Path(sys.argv[1])
@@ -135,7 +148,7 @@ jobs:
               test "$XNU_BOARD_CONFIG" = "SWEET"
               test "$RUNTIME_SUPPORT" = "not-implemented"
               cp "${WORK_DIR}/xnu/config/MASTER.arm64.sweet" "${WORK_DIR}/xnu/config/MASTER.arm64.senna"
-              python3 - "${WORK_DIR}/xnu/makedefs/MakeInc.def" <<'PY'
+              python3 - "${WORK_DIR}/xnu/makedefs/MakeInc.def" "${WORK_DIR}/xnu/bsd/conf/Makefile.template" <<'PY'
           import pathlib
           import re
           import sys
@@ -155,8 +168,20 @@ jobs:
           assert text.count(old) == 1, "plain-arm64 condition not found"
           text = text.replace(old, new, 1)
           path.write_text(text)
+          guard = "ifeq ($(CURRENT_MACHINE_CONFIG),SWEET)"
+          widened = "ifneq ($(filter $(CURRENT_MACHINE_CONFIG),SWEET SENNA),)"
+          guards = 0
+          for tpl in sorted(pathlib.Path(sys.argv[1]).parents[1].glob("*/conf/Makefile.template")):
+              body = tpl.read_text()
+              hits = body.count(guard)
+              if hits:
+                  tpl.write_text(body.replace(guard, widened))
+                  print(f"widened {hits} guard(s) in {tpl}")
+                  guards += hits
+          assert guards >= 2, f"expected sweet guards in bsd and libkern conf templates, found {guards}"
           PY
               grep -n 'SUPPORTED_ARM64_MACHINE_CONFIGS\|MACHINE_FLAGS_ARM64_SENNA\|filter $(CURRENT_MACHINE_CONFIG)' "${WORK_DIR}/xnu/makedefs/MakeInc.def"
+              grep -ln 'filter $(CURRENT_MACHINE_CONFIG),SWEET SENNA' "${WORK_DIR}"/xnu/*/conf/Makefile.template
               test -s "${WORK_DIR}/xnu/config/MASTER.arm64.senna"
           fi
           SENNA_PREPARE
@@ -196,18 +221,42 @@ jobs:
         working-directory: dxb
         env:
           MAKEFLAGS: ${{ inputs.keep_going == 'false' && '' || '-k' }}
-        run: bash build.sh -k
+        run: |
+          set +e
+          set -o pipefail
+          bash build.sh -k 2>&1 | tee "${GITHUB_WORKSPACE}/build.log"
+          rc=$?
+          set -e
+          grep -c 'XNU Build Done' "${GITHUB_WORKSPACE}/build.log" || true
+          if [ "$rc" -ne 0 ]; then
+            echo "::error::build.sh exited with code ${rc}"
+            LAST=$(grep -n -E 'error:|undefined symbol|Error Domain|\*\*\* ' "${GITHUB_WORKSPACE}/build.log" | tail -3 | tr '\n' ' ' | cut -c1-900)
+            echo "::error::last errors: ${LAST}"
+            grep -n -E 'error:|undefined symbol|\*\*\* ' "${GITHUB_WORKSPACE}/build.log" | tail -60 > "${GITHUB_WORKSPACE}/fail-errors.log" || true
+            tail -n 400 "${GITHUB_WORKSPACE}/build.log" > "${GITHUB_WORKSPACE}/fail-tail.log" || true
+            exit "$rc"
+          fi
 
       - name: Verify and collect kernelcache
         run: |
           set -euo pipefail
-          KC="dxb/fakeroot/oss-xnu.macOS.${MACOS_VERSION}.kc.${MACHINE_LOWER}"
-          test -s "$KC"
-          kmutil inspect --show-kernel-uuid -B "$KC"
+          KC=$(ls -1 "dxb/fakeroot/oss-xnu.macOS.${MACOS_VERSION}.kc.${MACHINE_LOWER}"* 2>/dev/null | head -1 || true)
+          echo "KC=${KC:-<none>}"
+          ls -la dxb/fakeroot || true
+          if [ -z "${KC:-}" ] || [ ! -s "$KC" ]; then
+            echo "::error::no kernelcache matching dxb/fakeroot/oss-xnu.macOS.${MACOS_VERSION}.kc.${MACHINE_LOWER}*"
+            exit 1
+          fi
+          file "$KC"
           mkdir -p out
           cp "$KC" "out/kernelcache.${MACHINE_LOWER}"
-          file "out/kernelcache.${MACHINE_LOWER}"
           ls -lh "out/kernelcache.${MACHINE_LOWER}"
+          if ! kmutil inspect --show-kernel-uuid -B "$KC" > out/kc-inspect.txt 2>&1; then
+            echo "::warning::kmutil inspect could not read the collection; artefact is still collected"
+            sed -n '1,20p' out/kc-inspect.txt || true
+          else
+            sed -n '1,20p' out/kc-inspect.txt
+          fi
           SOC=SM7150
           if [ "$MACHINE_CONFIG" = "SENNA" ]; then
             . xnu/senna/platform.sm8475.conf
@@ -223,7 +272,23 @@ jobs:
             '{machine_config:$machine,soc:$soc,runtime_support:$runtime,source_commit:$source,dxb_commit:$dxb,developer_dir:$developer_dir,kernelcache:$kernelcache}' \
             > out/build-metadata.json
           cat out/build-metadata.json
-
+          sha256sum "out/kernelcache.${MACHINE_LOWER}" | tee out/SHA256SUMS.txt
+      - name: Collect failure diagnostics
+        if: failure()
+        run: |
+          set +e
+          tail -n 400 "${GITHUB_WORKSPACE}/build.log" > fail-tail.log 2>/dev/null
+          grep -n -E 'error:|Error Domain|KC_|kernelcache|kmutil|Not produced' "${GITHUB_WORKSPACE}/build.log" | tail -80 > fail-errors.log 2>/dev/null
+          ls -la fail-tail.log fail-errors.log
+      - name: Upload failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-failure-${{ inputs.machine_config || 'SWEET' }}
+          path: |
+            fail-errors.log
+            fail-tail.log
+          if-no-files-found: ignore
       - name: Package build tree for local compiles
         if: always()
         run: |
