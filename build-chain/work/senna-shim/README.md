@@ -27,7 +27,7 @@
 | `shim.ld` | 链接脚本：`. = 0`、8×4K 二级栈、`_end` 供 Image 头使用 |
 | `board.h` | senna 常量，**每条都带 DTB 行号出处**（见文件内注释） |
 | `console.c/.h` | 在 splash 帧缓冲上画 8×16 位图字（×3），运行期可切 stride / R-B 交换 |
-| `senna.c` | 探测 + 画 4 组 FB 候选 + 30s 倒计时 + `PSCI_SYSTEM_RESET`；异常走同一套画屏 |
+| `senna.c` | 探测 + 画 4 组 FB 候选 + 20s 倒计时 + `PSCI_SYSTEM_RESET`；异常走同一套画屏 |
 | `font.h` | 8×16 ASCII 字模（从 ios-sweet shim 复用） |
 | `tools/mkbootimg_img.py` | 纯 Python 打 Android boot.img：`--version 4`（首选）/ `--version 2`（回退），并可 `--check-image` 校验 Image 头 |
 | `build.sh` | 交叉编译 + 打包 + sha256 |
@@ -66,9 +66,9 @@ fastboot boot build-chain/work/senna-shim/out/senna-shim-v4.img
 
 屏幕时间线（每次上电只跑一轮）：
 
-1. `0–12 s`：信息页（PROBE 表）。
-2. `12–40 s`：4 组帧缓冲候选，每组 7 s，页面底色不同 + 底部红/绿/蓝/白彩条。
-3. `40–70 s`：信息页 + 30 s 倒计时，随后 `PSCI_SYSTEM_RESET` 自动重启。
+1. `0–20 s`：信息页（PROBE 表）——20 s 够拍完所有数值。
+2. `20–60 s`：4 组帧缓冲候选，每组 10 s，页面底色不同 + 底部红/绿/蓝/白彩条。
+3. `60–80 s`：信息页 + 20 s 倒计时，随后 `PSCI_SYSTEM_RESET` 自动重启。
 4. 若发生异常：红底 `SENNA SHIM PANIC` 页显示 slot/ESR/FAR/ELR/SPSR 与 x0–x7，然后 `wfe` 停住。
 
 ## FB 判读表（拍照对照）
