@@ -113,7 +113,7 @@ Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649
 
 **C. 引导链（主线；C.2 源码与镜像已就绪，C.1/上机被设备阻塞）**
 - 设计：`build-chain/boot-chain/DESIGN.md`（v1，2026-11-20），路线 = 复用 ios-sweet shim，boot.img v4（v2 兜底）。
-- C.2 已完成（2026-11-20）：`build-chain/work/senna-shim/` 源码 + CI 出镜像（run 44677167822 全绿）：`out/senna-shim-v4.img` 86,016 B（sha256 `c0b8762d…fb23`）、`out/senna-shim-v2.img`（sha256 `71c5ab9c…2dbda`）；raw Image 已按 `image_size 0x14000` 补齐，入口 `b _start` 有 `--check-image` 校验；CI 附 `readelf`/`objdump` 入口反汇编便于离线核对。
+- C.2 已完成（2026-11-20）：`build-chain/work/senna-shim/` 源码 + CI 出镜像（v0.2，run 44678828635 全绿；v0.1 run 44677167822 已废弃）：`out/senna-shim-v4.img` 86,016 B（sha256 `7483023e…f907`）、`out/senna-shim-v2.img`（sha256 `1f7f4daf…ed12`）；raw Image 已按 `image_size 0x14000` 补齐，入口 `b _start` 有 `--check-image` 校验；CI 附 `readelf`/`objdump` 入口反汇编便于离线核对。
 - C.2 未完成：实机 `fastboot boot`（设备未连接）+ 拍屏判读（四组 FB 候选、CNTFRQ、GIC 版本、DTB magic、ramdisk 命中）+ 结果回填 DESIGN §6/REMAINING。
 - C.3 前置未动：`mkadt.py` senna 参数（dram/GIC/UFS/timebase/VTIMER INTID/FB 几何）、`platform.sm8475.conf` 的 `RUNTIME_SUPPORT`、B 段剩余实测。
 - 任何实机动作前：给方案 + 回滚 + 用户确认；只 `fastboot boot`，不刷分区。

@@ -98,8 +98,8 @@
 **状态：源码与镜像已就绪（2026-11-20），未上机。**
 
 - **目标**：用我们自己的 boot.img 在 senna 上跑起 shim，验证 §2.1 常量与 §6 未证项。
-- **已有产物**（`build-chain/work/senna-shim/`，CI run 44677167822）：
-  - `senna-shim-v4.img` 86,016 B（header v4，os_version `0x18000177`，sha256 `c0b8762d…fb23`）；`senna-shim-v2.img`（kernel_addr `0x8000`、ramdisk_addr `0x1000000`、tags `0x100`，sha256 `71c5ab9c…2dbda`）——v4 失败时换 v2 重试；
+- **已有产物**（`build-chain/work/senna-shim/`，shim v0.2，CI run 44678828635）：
+  - `senna-shim-v4.img` 86,016 B（header v4，os_version `0x18000177`，sha256 `7483023e…f907`，屏幕标题含 `v0.2`）；`senna-shim-v2.img`（kernel_addr `0x8000`、ramdisk_addr `0x1000000`、tags `0x100`，sha256 `1f7f4daf…ed12`）——v4 失败时换 v2 重试；
   - raw Image 已按 arm64 头 `image_size`（`0x14000`）补齐，入口 `_head` 的 `b _start` 由 `--check-image` 校验；
   - 源码：`start.S`/`shim.ld`（复用 sweet）、`board.h`（常量带 DTB 行号）、`console.c/h`、`senna.c`（探测 + 画屏 + panic 页 + PSCI 复位）、`tools/mkbootimg_img.py`（v4/v2 打包 + 头校验）。
 - **实机时间线**（shim v0.2 固定）：0-20 s 信息页（PSCI 版本、CNTFRQ、MPIDR/Aff、CurrentEL、GICD/GICR TYPER、DTB magic、ramdisk、IMEM restart reason；20 s 便于拍全）→ 20-60 s 四组帧缓冲候选各 10 s（组号 + RED/GREEN/BLUE/WHITE 四色条，用于判 stride 与 R/B 交换）→ 60-80 s 倒计时 → `PSCI_SYSTEM_RESET` 回 Android；任何异常进红底 PANIC 页（slot/ESR/FAR/ELR/SPSR/SP/x0-x7）并停住。屏幕标题行含 `v0.2`，用于区分镜像版本。

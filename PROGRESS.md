@@ -167,7 +167,7 @@
 ### 已完成
 - 源码树 `build-chain/work/senna-shim/`：`start.S`（arm64 Image 头 + 16 向量，复用 ios-sweet）、`shim.ld`、`board.h`（senna 常量，逐条带 DTB 行号）、`console.c/h`（splash 上 8×16 字模 ×3 放大，运行期可切 stride/R-B）、`senna.c`（探测 + 4 组帧缓冲候选 + panic 页 + 30 s 倒计时 + `PSCI_SYSTEM_RESET`）、`font.h`、`tools/mkbootimg_img.py`（v4/v2 打包 + `--pad-image`/`--check-image`）、`build.sh`、`README.md`。
 - CI `.github/workflows/senna-shim.yml`（workflow_dispatch + push 触发，ubuntu-24.04，装 `gcc-aarch64-linux-gnu`，构建后附 `readelf -h/-S` 与入口 `objdump` 便于离线核对）。
-- run **44677167822** 全绿：`out/shim.bin` 81,920 B、`out/shim.elf` 39,792 B、`out/senna-shim-v4.img` 86,016 B、`out/senna-shim-v2.img` 86,016 B。
+- run **44677167822**（v0.1）与 **44678828635**（v0.2，信息页 20 s / 每组 10 s / 倒计时 20 s，标题含 `v0.2`）均全绿：`out/shim.bin` 81,920 B、`out/shim.elf` 39,792 B、`out/senna-shim-v4.img` 86,016 B、`out/senna-shim-v2.img` 86,016 B。
 - 修补一处真实失败：`objcopy` 不输出栈/BSS 预留区，导致 arm64 头 `image_size 0x14000` > 文件长度 12,433 → `bad Image header`；加 `--pad-image` 按 `image_size` 补齐后通过。
 - 入口离线证据（CI run 44678271929 的 `Disassemble entry point` 步骤）：`readelf` Entry point `0x0`、`.text` @0x0、`.rodata` @0x2660、`.bss` @0x30a0；`objdump` 反汇编 `0: 14000200 b 800 <_start>`，即 arm64 头 code0 无条件跳到 `_start`（0x800），与 `--check-image` 的校验一致。
 
@@ -180,9 +180,9 @@
 | 项 | 实测值 | 出处 | 状态 |
 | --- | --- | --- | --- |
 | v4 镜像 | magic `ANDROID!`、header_size 1584、header_version 4、kernel 81,920 @0x1000、ramdisk_size 0、os_version `0x18000177` | `out/senna-shim-v4.img` | 证 |
-| v4 sha256 | `c0b8762d053b1ad678447d3b707a11540cda16b34dd7210b3623834e63e0fb23` | 同上 | 证 |
+| v4 sha256 | `7483023e9843f9e17ae9128e72664f2aadf27c1e16c9b6b408fa9a140087f907` | 同上 | 证 |
 | v2 镜像 | kernel_addr `0x8000`、ramdisk_addr `0x1000000`、tags `0x100`、page 4096、header_version 2、dtb_size 0 | `out/senna-shim-v2.img` | 证 |
-| v2 sha256 | `71c5ab9c1c915ec2772608ba37f1012d32e4f18403fa55bb341eef0e9012dbda` | 同上 | 证 |
+| v2 sha256 | `1f7f4dafa764df746cb6205d489405f8fe5a6688a2c41d0f80baa12cfb92ed12` | 同上 | 证 |
 | 入口 | arm64 头 code0 `0x14000200`（`b _start`）、`image_size 0x14000`、flags `0xa`、magic `ARMd` | `--check-image` + `objdump` | 证 |
 | FB 候选 | stride 4960/R-B 正常、4960/R-B 交换、5120、4992；各 7 s | `senna.c cands[]` | 待实机判读 |
 | 探测项 | PSCI 版本、`CNTFRQ_EL0`、GICD/GICR TYPER、DTB magic、`0x1000000` ramdisk、IMEM restart reason | `senna.c probe_all()` | 待实机判读 |
