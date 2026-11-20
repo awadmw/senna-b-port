@@ -1,0 +1,45 @@
+name: senna-shim
+
+# Builds the RAM-only diagnostic shim for senna-b (RMX3706 / SM8475) and
+# packs it as boot.img v4 (stock container of this device) plus a v2
+# fallback. Nothing here touches the device: the artifacts are only
+# booted with "fastboot boot" from a human-attended session.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "build-chain/work/senna-shim/**"
+      - ".github/workflows/senna-shim.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install aarch64 cross toolchain
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
+          aarch64-linux-gnu-gcc --version | head -1
+
+      - name: Build shim and boot images
+        working-directory: build-chain/work/senna-shim
+        run: bash build.sh
+
+      - name: Show artifact inventory
+        working-directory: build-chain/work/senna-shim
+        run: |
+          ls -l out
+          sha256sum out/*.img
+
+      - name: Upload boot images
+        uses: actions/upload-artifact@v4
+        with:
+          name: senna-shim-images
+          path: build-chain/work/senna-shim/out
+          if-no-files-found: error
