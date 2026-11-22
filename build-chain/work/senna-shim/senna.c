@@ -2,14 +2,20 @@
  * senna-b diagnostic boot shim.
  *
  * ABL loads this image via fastboot boot, enters at EL1 with MMU and
- * D-cache off, x0 = DTB. We probe the platform, paint the results on the
- * ABL splash framebuffer, then hand the device back with PSCI SYSTEM_RESET.
+ * D-cache off, x0 = DTB. We probe the platform, then hand the device back
+ * with PSCI SYSTEM_RESET.
  *
- * Deliberate limits:
- *   - No writes to IMEM/PMIC/UFS; the only side effects are framebuffer
- *     pixels and the final PSCI reset.
- *   - Every probe value is printed as raw hex so it can be cited as
- *     evidence for build-chain/boot-chain/DESIGN.md.
+ * Output channel (v0.4): the panel is a DSI command-mode panel
+ * (nt37705 ..._dsc_cmd), so the ABL splash framebuffer is not scanned out
+ * continuously -- painting it is invisible (v0.2/v0.3 left the screen on
+ * the ABL logo for the whole run). Results are therefore written as plain
+ * text into the ramoops console zone, which the next Linux boot exposes as
+ * /sys/fs/pstore/console-ramoops-0. dmesg on this device prints
+ * "ramoops: using 0x240000@0xa7a5c0000, ecc: 0", i.e. no ECC and a stable
+ * base, so a plain persistent_ram header is enough.
+ *
+ * Deliberate limits: no IMEM/PMIC/UFS writes; the side effects are the
+ * invisible framebuffer pixels, the ramoops text and the PSCI reset.
  */
 #include <stdint.h>
 #include "board.h"
@@ -25,6 +31,58 @@ static void hex(char *o, uint64_t v, int n)
 	for (int i = 0; i < n; i++)
 		o[i] = d[(v >> (4 * (n - 1 - i))) & 0xf];
 	o[n] = 0;
+}
+
+/* probe results, filled by probe_all() */
+static uint64_t g_dtb;
+static uint64_t g_dtbmagic;
+static uint64_t g_psci;
+static uint64_t g_gicd_pidr2, g_gicd_typer;
+static uint64_t g_gicr0_typer_lo, g_gicr0_typer_hi;
+static uint64_t g_rd_1000, g_rd_1040;
+static uint64_t g_imem;
+static uint64_t g_fbrw;
+
+/* ---- ramoops text channel ---------------------------------------- */
+
+#define SENNA_RAMOOPS_BASE	0x0a7a5c0000UL	/* dmesg "ramoops: using ...", stable over 2 boots */
+#define RAMOOPS_MAGIC		0x43474244U	/* persistent_ram_buffer.sig */
+#define RAMOOPS_SMEAR		0x200000L	/* +/- 2 MiB around the base, 4 KiB steps */
+
+static char rb[1200];
+static uint32_t rblen;
+
+static void rb_ch(char c)
+{
+	if (rblen < sizeof(rb) - 1)
+		rb[rblen++] = c;
+}
+
+static void rb_s(const char *s)
+{
+	while (*s)
+		rb_ch(*s++);
+}
+
+static void rb_hexn(uint64_t v, int digits)
+{
+	static const char d[] = "0123456789ABCDEF";
+	for (int i = digits - 1; i >= 0; i--)
+		rb_ch(d[(v >> (4 * i)) & 0xf]);
+}
+
+static void rb_line(const char *tag, const char *sep, uint64_t a, uint64_t b)
+{
+	rb_s(tag);
+	rb_ch(' ');
+	rb_hexn(a, 16);
+	if (sep) {
+		rb_ch(' ');
+		rb_s(sep);
+		rb_ch(' ');
+		rb_hexn(b, 16);
+	}
+	rb_ch('\n');
 }
 
 static void line(const char *label, const char *s)
@@ -101,26 +159,6 @@ static void fb_use(int i)
 		  SENNA_PANEL_H, cands[i].stride, cands[i].swap);
 }
 
-static void bar(uint32_t y, uint32_t h, uint32_t rgb)
-{
-	volatile uint32_t *fb = con_fb;
-	uint32_t c = rgb;
-	for (uint32_t yy = y; yy < y + h && yy < con_h; yy++) {
-		volatile uint32_t *p = fb + (uint64_t)yy * (con_stride / 4);
-		for (uint32_t x = 0; x < con_w; x++)
-			p[x] = c;
-	}
-}
-
-static uint64_t g_dtb;
-static uint64_t g_dtbmagic;
-static uint64_t g_psci;
-static uint64_t g_gicd_pidr2, g_gicd_typer;
-static uint64_t g_gicr0_typer_lo, g_gicr0_typer_hi;
-static uint64_t g_rd_1000, g_rd_1040;
-static uint64_t g_imem;
-static uint64_t g_fbrw;
-
 static void probe_all(void)
 {
 	g_psci = psci(PSCI_VERSION);
@@ -133,12 +171,12 @@ static void probe_all(void)
 	g_imem = rd32(SENNA_IMEM_RESTART_REASON);
 }
 
-static void draw_info(int final, int secs)
+static void draw_info(void)
 {
 	char b[17];
 
 	con_clear(0xff101418U);
-	con_title(" SENNA SHIM v0.3  (diag, RAM only) ", WHITE, 0xff003060U);
+	con_title(" SENNA SHIM v0.4  (diag, RAM only) ", WHITE, 0xff003060U);
 
 	con_str("BUILD", "senna-shim running at EL1, MMU off");
 	line("DTB", "x0 / magic:");
@@ -182,43 +220,10 @@ static void draw_info(int final, int secs)
 	con_str("", g_fbrw ? "readback=OK" : "readback=MISMATCH");
 	con_skip();
 
-	if (final) {
-		con_title(" ALL PROBES DONE - reboot in 30s ",
-			  BLACK, 0xffffff00U);
-		hex(b, (uint64_t)secs, 2);
-		con_str("COUNTDOWN", b);
-	} else {
-		con_title(" PHASE 1: FB CANDIDATES - watch screen colours ",
-			  WHITE, 0xff007040U);
-		con_str("NEXT", "4 framebuffer groups, 45s each");
-		con_str("CAPTURE", "photo this page now");
-	}
-}
-
-static void draw_group(int i)
-{
-	char b[8];
-	int col = i == 0 ? 0xff200000U : (i == 1 ? 0xff002000U
-		 : (i == 2 ? 0xff202000U : 0xff200020U));
-
-	fb_use(i);
-	con_clear(col);
-	con_title(" FB GROUP PROBE ", WHITE, 0xff000000U);
-	hex(b, (uint64_t)(i + 1), 2);
-	con_str("GROUP", b);
-	hex(b, cands[i].stride, 4);
-	con_str("STRIDE", b);
-	con_str("FORMAT", cands[i].name);
-	con_skip();
-	con_str("BARS", "RED GREEN BLUE WHITE");
-
-	bar(con_h - 240, 60, 0x00ff0000U);
-	bar(con_h - 180, 60, 0x0000ff00U);
-	bar(con_h - 120, 60, 0x000000ffU);
-	bar(con_h - 60,  60, 0x00ffffffU);
-
-	con_str("NOTE", "stop when a group is legible");
-	con_str("", "then take a photo");
+	con_title(" results -> ramoops console zone ",
+		  WHITE, 0xff007040U);
+	con_str("NOTE", "panel is cmd-mode: this page is invisible");
+	con_str("TEXT", "written to pstore, read back after boot");
 }
 
 void exc_handler(uint64_t slot, uint64_t *regs)
@@ -253,6 +258,48 @@ void secondary_main(uint64_t cpu)
 		__asm__ volatile("wfe");
 }
 
+static void payload_build(void)
+{
+	rblen = 0;
+	rb_s("SENNA SHIM v0.4 RAMOOPS PROBE (RAM-only, fastboot boot)\n");
+	rb_line("DTB", "MAGIC", g_dtb, g_dtbmagic);
+	rb_line("EL", "MPIDR", rd_currentel(), rd_mpidr());
+	rb_line("SCTLR", "PFR0", rd_sctlr(), rd_pfr0());
+	rb_line("CNTFRQ", "CNTPCT", rd_cntfrq(), rd_cntpct());
+	rb_line("CNTVCTL", "PSCI", rd_cntv_ctl(), g_psci);
+	rb_line("GICD_PIDR2", "GICD_TYPER", g_gicd_pidr2, g_gicd_typer);
+	rb_line("GICR_TYPER0", "GICR_TYPER0_HI", g_gicr0_typer_lo, g_gicr0_typer_hi);
+	rb_line("ICC_SRE", "ICC_CTLR", rd_icc_sre(), rd_icc_ctlr());
+	rb_line("RD_1000000", "RD_1040000", g_rd_1000, g_rd_1040);
+	rb_line("IMEM_RR_146AA65C", "FB_RW", g_imem, g_fbrw);
+	rb_line("PSCI_SYSTEM_RESET_ID", "PSCI_SYSTEM_RESET2_ID",
+		PSCI_SYSTEM_RESET, PSCI_SYSTEM_RESET2);
+	rb_line("SPLASH_BASE", "SPLASH_SIZE", SENNA_SPLASH_BASE, SENNA_SPLASH_SIZE);
+	rb_s("RAMOOPS_BASE ");
+	rb_hexn(SENNA_RAMOOPS_BASE, 16);
+	rb_s("\nEND\n");
+}
+
+/*
+ * persistent_ram_buffer = { u32 sig; u32 start; u32 size; u8 data[]; }
+ * The console zone starts at the ramoops base and no ECC is configured.
+ * Because the base is chosen by Linux at boot (the DT node has no reg), we
+ * stamp the same header on every 4 KiB page in a +/- 2 MiB window and let
+ * the next boot pick the page it actually reserved.
+ */
+static void ramoops_write(void)
+{
+	for (int64_t off = -RAMOOPS_SMEAR; off <= RAMOOPS_SMEAR; off += 0x1000) {
+		volatile uint32_t *h = (volatile uint32_t *)(SENNA_RAMOOPS_BASE + off);
+		volatile char *d = (volatile char *)(SENNA_RAMOOPS_BASE + off + 12);
+		for (uint32_t i = 0; i < rblen; i++)
+			d[i] = rb[i];
+		h[0] = RAMOOPS_MAGIC;
+		h[1] = 0;
+		h[2] = rblen;
+	}
+}
+
 void shim_main(uint64_t dtb)
 {
 	g_dtb = dtb;
@@ -267,22 +314,14 @@ void shim_main(uint64_t dtb)
 	con_fb[0] = 0x00a5a5a5U;
 	g_fbrw = (con_fb[0] == 0x00a5a5a5U);
 
-	draw_info(0, 0);
-	wait_ms(60000);
+	if (con_ready)
+		draw_info();
 
-	for (int i = 0; i < NCAND; i++) {
-		draw_group(i);
-		wait_ms(45000);
-	}
+	payload_build();
+	ramoops_write();
 
-	fb_use(0);
-	for (int s = 30; s > 0; s--) {
-		/* a full-screen clear costs ~0.1 s uncached, so only redraw
-		 * every 5 s; the countdown stays readable either way */
-		if (s == 30 || s % 5 == 0 || s == 1)
-			draw_info(1, s);
-		wait_ms(1000);
-	}
+	/* give the store time to drain before we reset */
+	wait_ms(3000);
 
 	psci(PSCI_SYSTEM_RESET);
 	psci(PSCI_SYSTEM_RESET2);
