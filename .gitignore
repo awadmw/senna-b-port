@@ -23,3 +23,9 @@ __pycache__/
 *.xz
 *.gz
 build-chain/work/senna-shim/out/
+build-chain/work/*.java
+build-chain/work/*.cpp
+build-chain/work/probe.sh
+build-chain/work/ramoops_probe.sh
+build-chain/work/pstore_after.sh
+build-chain/work/readback/
