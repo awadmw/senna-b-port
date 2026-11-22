@@ -139,7 +139,7 @@ Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649
 - 能 → 走 **C.2b-UART**（成本最低、和 XNU 早期调试同一条路）。
 - 不能 → 走 **C.2c 裸机 DWC3 控制台**（工程量大，但与 C.3 的 USB 驱动同源，不算白做）。
 
-**UART 路线（先离线写清，再上机一次验证）**：
+**UART 路线（设计已写成 `build-chain/boot-chain/UART.md`，寄存器偏移逐条有 Linux v5.10 出处）**：
 1. 写 `build-chain/boot-chain/UART.md`：GENI SE 在 `0x99c000`（窗口 `0x4000`）、SPI 608、引脚 GPIO26(TX)/GPIO27(RX)、function `qup7`、`115200n8`（出处 `from-binary.dts:17`、`:13812-13825`、`:2573-2584`）。只读 `GENI_S_STATUS`/`GENI_S_IRQ` 先判断 ABL 是否已把 SE 初始化过，再决定是否重配 `GENI_S_*`。
 2. shim 侧加 `uart_putc()`，把 12 行 `TAG <hex>` 直接打到串口（不依赖 ramoops）；串口无输出时退回最原始的忙等轮询 TX FIFO。
 3. 上机：`build-chain/tools/boot-attempt.ps1 -Image shim-v4 -Confirm`，PC 侧开串口记录（`mode COMx:115200,n,8,1` 或 PuTTY）。

@@ -139,6 +139,8 @@
 
 决策：**优先 UART**；若无法接触 UART 测试点，则启动「裸机 DWC3 控制台」子项目（C.2c）作为替代。通道落地前，C.2 的探测结果一律按「未读回」处理，不写进 §6 已证列。
 
+**UART 通道的完整设计已单独成文：`build-chain/boot-chain/UART.md`（v1，2026-11-22，未上机）**——含 GENI SE 全部寄存器偏移（逐条标注 Linux v5.10 出处）、FIFO 模式发送序列、115200 分频算法、U1/U2/U3 三阶段验收与失败日志模板。
+
 **失败日志**：候选证伪时记录判据命令与原始输出（如上表），不要只写结论。
 ### C.3 XNU 接管（依赖 B 段剩余项）
 
@@ -207,7 +209,7 @@
 3. [C.2] ~~交叉编译 + CI 出镜像~~ 完成（`.github/workflows/senna-shim.yml`，v4/v2 双镜像 + SHA256SUMS）。
 4. [C.2] ~~画屏判读 FB/stride/format~~ **证伪并关闭**：cmd-mode 面板，ABL 后无扫描输出（§5 C.2 结论）。
 5. [C.2] ~~pstore 回读~~ **通道关闭**：pmsg 终判不持久（`20261122T022935Z-pmsg-persist.md`）；kcore/devmem 也都不存在（`CONFIG_PROC_KCORE`/`CONFIG_DEVMEM` 均未开）。
-6. [C.2b] **当前阻塞点 = 输出通道**：优先做 UART（GPIO26/27，需硬件可接触）；否则立「裸机 DWC3 控制台」子项目。通道先用一个最小可复现实验证明（shim 发一个字符 / 主机侧收到）。
+6. [C.2b] **当前阻塞点 = 输出通道**：优先做 UART（GPIO26/27，需硬件可接触）；否则立「裸机 DWC3 控制台」子项目。通道先用一个最小可复现实验证明（shim 发一个字符 / 主机侧收到）。UART 方案见 `build-chain/boot-chain/UART.md`；第一步是 U1「只读探测」（`FW_REVISION_RO`/`STATUS`/`HW_PARAM_0`/`SER_M_CLK_CFG`），零写、判 SE 是否有时钟。
 7. [C.2] 通道打通后再上机回读 `TAG <hex>`，把 DTB magic、EL、GIC/PSCI/IMEM 等未证项一次性回填 §6。
 8. [C.3] 与通道并行可做的离线工作：`mkadt.py` senna 参数落地、`xnu/senna/platform.sm8475.conf` 的 `RUNTIME_SUPPORT`、iOS 16.7.16 rootfs 与 `mkipsw` 道具链。
 9. [B 剩余] CNTFRQ、GIC 中断已按 DTB + 实机 dmesg 回填（§2.1、§6）；仍待：EDL 演练、iOS 16.7.16 rootfs。
