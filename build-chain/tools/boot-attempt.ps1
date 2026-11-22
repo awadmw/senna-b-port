@@ -29,8 +29,8 @@ Set-Location $repo
 
 $known = @{
   'stock'   = @{ Path = 'build-chain/ota-evidence/boot.img'; Sha = ''; Purpose = 'C.1 机制演练：官方 stock boot.img，验证 fastboot boot 可用性' }
-  'shim-v4' = @{ Path = 'build-chain/work/senna-shim/out/senna-shim-v4.img'; Sha = 'a05c1136a35c4936b16103ec964400817d869d71330cf2b53cd49d29518ca47a'; Purpose = 'C.2 senna 诊断 shim（v4 头）' }
-  'shim-v2' = @{ Path = 'build-chain/work/senna-shim/out/senna-shim-v2.img'; Sha = 'eca04eddfa136184c1a214eac7a10323e92ecdb78a8b46dd9d5292abcd3935b3'; Purpose = 'C.2 senna 诊断 shim（v2 兜底，v4 失败时用）' }
+  'shim-v4' = @{ Path = 'build-chain/work/senna-shim/out/senna-shim-v4.img'; Sha = 'bb0a77605dcca97ccb33ed9824e36314c0abef0a6b5133ed0a4e56a294cb0caf'; Purpose = 'C.2 senna 诊断 shim v0.6spin D0 保持（v4 头）' }
+  'shim-v2' = @{ Path = 'build-chain/work/senna-shim/out/senna-shim-v2.img'; Sha = '27280276aadaa0921ad1707cb45bba40d3670e989b17f3c6f9d98012ad8e635c'; Purpose = 'C.2 senna 诊断 shim（v2 兜底，v4 失败时用）' }
 }
 
 if ($Image -eq 'custom') {
@@ -67,33 +67,48 @@ $online = $devs.Count -gt 0
 $devStr = if ($online) { $devs -join ' | ' } else { '未检测到（计划模式）' }
 Write-Host ('设备: {0}' -f $devStr)
 
+$plan = if ($Image -like 'shim-*') {
+  @(
+    '1. fastboot boot 镜像（只进 RAM，不写分区，不改 slot）',
+    '2. 屏幕不会更新：面板是 DSI command mode，ABL 之后没有扫描输出（DESIGN.md 第 5 节）',
+    '3. shim 自持 2 min（v0.6spin）后 PSCI_SYSTEM_RESET 回 Android',
+    '4. 主机侧同时跑 usb_watch.py 记录 USB 在场情况（D0）'
+  )
+} else {
+  @(
+    '1. fastboot boot 镜像（只进 RAM，不写分区，不改 slot）',
+    '2. 屏幕按 DESIGN.md 第 5 节时间线拍屏：信息页 / 四组候选各一张 / 倒计时或 panic 页',
+    '3. 设备应自动重启回 Android（shim 内置 PSCI_SYSTEM_RESET）',
+    '4. 记录 fastboot getvar all 快照，确认无变化'
+  )
+}
+
+# NOTE: use -f, not '+', for these lines: in PowerShell the ',' separator binds
+# tighter than '+', so "'a' + $x," would fold the array into a single string.
 $lines = @(
-  '# boot attempt ' + $stamp + ' (' + $Image + ')',
+  ('# boot attempt {0} ({1})' -f $stamp, $Image),
   '',
-  '- 时间(UTC): ' + $stamp,
-  '- git: ' + $rev,
-  '- 镜像: ' + $imgPath,
-  '- 大小: ' + $size,
-  '- sha256: ' + $sha,
-  '- 用途: ' + $target.Purpose,
-  '- 备注: ' + $Note,
-  '- 设备: ' + $devStr,
+  ('- 时间(UTC): {0}' -f $stamp),
+  ('- git: {0}' -f $rev),
+  ('- 镜像: {0}' -f $imgPath),
+  ('- 大小: {0}' -f $size),
+  ('- sha256: {0}' -f $sha),
+  ('- 用途: {0}' -f $target.Purpose),
+  ('- 备注: {0}' -f $Note),
+  ('- 设备: {0}' -f $devStr),
   '',
   '## 计划',
   '',
-  '1. fastboot boot 镜像（只进 RAM，不写分区，不改 slot）',
-  '2. 屏幕按 DESIGN.md 第 5 节时间线拍屏：信息页 / 四组候选各一张 / 倒计时或 panic 页',
-  '3. 设备应自动重启回 Android（shim 内置 PSCI_SYSTEM_RESET）',
-  '4. 记录 fastboot getvar all 快照，确认无变化',
+  $plan[0], $plan[1], $plan[2], $plan[3],
   '',
   '## 结果',
   '',
-  '（待填：fastboot 输出、屏幕现象、照片文件名、是否自动重启）',
+  '（待填：fastboot 输出、屏幕现象、是否自动重启）',
   '',
   '## fastboot 输出',
   ''
 )
-Set-Content -Path $evFile -Value $lines -Encoding utf8
+[System.IO.File]::WriteAllLines($evFile, [string[]]$lines, (New-Object System.Text.UTF8Encoding($true)))
 
 if (-not $Confirm) {
   Write-Host ''
@@ -126,4 +141,8 @@ Write-Host ('  ' + $evFile)
 Write-Host ('  ' + $outFile)
 Write-Host ('  ' + $errFile)
 Write-Host ''
-Write-Host '下一步：拍屏并把照片放到 build-chain/evidence/boot-attempts/，在证据文件「结果」节填写现象。' -ForegroundColor Cyan
+if ($Image -like 'shim-*') {
+  Write-Host '下一步：D0——另开窗口跑 usb_watch.py，把 CSV 与结论写进证据文件「结果」节。' -ForegroundColor Cyan
+} else {
+  Write-Host '下一步：拍屏并把照片放到 build-chain/evidence/boot-attempts/，在证据文件「结果」节填写现象。' -ForegroundColor Cyan
+}

@@ -321,10 +321,30 @@
 | TRB | 16 B（bpl/bph/size/ctrl）；`TRBCTL(n)=n<<4`、`IOC` bit11、`LST` bit1、`HWO` bit0 | 同上 |
 
 ### 未完成
-- `senna-shim-v0.6spin` 镜像未出（需 CI）；D0 未执行，U1 未判。
+- ~~`senna-shim-v0.6spin` 镜像~~ 已出（见下节）；**D0 仍未执行，U1 未判**。
 - `build-chain/tools/usb_console.py`（pyusb 读 EP1 IN）未写，等 U1 结论。
 - 路径 B 的 EP0 状态机、CDC-ACM 描述符未设计到代码级。
 
 ### 环境坑（新增）
 - 用 JS 模板字符串写含大量 Markdown 反引号的文档会直接截断模板（报 `Identifier cannot follow number`）→ 先拿 `¶` 当反引号占位，写完后在 JS 里把占位符替换回真反引号。
 - PowerShell 5.1 控制台是 cp936，python 打印中文变乱码 → 脚本对外输出统一用 ASCII（日志/CSV 里再写中文）。
+
+## 2026-11-22（续 3）v0.6spin（D0 保持构建）就绪
+
+**目的**：把 D0 从「还要先出镜像」变成「一条命令 + 2 分钟窗口」，不占用设备、不引入新参数。
+
+### 已完成
+- `build-chain/work/senna-shim/senna.c` 两处改动（单变量，别的没动）：`SENNA_RAMOOPS_WRITE 0`（`ramoops_write()`/`flush_range()`/`dc_civac()` 整段编译掉，D0 不写任何内存）、`SENNA_D0_HOLD_MS 120000`（静置 2 min 后 `PSCI_SYSTEM_RESET`）；版本串 `v0.6spin` / `D0 HOLD`，标题 `SENNA SHIM v0.6spin (D0 hold)`。
+- CI run **`44977828469`** success（39 s）；产物 `build-chain/work/senna-shim/out/`：`shim.bin` 81,920 B、`shim.elf` 38,560 B、`senna-shim-v4.img` 86,016 B、`senna-shim-v2.img` 86,016 B。
+- sha256：v4 `bb0a77605dcca97ccb33ed9824e36314c0abef0a6b5133ed0a4e56a294cb0caf`；v2 `27280276aadaa0921ad1707cb45bba40d3670e989b17f3c6f9d98012ad8e635c`。
+- 校验：`shim.bin` 含 `v0.6spin`×2 / `D0 HOLD`×1，**不含** `v0.5`；arm64 Image magic `0x644d5241`、text_offset 0、image_size 81,920；v4 头 `ANDROID!`、hdrver 4、ksize 81,920、rsize 0、hsz 1584。
+- `build-chain/tools/boot-attempt.ps1` 基线同步为上面的 v4/v2 sha（按字节替换，保住 UTF-8 BOM + CRLF，diff 只 2 行）；`-Image shim-v4` 计划模式实跑通过（sha 命中），写出 `build-chain/evidence/boot-attempts/20261122T025031Z-shim-v4.md`（plan-only）。
+- `build-chain/work/senna-shim/README.md` 增「v0.6spin（D0 保持构建）」小节（一次性构建、A/B/C 判读口径、完事把 `SENNA_RAMOOPS_WRITE` 改回 1）。
+
+### 未完成
+- **D0 本体未执行**（需要设备在场 + 2 分钟窗口）：先起 `python build-chain/tools/usb_watch.py --duration 150 --out build-chain/evidence/boot-attempts/d0-usb-watch.csv`，再另一个窗口 `boot-attempt.ps1 -Image shim-v4 -Confirm`。
+- U1 未判 → 路径 A（继承 EP1，~200 行）/ 路径 B（重建 DWC3，~600 行）未选。
+
+### 环境坑
+- `python io.open(..., encoding="utf-8-sig")` 读 `.ps1` 会把 CRLF 统一成 LF，再用 `newline=""` 写回会整文件换行全变（129 行全 dirty）→ 改 `.ps1` 一律按 `rb`/`wb` 做字节替换。
+- **`boot-attempt.ps1` 生成证据文件的隐藏 bug（本轮修掉）**：PowerShell 里 `,` 比 `+` 结合更紧，`'a' + $x,` 会把后面的数组元素当字符串拼进来（用空格连接）→ 整个计划段被压成一行（`Set-Content`/`WriteAllLines` 都救不回）。修法：这些行改用 `-f` 格式化（`('# boot attempt {0} ({1})' -f $stamp, $Image),`），并用 `[System.IO.File]::WriteAllLines(..., UTF8Encoding($true))` 显式写 BOM+CRLF。此前 3 次「计划模式」证据文件（`20261122T011007Z/011026Z/025031Z-*`）都是压成一行，已删掉重生成（`20261122T025215Z-shim-v4.md`）。

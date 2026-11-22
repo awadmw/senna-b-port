@@ -137,11 +137,11 @@ Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649
 **现状（2026-11-22 终判）**：C.1 已通过（`fastboot boot` 可用）；C.2 四条回读路线（splash 帧缓冲、ramoops/pstore、`/proc/kcore`、`/dev/mem`）全部关闭；**用户已决策（m01641）**：UART 硬件不可接触 → 走 **C.2c 裸机 DWC3 控制台**，设计 v1 已交付（`build-chain/boot-chain/USB-CONSOLE.md`），未上机。
 
 **第一件事：做 D0（零成本判据实验），不要再写新方案**——U1（ABL 是否把 USB 留在已枚举状态）决定后面是 200 行还是 600+ 行。
-1. 出 `senna-shim-v0.6spin` 镜像：基于 v0.5，改成「探测 → 不写 ramoops → `wait_ms(60000)` → `PSCI_SYSTEM_RESET`」，其余不动；走 CI（`.github/workflows/senna-shim.yml`）。
-2. 与用户约一次 2 分钟窗口：`fastboot boot senna-shim-v4.img`，同时跑 `python build-chain/tools/usb_watch.py --duration 120 --out build-chain/evidence/boot-attempts/d0-usb-watch.csv`。
+1. ~~出 `senna-shim-v0.6spin` 镜像~~ **已就绪（2026-11-22）**：基于 v0.5 只改两处——`SENNA_RAMOOPS_WRITE=0`（写入整段编译掉，D0 不写任何内存）、`SENNA_D0_HOLD_MS=120000`（静置 2 min）→ `PSCI_SYSTEM_RESET`。CI run `44977828469` 绿，`out/senna-shim-v4.img` 86,016 B sha256 `bb0a77605dcca97ccb33ed9824e36314c0abef0a6b5133ed0a4e56a294cb0caf`（执行器基线已同步）。
+2. 与用户约一次 2 分钟窗口：先起观测器 `python build-chain/tools/usb_watch.py --duration 150 --out build-chain/evidence/boot-attempts/d0-usb-watch.csv`（先跑，再在另一个窗口 `powershell -NoProfile -ExecutionPolicy Bypass -File build-chain/tools/boot-attempt.ps1 -Image shim-v4 -Confirm`），因为 shim 只有 2 min 窗口。
 3. 判读：设备在场但 `getvar` 不应答 → **路径 A（继承）**；设备消失 → **路径 B（重配）**；设备在场且应答 → ABL 未跳转，重测。结论写进 `evidence/boot-attempts/<UTC>-d0-usb-inherit.md`。
 
-**UART 路线（设计已写成 `build-chain/boot-chain/UART.md`，寄存器偏移逐条有 Linux v5.10 出处）**：
+**UART 路线（`build-chain/boot-chain/UART.md` v1 已完成，寄存器偏移逐条有 Linux v5.10 出处；硬件不可接触 → 仅备查，不再推进）**：
 1. 写 `build-chain/boot-chain/UART.md`：GENI SE 在 `0x99c000`（窗口 `0x4000`）、SPI 608、引脚 GPIO26(TX)/GPIO27(RX)、function `qup7`、`115200n8`（出处 `from-binary.dts:17`、`:13812-13825`、`:2573-2584`）。只读 `GENI_S_STATUS`/`GENI_S_IRQ` 先判断 ABL 是否已把 SE 初始化过，再决定是否重配 `GENI_S_*`。
 2. shim 侧加 `uart_putc()`，把 12 行 `TAG <hex>` 直接打到串口（不依赖 ramoops）；串口无输出时退回最原始的忙等轮询 TX FIFO。
 3. 上机：`build-chain/tools/boot-attempt.ps1 -Image shim-v4 -Confirm`，PC 侧开串口记录（`mode COMx:115200,n,8,1` 或 PuTTY）。
