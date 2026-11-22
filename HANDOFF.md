@@ -96,6 +96,9 @@ Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649
 - **账号余额 ¥0.00**：`code_agent` 子代理调用失败（`Select an available model before sending a message`），长任务易被打断。充值后可用于纯执行类工作（下载/校验/文档）。
 - 本机无 macOS，无法本地编译内核；一切构建只能在 GitHub Actions。
 - 设备为唯一实机，任何 `fastboot boot` 前必须先有回滚说明与用户确认。
+- **显示是 DSI command mode + DSC**（bootargs 面板名 `..._nt37705_1240_2772_dsc_cmd`）：ABL 推一帧进面板 GRAM 后没有持续扫描输出 → 在 shim/XNU 里往 splash 区写像素**看不见**。带画面的判读必须先有 DPU+DSI+DSC 驱动；在那之前只能用 ramoops/pstore（或未验证的 UART）做反馈通道。
+- **ramoops 在 `0xa7a5c0000`（0x240000，ecc 0）**：地址来自实机 dmesg 两次独立重启，稳定；但它是内核启动时分配的，理论上可能变，回读时要先核对 dmesg 里的地址再判读。
+- **`fastboot boot` 后 adbd 可能长时间不枚举**（v0.5 实测：USB 上只有 MTP，10 min+ 无 adb）：此时设备其实是进了 Android 用户态，不是变砖；需用户解锁屏幕/重启把 adb 弄回来。
 
 ## 7. 未完成任务（按优先级）
 
@@ -111,23 +114,36 @@ Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649
 - **B.2/B.6 官方 OTA 交叉核对（已完成一半）**：`build-chain/ota-evidence/`。`RMX3706_13.1.0.115_CN01_rollback_4.0.zip`（7,585,057,674 字节）用 payload-dumper-go 抽 `dtbo`(=实机 `4F80DE98…`)、`vendor_boot`(=实机 `4AAB629E…`)、`uefi`（`F4CD52E1…`）、`boot`（`D9162A96…`，实机 `boot_b` 是 Magisk 补丁所以不同）。结论：DTBO 与 vendor_boot 来源已可追溯到官方全量包。**仍缺**：iOS 16.7.16 (20H392) rootfs。
 - 仍缺：vendor_boot base 选择算法的 bootloader 侧证据；活动帧缓冲实际 stride/format；CNTFRQ_EL0 与 GIC 中断实测；EDL 演练。
 
-**C. 引导链（主线；C.2 源码与镜像已就绪，C.1/上机被设备阻塞）**
-- 设计：`build-chain/boot-chain/DESIGN.md`（v1，2026-11-20），路线 = 复用 ios-sweet shim，boot.img v4（v2 兜底）。
-- C.2 已完成（2026-11-20）：`build-chain/work/senna-shim/` 源码 + CI 出镜像（v0.2，run 44678828635 全绿；v0.1 run 44677167822 已废弃）：`out/senna-shim-v4.img` 86,016 B（sha256 `7483023e…f907`）、`out/senna-shim-v2.img`（sha256 `1f7f4daf…ed12`）；raw Image 已按 `image_size 0x14000` 补齐，入口 `b _start` 有 `--check-image` 校验；CI 附 `readelf`/`objdump` 入口反汇编便于离线核对。
-- C.2 未完成：实机 `fastboot boot`（设备未连接）+ 拍屏判读（四组 FB 候选、CNTFRQ、GIC 版本、DTB magic、ramdisk 命中）+ 结果回填 DESIGN §6/REMAINING。
-- C.3 前置未动：`mkadt.py` senna 参数（dram/GIC/UFS/timebase/VTIMER INTID/FB 几何）、`platform.sm8475.conf` 的 `RUNTIME_SUPPORT`、B 段剩余实测。
+**C. 引导链（主线；C.1 已通过，C.2 卡在「回读通道」上）**
+- 设计：`build-chain/boot-chain/DESIGN.md`（v1 2026-11-20；2026-11-22 更新 §5 C.2、§6 未证项、§9 决策、§10 待办），路线 = 复用 ios-sweet shim，boot.img v4（v2 兜底）。
+- **C.1 已通过（2026-11-22）**：`fastboot boot` 官方 stock 去填充镜像（`boot-trimmed.img` 48,345,088 B，sha256 `2698dbbe…be09`）→ `Sending 47212 KB OKAY [1.122s]` + `Booting OKAY [0.515s]`，9 s 回 adb、48 s 开机完成、槽位/解锁状态不变。→ **senna ABL 支持 `fastboot boot`**。证据 `build-chain/evidence/boot-attempts/2026-11-22T01-00Z-c1-stock.md`。
+- **C.2 画屏路线证伪（2026-11-22，重大结论）**：面板是 DSI **command mode** + DSC（`from-binary.dts:16` bootargs 面板名 `..._dsc_cmd`），ABL 之后没有持续扫描输出，往 splash 区 `0xb8000000+0x2b00000` 写像素**永远不可见**。v0.2/v0.3 跑满全时长（v0.3 = 4.5 min）后自动 `PSCI_SYSTEM_RESET` 回 Android（uptime 归零）→ 代码执行链通，只是显示不可见。**对 C.3 的影响：XNU 上屏前置 = 移植 DPU+DSI+DSC 驱动**。
+- **C.2 现行通道：ramoops → pstore**。实机 dmesg 稳定给 `ramoops: using 0x240000@0xa7a5c0000, ecc: 0`（DT 无 `reg`，内核启动时分配）；`ecc: 0` 后校验只剩 `sig = 0x43474244`；`record_size=0` 使 console 区落在区域基址。shim 直接写 `{sig,start=0,size,data}`，内核用 `pgprot_noncached` 读真实 DRAM。
+  - v0.4（commit `0b09995`，sha256 `dd919a15…fbc6`）：上机 `2026-11-22T01:10:31Z`，fastboot OK、30 s 回 adb，但 **pstore 全空**。
+  - v0.5（commit `20c95d3b4403`，sha256 `a05c1136…a47a`）：只加 `dc civac` + `dsb sy; isb`。上机 `2026-11-22T01:15:46Z`，fastboot OK（`Total time: 0.789s`），之后 **adb 再未枚举**，USB 上只有 `CAPE-MTP _SN:78AD6B26`（VID_18D1&PID_4EE8）→ 系统进了 Android 用户态但 adbd 没起，pstore 取不到，也无法判断是正常 reset 还是看门狗复位。
+- **C.2 未完成**：读 pstore（或 kcore 直读 `0xa7a5c0000`）→ 12 项探测值回填 DESIGN §6 / `REMAINING.md`。
+- C.3 前置未动：`mkadt.py` senna 参数（dram/GIC/UFS/timebase/VTIMER INTID/FB 几何）、`platform.sm8475.conf` 的 `RUNTIME_SUPPORT`、B 段剩余实测；**新增 DPU+DSI+DSC 显示驱动**。
 - 任何实机动作前：给方案 + 回滚 + 用户确认；只 `fastboot boot`，不刷分区。
-- 实机执行器已备好：`build-chain/tools/boot-attempt.ps1`（校验 sha256 → 探测设备 → 生成证据 → 仅 `-Confirm` 时 `fastboot boot`）；先 `-Image stock`（C.1），再 `-Image shim-v4`（C.2），失败换 `shim-v2`。
+- 工具：`build-chain/tools/boot-attempt.ps1`（校验 sha256 → 探测设备 → 生成证据 → 仅 `-Confirm` 时 `fastboot boot`）；`build-chain/tools/pstore-dump.sh`（设备侧读 pstore/last_kmsg）；`build-chain/tools/kcore-read.sh` + `kcore_phys.py`（按 `PAGE_OFFSET 0xFFFF000000000000 + phys` 从 `/proc/kcore` 直读物理页）。
 **D. 内核/用户空间**
 - 明确哪些 kext/用户态组件必须注入、哪些由内核补；rootfs 依然一字节不改（只读挂载或 overlay 方案需先论证）。
-
-**E. 合规与隔离**
-- 保留"不做签名绕过、不碰分区表"的边界说明；所有实验可回滚。
-
 ## 8. 下一会话第一件事
 
-B.1 已 PASS（见第 7 节），A 段与 B 段可做部分都已完成，C 段设计已完成：`build-chain/boot-chain/DESIGN.md`（v1，2026-11-20）已经写好，包含证据表（DTB 行号引用）、boot.img/vendor_boot v4 头解析、`fastboot boot` 支持性无静态证据的结论、C.1/C.2/C.3 三级计划（每级目标/做法/验收/失败日志）、未证项探测方法、回滚与失败日志模板。
+**现状（2026-11-22）**：C.1 已通过（`fastboot boot` 可用）；C.2 画屏路线已证伪（command-mode 面板），反馈通道改走 ramoops/pstore；v0.4 上机后 pstore 为空，v0.5 上机后 **adbd 没起来**（PC 侧只有 MTP），取证被卡住。`DESIGN.md`、`PROGRESS.md` 已按这些事实回填。
 
-**路线已定**：复用 ios-sweet 的 shim（ABL → `fastboot boot` shim → XNU），不 clone edk2-msm；boot.img 目标版本 v4（实机 OTA 已证 v4 可用）。
+**按顺序做，不要跳步**：
 
-**下一步（需要用户在场 + 明确同意）**：先做 C.1 机制演练——`fastboot boot build-chain/ota-evidence/boot.img`（官方 stock 镜像，只进 RAM、不写分区），按 DESIGN.md §8 记录日志；`FAILED (remote: unknown command)` 则机制不可用，停下汇报。C.1 通过后立刻做 C.2：`fastboot boot build-chain/work/senna-shim/out/senna-shim-v4.img`，失败换 v2，拍屏判读（DESIGN.md §5 C.2 有时间线与验收表）。两个动作都已备好镜像与回滚说明，唯一阻塞是设备未连接（`adb devices`/`fastboot devices` 空）。任何实机 `fastboot boot` 前必须先给方案 + 回滚 + 用户确认。
+1. **先让 adb 回来**：解锁手机屏幕（看有没有「USB 调试」授权弹窗 / 是否卡在开机动画），必要时长按电源 10 s 重启（会回 boot_b 正常系统，root 由 Magisk 恢复）。判据：`adb devices` 出现 `78ad6b26 device`。
+2. **读 pstore**（首选，最省事）：
+   `adb push build-chain/tools/pstore-dump.sh /data/local/tmp/pstore.sh`
+   `adb shell su -c 'sh /data/local/tmp/pstore.sh'`
+   - 出现 `SENNA SHIM v0.5` + 12 行 `TAG <hex>` → 通道打通，把 DTB magic / CurrentEL / CNTFRQ / GICD-TYPER / GICR TYPER / ICC_SRE / PSCI 版本 / IMEM/FB 各项写回 DESIGN §6 与 `REMAINING.md`。
+   - 仍是空 → 进第 3 步。
+3. **kcore 直读物理内存**（绕开 pstore 校验，回答「到底有没有写进 DRAM」）：
+   `adb shell su -c 'dd if=/proc/kcore bs=1024 count=64 of=/data/local/tmp/kc.hdr'` → `adb pull /data/local/tmp/kc.hdr`
+   `python build-chain/tools/kcore_phys.py kc.hdr 0xa7a5c0000 4096` → 按输出的 `dd if=/proc/kcore bs=1 skip=... ` 在设备上 dump → 搜 `SENNA SHIM`。
+   - 有 → 数据进了 DRAM，问题在 pstore 的头部字段/覆盖顺序；改 shim 头部写入即可。
+   - 没有 → 写入确实没落盘（cache/映射问题），进第 4 步。
+4. **v0.6 方案**（先在 `DESIGN.md` §5 C.2 写清再上机，单变量）：按 `SCTLR_EL1.M` 分支决定是否清 cache；或换到 splash 之外的持久区；或去掉 `dc civac`（若 v0.5 的异常其实是它导致的挂死）。
+5. **不要再做画屏判读**：v0.2/v0.3 已证伪——面板是 DSI command mode + DSC，ABL 之后没有扫描输出，写 splash 区不可见；XNU 上屏必须先有 DPU+DSI+DSC 驱动（见 DESIGN §5 C.2 结论）。
+6. **边界不变**：只 `fastboot boot`，不刷分区、不动用户空间；每次实机动作前先给方案 + 回滚；执行器 `build-chain/tools/boot-attempt.ps1 -Image shim-v4 -Confirm`。

@@ -172,7 +172,7 @@
 - 入口离线证据（CI run 44678271929 的 `Disassemble entry point` 步骤）：`readelf` Entry point `0x0`、`.text` @0x0、`.rodata` @0x2660、`.bss` @0x30a0；`objdump` 反汇编 `0: 14000200 b 800 <_start>`，即 arm64 头 code0 无条件跳到 `_start`（0x800），与 `--check-image` 的校验一致。
 
 ### 未完成
-- C.1 机制演练 + C.2 上机：设备未连接（`adb devices`/`fastboot devices` 空），`fastboot boot` 未执行，屏上数据全部未取。
+- ~~C.1 机制演练 + C.2 上机~~ 已由下一节（2026-11-22）完成：C.1 通过，C.2 画屏证伪后改走 ramoops。
 - C.3：未开始。
 
 ### 关键参数表（镜像与入口）
@@ -192,5 +192,49 @@
 - 本机 DNS 把 `github.com` 污染成 `20.6.7.17`，`git push` 连不上（`api.github.com` 正常）→ 新增 `build-chain/tools/push_via_api.py`：用 `gh auth token` 走 Git Data API 建 blob/tree/commit 并更新 `main`，把 remote sha 记到 `.git/remote_main_sha`，之后 `git push` 恢复即可停用。
 - 实机执行器 `build-chain/tools/boot-attempt.ps1`：校验镜像 sha256（内置 v4/v2 基线）→ 探测 fastboot 设备 → 写 `build-chain/evidence/boot-attempts/<UTC>-<image>.md` 计划 → 仅 `-Confirm` 且设备在线时执行 `fastboot boot` 并落盘输出；无 `-Confirm` 只生成计划，不做任何引导。用法见脚本头注释（用 `powershell -File`，本机无 `pwsh`）。
 - 坑：Windows PowerShell 5.1 按 ANSI 解析无 BOM 的 `.ps1`，含中文会报“字符串缺少终止符”→ `.ps1` 必须存成 UTF-8 带 BOM。
+
+## 2026-11-22 C.1 通过 + C.2 上机：画屏证伪 → 改走 ramoops/pstore
+
+### 已完成
+- **C.1 机制演练通过**：`fastboot boot boot-trimmed.img` 输出 `Sending 'boot.img' (47212 KB) OKAY [1.122s]` / `Booting OKAY [0.515s]` / `Finished. Total time: 1.657s`；9 s 后 adb 回归，48 s 后 `sys.boot_completed=1`，`ro.boot.slot_suffix=_b`、`verifiedbootstate=orange` 不变。→ **senna ABL 支持 `fastboot boot`**（此前 uefi.img 静态扫描 0 命中 fastboot 命令，只能实机判定）。
+- **stock 镜像去填充**：`ota-evidence/boot.img` 是 192 MiB 整分区 dump，AVBf footer @`0xbffffc0` 给出 `original_image_size=48345088`；去填充后 `boot-trimmed.img` 48,345,088 B，sha256 `2698dbbe0d4c638c9b0cde4c401a6b15f865a26049c89eb22518aca61eb9be09`（`*.img` 不入库）。
+- **画屏路线证伪（关键结论）**：面板是 DSI command mode + DSC（bootargs `msm_drm.dsi_display0=qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd`，`from-binary.dts:16`）；ABL 推一帧进面板 GRAM 后没有持续扫描输出，写 splash 区永远不可见。v0.2/v0.3 跑满全时长（v0.3 = 4.5 min）后自动 `PSCI_SYSTEM_RESET` 回 Android（uptime 归零），说明**代码执行链通、只是显示不可见**。→ C.3 上屏前置升级为「DPU+DSI+DSC 驱动」。
+- **ramoops 通道判定**：实机 dmesg 两次独立重启都是 `ramoops: using 0x240000@0xa7a5c0000, ecc: 0`（地址确定）；DT `ramoops_region` 无 `reg`（`from-binary.dts:381-389`），由内核启动时分配。`ecc: 0` → 校验只剩 sig：DRAM 里必须是 `0x43474244`（`fs/pstore/ram_core.c` `persistent_ram_post_init`）；本机 `record_size=0`，console 区落在区域基址。
+- **shim v0.4**（commit `0b09995`，CI run 44970068008）：探测结果编成 12 行 `TAG <hex>` 文本，在 base±2 MiB 内每 4 KiB 页写 `{sig=0x43474244,start=0,size}` + 文本，3 s 后 `PSCI_SYSTEM_RESET`。上机 `2026-11-22T01:10:31Z`：fastboot `Sending 84 KB OKAY`/`Booting OKAY`，30 s 回 adb、63 s 开机完成，但 **pstore 全空**（`console-ramoops-0`/`console-ramoops`/`dmesg-ramoops-0`/`last_kmsg.txt` 全 MISSING）。
+- **shim v0.5**（commit `20c95d3b4403`，CI run 44970517965）：只加 `dc civac` 逐 64 B 行清理 + `dsb sy; isb`（假设 ABL 交给 shim 时 MMU 开着且映射 cacheable，PSCI reset 会丢未回写的数据），其余不动。上机 `2026-11-22T01:15:46Z`：fastboot 同上（`Total time: 0.789s`），之后 **adb 再未枚举**；USB 上稳定出现 `CAPE-MTP _SN:78AD6B26`（VID_18D1&PID_4EE8，10 min 以上）→ 系统进了 Android 用户态但 adbd 没起来，pstore 取不到。
+- **取证工具**：`build-chain/tools/pstore-dump.sh`（设备侧读 pstore/last_kmsg）、`build-chain/tools/kcore-read.sh` + `build-chain/tools/kcore_phys.py`（解析 `/proc/kcore` ELF64 PT_LOAD，按 `PAGE_OFFSET 0xFFFF000000000000 + phys` 算出 dd 偏移，直接验证物理 `0xa7a5c0000` 是否被写入，绕开 pstore 校验）。
+- 文档：`build-chain/boot-chain/DESIGN.md` §5 C.2 重写（cmd-mode 结论 + ramoops 通道 + v0.3/v0.4/v0.5 证据）、§6 未证项表按新事实改写、§9 新增 3 条决策、§10 待办重排。
+
+### 未完成
+- **v0.5 结果未知**：无法判断是「跑完正常 reset」还是「看门狗复位」；pstore 未读、`0xa7a5c0000` 是否真的写进 DRAM 未验证。v0.4 是 30 s 内 adb 回来，v0.5 明显不同 → 可疑。
+- 12 项探测值（DTB magic、CurrentEL、CNTFRQ、GIC TYPER、PSCI 版本、IMEM restart reason、splash 读回等）全部还没有回读。
+- C.3 未开始，且新增前置：XNU 上屏需要 DPU+DSI+DSC。
+- B 剩余：EDL 演练、iOS 16.7.16 rootfs 未动。
+
+### 关键参数表（ramoops 与 v0.4/v0.5）
+
+| 项 | 实测值 | 出处 | 状态 |
+| --- | --- | --- | --- |
+| ramoops 区 | `0x240000@0xa7a5c0000`，`ecc: 0` | 实机 dmesg（两次重启一致） | 证 |
+| ramoops 布局 | size 0x240000、console 0x40000、pmsg 0x200000、record_size 0 | `from-binary.dts:381-389` + dmesg | 证 |
+| 头结构 | `{u32 sig; u32 start; u32 size; u8 data[]}`，sig 必须 `0x43474244` | `fs/pstore/ram_core.c:33-38`、`:488-530` | 证 |
+| 读取路径 | `pgprot_noncached` 逐页 vmap，直接读 DRAM | `fs/pstore/ram_core.c:399-437` | 证 |
+| v0.4 sha256 | `dd919a15c31d444e5854b8e3c6deee21b9eb1569c7f8f38c4d45b2700dcffbc6` | CI 44970068008 | 证 |
+| v0.5 sha256 | `a05c1136a35c4936b16103ec964400817d869d71330cf2b53cd49d29518ca47a` | CI 44970517965 | 证 |
+| v0.5 v2 等价镜像 | `eca04eddfa136184c1a214eac7a10323e92ecdb78a8b46dd9d5292abcd3935b3` | 同上 | 证 |
+| splash 区 | `0xb8000000+0x2b00000`，`/proc/iomem` 里是 reserved | `from-binary.dts:412-416`、实机 iomem | 证（但 cmd-mode 下写它不可见） |
+
+### 证据与工具索引
+- `build-chain/evidence/boot-attempts/2026-11-22T01-00Z-c1-stock.md`（C.1 全部原样日志）+ `c1-after-boot.png`
+- `build-chain/evidence/boot-attempts/20261122T011031Z-shim-v4.md`（v0.4）
+- `build-chain/evidence/boot-attempts/20261122T011546Z-shim-v4.md`（v0.5；真输出在 `.fastboot.err`）
+- `build-chain/work/k_ram.c` / `k_ram_core.c` / `k_pstore_ram.h`（v5.10 pstore 源码，判 sig 语义用）
+
+### 环境坑（新增）
+- `edit`/覆盖写 `.ps1` 会丢 UTF-8 BOM → PS 5.1 按 ANSI 解析，中文报 `Unexpected token`；修法：python 用 `encoding='utf-8-sig'` 读写。
+- 在 run_code 的 JS 模板字符串里直接写 PowerShell 的反引号换行转义（反引号加 r 再加反引号加 n）会把模板截断，导致 `Expected ',', got 'ident'`；改用字符串数组拼 `[Environment]::NewLine`。
+- `gh run download` 没有 `--clobber`，重复下载前要先删目标目录。
+- `gh api repos/torvalds/linux/contents/drivers/pstore/...` 恒 404：pstore 在 `fs/pstore`，且这类取文件用 `raw.githubusercontent.com` 更稳。
+
 
 
