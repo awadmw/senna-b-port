@@ -32,3 +32,5 @@ build-chain/work/readback/
 build-chain/work/*.sh
 build-chain/work/geni/
 build-chain/work/progress_add.md
+build-chain/work/usb/
+build-chain/work/*.csv

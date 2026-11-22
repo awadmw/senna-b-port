@@ -283,6 +283,48 @@
 - 长任务（等重启、轮询 adb）必须 `run_in_background: true`：`run_code` 的 120 s 上限会杀掉前台进程，`pwsh` 的 `timeoutMs` 不覆盖它。
 - 用 pwsh 拼中文长文本写文件时，`cd` 后接相对路径不生效（被解析到 `default-workspace`）→ 一律用绝对路径，或改用 `edit` 在唯一锚点后追加。
 
+## 2026-11-22（续 2）C.2c 裸机 DWC3 控制台设计 v1（离线，未上机）
 
+### 背景与决策
+- 用户 m01641 在三个选项里选「2」：**UART 硬件不可接触** → 走 C.2c 裸机 DWC3 控制台，先离线设计、不占用设备。
+- 前序结论不变：画屏（cmd-mode 面板）、ramoops/pstore、`/proc/kcore`、`/dev/mem` 四条通道全关闭（见上一节）。
+- UART 设计 `build-chain/boot-chain/UART.md` 保留备查，不再推进。
 
+### 已完成
+1. 新增 **`build-chain/boot-chain/USB-CONSOLE.md`（v1）**：目的/非目标、通道对比、DTB 证据表、DWC3 寄存器表（Linux v6.6 出处）、U1/U2/U3 三个未知、路径 A/B/C、D0–D4 计划、主机工具、风险表、决策记录。
+2. 新增 **`build-chain/tools/usb_watch.py`**（D0 主机侧观测器）：每 `--interval` 秒跑一次 `fastboot devices`，设备在场时再跑 `getvar product` 判是否应答，可选抓 `Get-PnpDevice` 快照，写 CSV，结束按 A/B/C 三种结论打印退出码（A=0 / B=1 / C=3 / 无样本=2）。
+   - 冒烟（设备在 Android 时）：`dev=0` 采样 2 次 → `VERDICT B`，脚本可用。
+3. `DESIGN.md`：§5 新增「C.2c 裸机 DWC3 控制台」小节；§9 决策记录加 1 条；§10 待办改为 6 / 6a / 6b（决策完成 → 设计完成 → D0 待做）。
 
+### 关键判据（D0 / U1）
+
+| 主机侧现象 | 含义 | 下一步 |
+| --- | --- | --- |
+| 设备在场、`fastboot devices` 有设备、`getvar` 超时 | ABL 留下的 gadget 还在总线上 | **路径 A**：复用 EP1 bulk IN 发数据（~200 行） |
+| 设备消失（`Get-PnpDevice` 里也无 18D1） | ABL 已拆 USB | **路径 B**：重配 DWC3 + EP0 状态机（~600 行） |
+| 设备在场且 `getvar` 正常应答 | ABL 仍在跑 / 设备已回 fastboot | 重测（正常不可能） |
+
+### 关键参数表（本轮新增，全部有出处）
+
+| 项 | 值 | 出处 |
+| --- | --- | --- |
+| USB 控制器 | `ssusb@a600000`，`reg = <0xa600000 0x100000>` | `from-binary.dts:20889-20895` |
+| DWC3 核 | `dwc3@a600000`，`reg = <0xa600000 0xd93c>` | `:20918-20920` |
+| DWC3 中断 | SPI 133（`<0 0x85 4>`） | `:20925` |
+| wrapper 中断 | pwr_event SPI 130（PDC）、ss_phy 17、dp_hs_phy 14、dm_hs_phy 15 | `:20901-20902` |
+| 核时钟 | 200 MHz（`0xbebc200`）/ 断连 133.3 MHz / HS 66.7 MHz | `:20906-20908` |
+| USB2 PHY | `hsphy@88e3000`，`qcom,usb-snps-eusb2-phy`（**eUSB2**，+外部 repeater） | `:20953-20967` |
+| USB3/DP PHY | `ssphy@88e8000`，`0x88e8000+0x3000`，init-seq 164 组 + 13 项偏移表**在 DTB 里** | `:20969-20986` |
+| EUD | `0x88e0000+0x2000`，SPI 11，`qcom,secure-eud-en` | `:12884-12896` |
+| DWC3 寄存器 | `GCTL 0xc110`、`DCFG 0xc700`、`DCTL 0xc704`、`DEVTEN 0xc708`、`DSTS 0xc70c`、`GEVNT* 0xc400+`、`DEP_BASE(n)=0xc800+n*0x10` | Linux v6.6 `drivers/usb/dwc3/core.h` |
+| 事件缓冲 | 4096 B / 4 B 一项 = 1024 项；`GEVNTCOUNT.EHB` bit31 | 同上 |
+| TRB | 16 B（bpl/bph/size/ctrl）；`TRBCTL(n)=n<<4`、`IOC` bit11、`LST` bit1、`HWO` bit0 | 同上 |
+
+### 未完成
+- `senna-shim-v0.6spin` 镜像未出（需 CI）；D0 未执行，U1 未判。
+- `build-chain/tools/usb_console.py`（pyusb 读 EP1 IN）未写，等 U1 结论。
+- 路径 B 的 EP0 状态机、CDC-ACM 描述符未设计到代码级。
+
+### 环境坑（新增）
+- 用 JS 模板字符串写含大量 Markdown 反引号的文档会直接截断模板（报 `Identifier cannot follow number`）→ 先拿 `¶` 当反引号占位，写完后在 JS 里把占位符替换回真反引号。
+- PowerShell 5.1 控制台是 cp936，python 打印中文变乱码 → 脚本对外输出统一用 ASCII（日志/CSV 里再写中文）。

@@ -125,6 +125,7 @@ Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649
   - v0.5（commit `20c95d3b4403`，sha256 `a05c1136…a47a`，加 `dc civac`）：上机 `2026-11-22T01:15:46Z`，fastboot OK（`Total time: 0.789s`），之后 adbd 长时间不枚举（USB 只有 `CAPE-MTP _SN:78AD6B26`）。
   - 终判实验：`build-chain/tools/persist_test.py` 往 `/dev/pmsg0` 写 marker 再 `adb reboot`，重启后 pstore 连一条都没有（`build-chain/evidence/boot-attempts/20261122T022935Z-pmsg-persist.md`）→ 保留区不持久，**不是 shim 写错**。
 - **C.2b 输出通道重选（当前唯一路径）**：候选排序 ① UART（`qcom,msm-geni-console` @`0x99c000`，SPI 608，GPIO26/27，function `qup7`）② 裸机 DWC3 USB 控制台（`a600000.ssusb` + QMP `88e8000.ssphy`）③ DPU+DSI+DSC（顺带解决 XNU 上屏，工程量最大）④ flash 草稿区（被「用户空间一字节不改」排除）。决策与验收见 `build-chain/boot-chain/DESIGN.md` §5 C.2b。
+- **C.2c 裸机 DWC3 控制台（设计 v1 完成 2026-11-22，未上机）**：`build-chain/boot-chain/USB-CONSOLE.md`。核心未知 U1 = ABL 跳转后 USB 是否仍在「已枚举」状态；据此分路径 A（继承 fastboot gadget，~200 行）/ B（重配 DWC3，~600 行）/ C（全量重建，默认判不可行）。D0 判据实验零成本：`senna-shim-v0.6spin`（60 s 空转）+ `build-chain/tools/usb_watch.py`（已写并冒烟）。USB2 侧是 **eUSB2**（外部 `usb-repeater`），USB3/DP PHY 的初始化序列与 13 项寄存器偏移表**直接写在 DTB**（`from-binary.dts:20983-20984`）。
 - **B 段顺带补齐的参数（都是本机出处，别再套 sweet）**：CNTFRQ = 19,200,000（`from-binary.dts:5883` + dmesg 19.20MHz）；架构 timer PPI = phys 14 / virt 11 / secure-phys 13 / hyp 12 全 level-low（`from-binary.dts:5882`）；GICv3 = 988 SPI + 16 PPI + GICR stride 0x40000 + ITS `0x17140000`（实机 dmesg）。
 - C.3 前置未动：`mkadt.py` senna 参数（dram/GIC/UFS/timebase/VTIMER INTID/FB 几何）、`platform.sm8475.conf` 的 `RUNTIME_SUPPORT`、B 段剩余实测；**新增 DPU+DSI+DSC 显示驱动**。
 - 任何实机动作前：给方案 + 回滚 + 用户确认；只 `fastboot boot`，不刷分区。
@@ -133,18 +134,19 @@ Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649
 - 明确哪些 kext/用户态组件必须注入、哪些由内核补；rootfs 依然一字节不改（只读挂载或 overlay 方案需先论证）。
 ## 8. 下一会话第一件事
 
-**现状（2026-11-22 终判）**：C.1 已通过（`fastboot boot` 可用）；C.2 的四条回读路线（splash 帧缓冲、ramoops/pstore、`/proc/kcore`、`/dev/mem`）全部关闭，OPPO minidump 只在崩溃时收集 → **当前唯一阻塞点 = 输出通道**。C.2b 方案已写入 `build-chain/boot-chain/DESIGN.md` §5，`PROGRESS.md` 已回填。
+**现状（2026-11-22 终判）**：C.1 已通过（`fastboot boot` 可用）；C.2 四条回读路线（splash 帧缓冲、ramoops/pstore、`/proc/kcore`、`/dev/mem`）全部关闭；**用户已决策（m01641）**：UART 硬件不可接触 → 走 **C.2c 裸机 DWC3 控制台**，设计 v1 已交付（`build-chain/boot-chain/USB-CONSOLE.md`），未上机。
 
-**第一件事：先决策，不要自己选**——UART 硬件能不能接触（拆后盖接 GPIO26/27，或已有 USB-TTL / 工程线 / 9008 线里带串口）？
-- 能 → 走 **C.2b-UART**（成本最低、和 XNU 早期调试同一条路）。
-- 不能 → 走 **C.2c 裸机 DWC3 控制台**（工程量大，但与 C.3 的 USB 驱动同源，不算白做）。
+**第一件事：做 D0（零成本判据实验），不要再写新方案**——U1（ABL 是否把 USB 留在已枚举状态）决定后面是 200 行还是 600+ 行。
+1. 出 `senna-shim-v0.6spin` 镜像：基于 v0.5，改成「探测 → 不写 ramoops → `wait_ms(60000)` → `PSCI_SYSTEM_RESET`」，其余不动；走 CI（`.github/workflows/senna-shim.yml`）。
+2. 与用户约一次 2 分钟窗口：`fastboot boot senna-shim-v4.img`，同时跑 `python build-chain/tools/usb_watch.py --duration 120 --out build-chain/evidence/boot-attempts/d0-usb-watch.csv`。
+3. 判读：设备在场但 `getvar` 不应答 → **路径 A（继承）**；设备消失 → **路径 B（重配）**；设备在场且应答 → ABL 未跳转，重测。结论写进 `evidence/boot-attempts/<UTC>-d0-usb-inherit.md`。
 
 **UART 路线（设计已写成 `build-chain/boot-chain/UART.md`，寄存器偏移逐条有 Linux v5.10 出处）**：
 1. 写 `build-chain/boot-chain/UART.md`：GENI SE 在 `0x99c000`（窗口 `0x4000`）、SPI 608、引脚 GPIO26(TX)/GPIO27(RX)、function `qup7`、`115200n8`（出处 `from-binary.dts:17`、`:13812-13825`、`:2573-2584`）。只读 `GENI_S_STATUS`/`GENI_S_IRQ` 先判断 ABL 是否已把 SE 初始化过，再决定是否重配 `GENI_S_*`。
 2. shim 侧加 `uart_putc()`，把 12 行 `TAG <hex>` 直接打到串口（不依赖 ramoops）；串口无输出时退回最原始的忙等轮询 TX FIFO。
 3. 上机：`build-chain/tools/boot-attempt.ps1 -Image shim-v4 -Confirm`，PC 侧开串口记录（`mode COMx:115200,n,8,1` 或 PuTTY）。
 
-**DWC3 路线（若 UART 不可行）**：先离线读 DTB `ssusb@a600000` + `dwc3-msm.ko` 的初始化序列与 QMP PHY `88e8000.ssphy`，只做 device-mode 枚举；**换自有 VID/PID**（不要复用 `18D1:4EE8`，会和 adb 抢），先写完代码再上机。
+**DWC3 路线（C.2c，已选定，设计见 `USB-CONSOLE.md`）**：先做 D0 判 U1，**不要先写 USB 驱动**。路径 A 复用 ABL 的 fastboot 接口（`18D1:4EE0`，WinUSB 已绑定，免装驱动）；只有走路径 B 重新枚举时才需要自有 VID/PID（**不要用 `18D1:4EE8`，那是 MTP，会和 adb 抢**）。
 
 **不要再做的三件事**：读 pstore（跨重启不持久，已终判）、`/proc/kcore`+`/dev/mem`（内核没编）、画屏判读（面板是 DSI command mode + DSC，ABL 之后没有扫描输出）。
 

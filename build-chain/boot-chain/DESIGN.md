@@ -142,6 +142,21 @@
 **UART 通道的完整设计已单独成文：`build-chain/boot-chain/UART.md`（v1，2026-11-22，未上机）**——含 GENI SE 全部寄存器偏移（逐条标注 Linux v5.10 出处）、FIFO 模式发送序列、115200 分频算法、U1/U2/U3 三阶段验收与失败日志模板。
 
 **失败日志**：候选证伪时记录判据命令与原始输出（如上表），不要只写结论。
+
+### C.2c 裸机 DWC3 控制台（UART 不可接触后的替代路线）
+
+**状态：设计稿 v1 完成（2026-11-22），未上机。完整设计见 `build-chain/boot-chain/USB-CONSOLE.md`。**
+
+- **为什么是 USB**：它不是「理论上可用」，而是本机**刚刚用过**——ABL 的 fastboot 就跑在这套 DWC3 上（47,212 KB / 1.122 s）。
+- **核心未知 U1（决定成本）**：ABL 跳转后 DWC3 是否仍留在「已枚举」状态。
+  - 路径 A（继承，~200 行）：复用 ABL 已配好的 EP1 bulk IN，主机用 pyusb 直接读——**无需装驱动**。
+  - 路径 B（重配 DWC3，~600 行）：PHY 沿用，重写 EP0 状态机直到重新枚举。
+  - 路径 C（全量重建）：需要 GCC/GDSC/PMIC/eUSB2 repeater，**默认判为不可行**，只做评估。
+- **D0 判据实验（零成本）**：`senna-shim-v0.6spin`（探测 → 不写 ramoops → 等 60 s → 复位）+ 主机侧 `build-chain/tools/usb_watch.py`。
+  - 设备在场但 fastboot 不应答 → 路径 A；设备消失 → 路径 B；设备在场且应答 → ABL 未跳转，重测。
+- **关键证据**：USB2 侧是 **eUSB2 PHY**（`hsphy@88e3000`，`qcom,usb-snps-eusb2-phy`，依赖外部 `usb-repeater`，`from-binary.dts:20953-20967`）；USB3/DP combo PHY（`ssphy@88e8000`）的**初始化序列与 13 项寄存器偏移表都直接写在 DTB 里**（`:20983-20984`），路径 B/C 不必从驱动反推。
+- **验收**：D1 主机收到 `SENNA USB OK`；D2 收到 12 行 `TAG <hex>`（与 v0.4 的 payload 同格式）。
+- **失败日志**：`evidence/boot-attempts/<UTC>-d0-usb-inherit.md` + `d0-usb-watch-<UTC>.csv`（含 `DSTS`/`DCTL`/`DEPCMD` 读回值）。
 ### C.3 XNU 接管（依赖 B 段剩余项）
 
 - **目标**：shim 把 payload（XNU demo kernel + ADT）拉起，出现 XNU 早期日志（帧缓冲/串口二选一）。
@@ -201,6 +216,7 @@
 - 2026-11-22：**用户态直读物理内存的路线全部关闭**：`/proc/config.gz` 里 `CONFIG_PROC_KCORE is not set`、`# CONFIG_DEVMEM is not set`；`mknod /dev/mem c 1 1` 能建节点但 `dd` 报 `No such device or address`。以后不要再在 kcore/devmem 上花时间。
 - 2026-11-22：**中断号以本机 DTB 为准**：`arm,armv8-timer` 给 PPI 13/14/11/12（`from-binary.dts:5882`），实机 dmesg 的 `GICv3:arch_timer(11)` 与 virt=11 对上；sweet 的 19/18 一律不采用。CNTFRQ 用 DTB `0x124f800` + dmesg `19.20MHz` 双证据定案。
 - 2026-11-22：**输出通道优先 UART**，次选裸机 DWC3 控制台；显示驱动排最后（虽然 C.3 终局需要）；flash 草稿区因与「不刷分区」约束冲突而排除（详见 C.2b）。
+- 2026-11-22：**UART 不可接触 → 定 C.2c 裸机 DWC3 控制台**。先做 D0 零成本观测再写代码：U1（ABL 是否留下已枚举 gadget）决定 200 行还是 600+ 行；路径 A 复用现成 fastboot 接口（主机已绑 WinUSB，免装驱动），不自己造 CDC-ACM。PHY 初始化序列直接取 DTB（`from-binary.dts:20984`）而不是从驱动反推。
 
 ## 10. 待办（按顺序）
 
@@ -209,7 +225,9 @@
 3. [C.2] ~~交叉编译 + CI 出镜像~~ 完成（`.github/workflows/senna-shim.yml`，v4/v2 双镜像 + SHA256SUMS）。
 4. [C.2] ~~画屏判读 FB/stride/format~~ **证伪并关闭**：cmd-mode 面板，ABL 后无扫描输出（§5 C.2 结论）。
 5. [C.2] ~~pstore 回读~~ **通道关闭**：pmsg 终判不持久（`20261122T022935Z-pmsg-persist.md`）；kcore/devmem 也都不存在（`CONFIG_PROC_KCORE`/`CONFIG_DEVMEM` 均未开）。
-6. [C.2b] **当前阻塞点 = 输出通道**：优先做 UART（GPIO26/27，需硬件可接触）；否则立「裸机 DWC3 控制台」子项目。通道先用一个最小可复现实验证明（shim 发一个字符 / 主机侧收到）。UART 方案见 `build-chain/boot-chain/UART.md`；第一步是 U1「只读探测」（`FW_REVISION_RO`/`STATUS`/`HW_PARAM_0`/`SER_M_CLK_CFG`），零写、判 SE 是否有时钟。
-7. [C.2] 通道打通后再上机回读 `TAG <hex>`，把 DTB magic、EL、GIC/PSCI/IMEM 等未证项一次性回填 §6。
+6. [C.2b] **决策已完成（2026-11-22）**：UART 硬件不可接触（用户 m01641）→ 转 C.2c 裸机 DWC3 控制台。UART 设计 `build-chain/boot-chain/UART.md` 保留备查，不再推进。
+6a. [C.2c] ~~设计稿~~ **v1 完成（2026-11-22）**：`build-chain/boot-chain/USB-CONSOLE.md`，含 DTB 证据表、DWC3 寄存器表（Linux v6.6 出处）、A/B/C 三条路径与 D0–D4 计划；主机侧观测器 `build-chain/tools/usb_watch.py` 已写并冒烟通过。
+6b. [C.2c/D0] **下一步（离线可做）**：出 `senna-shim-v0.6spin` 镜像（探测 → 不写 ramoops → 等 60 s → 复位），与用户约一次 2 分钟窗口跑 `usb_watch.py`，判 U1（A 继承 / B 重建 / C 重测）。
+7. [C.2] 通道打通后（A 或 B 路径任一成立）再上机回读 `TAG <hex>`，把 DTB magic、EL、GIC/PSCI/IMEM 等未证项一次性回填 §6。
 8. [C.3] 与通道并行可做的离线工作：`mkadt.py` senna 参数落地、`xnu/senna/platform.sm8475.conf` 的 `RUNTIME_SUPPORT`、iOS 16.7.16 rootfs 与 `mkipsw` 道具链。
 9. [B 剩余] CNTFRQ、GIC 中断已按 DTB + 实机 dmesg 回填（§2.1、§6）；仍待：EDL 演练、iOS 16.7.16 rootfs。
