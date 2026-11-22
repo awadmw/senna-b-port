@@ -29,8 +29,8 @@ Set-Location $repo
 
 $known = @{
   'stock'   = @{ Path = 'build-chain/ota-evidence/boot.img'; Sha = ''; Purpose = 'C.1 机制演练：官方 stock boot.img，验证 fastboot boot 可用性' }
-  'shim-v4' = @{ Path = 'build-chain/work/senna-shim/out/senna-shim-v4.img'; Sha = '7483023e9843f9e17ae9128e72664f2aadf27c1e16c9b6b408fa9a140087f907'; Purpose = 'C.2 senna 诊断 shim（v4 头）' }
-  'shim-v2' = @{ Path = 'build-chain/work/senna-shim/out/senna-shim-v2.img'; Sha = '1f7f4dafa764df746cb6205d489405f8fe5a6688a2c41d0f80baa12cfb92ed12'; Purpose = 'C.2 senna 诊断 shim（v2 兜底，v4 失败时用）' }
+  'shim-v4' = @{ Path = 'build-chain/work/senna-shim/out/senna-shim-v4.img'; Sha = 'dd919a15c31d444e5854b8e3c6deee21b9eb1569c7f8f38c4d45b2700dcffbc6'; Purpose = 'C.2 senna 诊断 shim（v4 头）' }
+  'shim-v2' = @{ Path = 'build-chain/work/senna-shim/out/senna-shim-v2.img'; Sha = 'cd23adf64a9d09942aab958b7c01e5a44b1337800b956ac76219f7cf00ea1ee5'; Purpose = 'C.2 senna 诊断 shim（v2 兜底，v4 失败时用）' }
 }
 
 if ($Image -eq 'custom') {

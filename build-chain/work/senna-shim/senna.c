@@ -176,7 +176,7 @@ static void draw_info(void)
 	char b[17];
 
 	con_clear(0xff101418U);
-	con_title(" SENNA SHIM v0.4  (diag, RAM only) ", WHITE, 0xff003060U);
+	con_title(" SENNA SHIM v0.5  (diag, RAM only) ", WHITE, 0xff003060U);
 
 	con_str("BUILD", "senna-shim running at EL1, MMU off");
 	line("DTB", "x0 / magic:");
@@ -261,7 +261,7 @@ void secondary_main(uint64_t cpu)
 static void payload_build(void)
 {
 	rblen = 0;
-	rb_s("SENNA SHIM v0.4 RAMOOPS PROBE (RAM-only, fastboot boot)\n");
+	rb_s("SENNA SHIM v0.5 RAMOOPS PROBE (RAM-only, fastboot boot)\n");
 	rb_line("DTB", "MAGIC", g_dtb, g_dtbmagic);
 	rb_line("EL", "MPIDR", rd_currentel(), rd_mpidr());
 	rb_line("SCTLR", "PFR0", rd_sctlr(), rd_pfr0());
@@ -287,6 +287,26 @@ static void payload_build(void)
  * stamp the same header on every 4 KiB page in a +/- 2 MiB window and let
  * the next boot pick the page it actually reserved.
  */
+static void dc_civac(uint64_t va)
+{
+	__asm__ volatile("dc civac, %0" :: "r"(va) : "memory");
+}
+
+/*
+ * The ABL does not guarantee that it handed us a memory map: if the MMU is
+ * still on, the stores above land in a cacheable mapping and a PSCI reset
+ * throws them away. Clean (and invalidate) every line we touched so the text
+ * reaches DRAM either way; with the MMU off the ops are harmless no-ops.
+ */
+static void flush_range(uint64_t base, uint64_t len)
+{
+	uint64_t p = base & ~0x3fULL, end = base + len;
+
+	for (; p < end; p += 64)
+		dc_civac(p);
+	__asm__ volatile("dsb sy; isb" ::: "memory");
+}
+
 static void ramoops_write(void)
 {
 	for (int64_t off = -RAMOOPS_SMEAR; off <= RAMOOPS_SMEAR; off += 0x1000) {
@@ -297,6 +317,8 @@ static void ramoops_write(void)
 		h[0] = RAMOOPS_MAGIC;
 		h[1] = 0;
 		h[2] = rblen;
+		__asm__ volatile("dsb sy" ::: "memory");
+		flush_range(SENNA_RAMOOPS_BASE + off, (uint64_t)rblen + 12);
 	}
 }
 
