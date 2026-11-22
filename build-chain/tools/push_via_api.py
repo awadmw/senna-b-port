@@ -9,7 +9,7 @@
       .git/remote_main_sha（格式：<remote_sha> <local_sha>）。
 注意：github.com 恢复后直接 git push 即可；若远端已领先（force=False 会报 422），先人工核对。
 """
-import base64, json, os, subprocess, sys, urllib.request
+import base64, json, os, ssl, subprocess, sys, time, urllib.request
 
 REPO = "awadmw/senna-b-port"
 BRANCH = "main"
@@ -26,16 +26,23 @@ def api(method, path, body=None):
     req.add_header("User-Agent", "senna-push")
     if data:
         req.add_header("Content-Type", "application/json")
-    try:
-        with urllib.request.urlopen(req, timeout=60) as r:
-            return json.loads(r.read().decode() or "null")
-    except urllib.error.HTTPError as e:
-        print("HTTP", e.code, path, e.read().decode()[:500])
-        raise
+    last = None
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                return json.loads(r.read().decode() or "null")
+        except urllib.error.HTTPError as e:
+            print("HTTP", e.code, path, e.read().decode()[:500])
+            raise
+        except (urllib.error.URLError, ssl.SSLError, TimeoutError) as e:
+            last = e
+            print("  retry %d: %s" % (attempt + 1, e))
+            time.sleep(2 + attempt * 3)
+    raise last
 
 def git(*args, binary=False):
     out = subprocess.check_output(["git"] + list(args), cwd=TOP)
-    return out if binary else out.decode().strip()
+    return out if binary else out.decode("utf-8", "replace").strip()
 
 remote = local_base = None
 if os.path.exists(SHAFILE):
