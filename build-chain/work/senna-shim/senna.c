@@ -138,7 +138,7 @@ static void draw_info(int final, int secs)
 	char b[17];
 
 	con_clear(0xff101418U);
-	con_title(" SENNA SHIM v0.2  (diag, RAM only) ", WHITE, 0xff003060U);
+	con_title(" SENNA SHIM v0.3  (diag, RAM only) ", WHITE, 0xff003060U);
 
 	con_str("BUILD", "senna-shim running at EL1, MMU off");
 	line("DTB", "x0 / magic:");
@@ -183,14 +183,15 @@ static void draw_info(int final, int secs)
 	con_skip();
 
 	if (final) {
-		con_title(" ALL PROBES DONE - reboot in 20s ",
+		con_title(" ALL PROBES DONE - reboot in 30s ",
 			  BLACK, 0xffffff00U);
 		hex(b, (uint64_t)secs, 2);
 		con_str("COUNTDOWN", b);
 	} else {
 		con_title(" PHASE 1: FB CANDIDATES - watch screen colours ",
 			  WHITE, 0xff007040U);
-		con_str("NEXT", "4 framebuffer groups, 10s each");
+		con_str("NEXT", "4 framebuffer groups, 45s each");
+		con_str("CAPTURE", "photo this page now");
 	}
 }
 
@@ -267,18 +268,18 @@ void shim_main(uint64_t dtb)
 	g_fbrw = (con_fb[0] == 0x00a5a5a5U);
 
 	draw_info(0, 0);
-	wait_ms(20000);
+	wait_ms(60000);
 
 	for (int i = 0; i < NCAND; i++) {
 		draw_group(i);
-		wait_ms(10000);
+		wait_ms(45000);
 	}
 
 	fb_use(0);
-	for (int s = 20; s > 0; s--) {
+	for (int s = 30; s > 0; s--) {
 		/* a full-screen clear costs ~0.1 s uncached, so only redraw
 		 * every 5 s; the countdown stays readable either way */
-		if (s == 20 || s % 5 == 0 || s == 1)
+		if (s == 30 || s % 5 == 0 || s == 1)
 			draw_info(1, s);
 		wait_ms(1000);
 	}
