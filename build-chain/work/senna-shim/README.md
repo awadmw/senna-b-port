@@ -44,7 +44,7 @@ v0.4 因此改为走 **ramoops 文本通道**：把结果写进 ramoops 控制�
 | `shim.ld` | 链接脚本：`. = 0`、8×4K 二级栈、`_end` 供 Image 头使用 |
 | `board.h` | senna 常量，**每条都带 DTB 行号出处**（见文件内注释） |
 | `console.c/.h` | splash 帧缓冲上的 8×16 位图字（×3）；v0.4 仍保留，但页面不可见 |
-| `senna.c` | 探测 → 组文本 → 写 ramoops → `wait_ms(3000)` → `PSCI_SYSTEM_RESET` |
+| `senna.c` | 探测 → 组文本 →（`SENNA_RAMOOPS_WRITE=1`）写 ramoops → `wait_ms(SENNA_D0_HOLD_MS)` → `PSCI_SYSTEM_RESET` |
 | `font.h` | 8×16 ASCII 字模（从 ios-sweet shim 复用） |
 | `tools/mkbootimg_img.py` | 纯 Python 打 Android boot.img：`--version 4`（首选）/ `--version 2`（回退），并可 `--check-image` 校验 Image 头 |
 | `build.sh` | 交叉编译 + 打包 + sha256 |
@@ -56,6 +56,16 @@ v0.4 因此改为走 **ramoops 文本通道**：把结果写进 ramoops 控制�
 base 由 Linux 启动时分配（实测稳定在 `0xa7a5c0000`），所以 `ramoops_write()` 在
 `base ± 2 MiB` 内每 4 KiB 页都盖一份同样的头+文本，让真正被保留的那页命中。
 区域配置：`size=0x240000`、`console-size=0x40000`、`pmsg-size=0x200000`、**无 ECC**、无 record-size。
+
+## v0.6spin（D0 保持构建）
+
+只为一件事存在：判 U1——`fastboot boot` 之后，ABL 留下的 fastboot gadget 还在不在。
+
+- `SENNA_RAMOOPS_WRITE` 置 0，ramoops 写入整段编译掉（D0 阶段不写任何内存）。
+- 探测照跑，`draw_info()` 照画（仍然不可见，留着只为异常时红屏一致）。
+- `wait_ms(120000)`：**2 分钟静置**，给主机侧 `build-chain/tools/usb_watch.py` 足够样本，然后 `PSCI_SYSTEM_RESET` 回 Android。
+- 判读：`usb_watch.py` 返回 A（gadget 仍在，走路径 A 复用 EP1）/ B（消失，走路径 B 自己重建）/ C（有应答，直接抓）。
+- 这是**一次性**构建；D0 结束后把 `SENNA_RAMOOPS_WRITE` 改回 1 再做 v0.7。
 
 ## 构建
 

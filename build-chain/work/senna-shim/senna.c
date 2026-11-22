@@ -49,6 +49,16 @@ static uint64_t g_fbrw;
 #define RAMOOPS_MAGIC		0x43474244U	/* persistent_ram_buffer.sig */
 #define RAMOOPS_SMEAR		0x200000L	/* +/- 2 MiB around the base, 4 KiB steps */
 
+/* ---- D0 hold (USB-CONSOLE.md §6) --------------------------------- */
+
+#define SENNA_D0_HOLD_MS	120000U	/* 2 min: wide window for the host observer */
+
+/*
+ * v0.6spin is a D0-only build: it must not write anything anywhere, so the
+ * ramoops writer is compiled out. Flip back to 1 for the next probe build.
+ */
+#define SENNA_RAMOOPS_WRITE	0
+
 static char rb[1200];
 static uint32_t rblen;
 
@@ -176,7 +186,7 @@ static void draw_info(void)
 	char b[17];
 
 	con_clear(0xff101418U);
-	con_title(" SENNA SHIM v0.5  (diag, RAM only) ", WHITE, 0xff003060U);
+	con_title(" SENNA SHIM v0.6spin  (D0 hold) ", WHITE, 0xff003060U);
 
 	con_str("BUILD", "senna-shim running at EL1, MMU off");
 	line("DTB", "x0 / magic:");
@@ -261,7 +271,7 @@ void secondary_main(uint64_t cpu)
 static void payload_build(void)
 {
 	rblen = 0;
-	rb_s("SENNA SHIM v0.5 RAMOOPS PROBE (RAM-only, fastboot boot)\n");
+	rb_s("SENNA SHIM v0.6spin D0 HOLD (RAM-only, fastboot boot)\n");
 	rb_line("DTB", "MAGIC", g_dtb, g_dtbmagic);
 	rb_line("EL", "MPIDR", rd_currentel(), rd_mpidr());
 	rb_line("SCTLR", "PFR0", rd_sctlr(), rd_pfr0());
@@ -287,6 +297,8 @@ static void payload_build(void)
  * stamp the same header on every 4 KiB page in a +/- 2 MiB window and let
  * the next boot pick the page it actually reserved.
  */
+#if SENNA_RAMOOPS_WRITE
+
 static void dc_civac(uint64_t va)
 {
 	__asm__ volatile("dc civac, %0" :: "r"(va) : "memory");
@@ -322,6 +334,8 @@ static void ramoops_write(void)
 	}
 }
 
+#endif /* SENNA_RAMOOPS_WRITE */
+
 void shim_main(uint64_t dtb)
 {
 	g_dtb = dtb;
@@ -340,10 +354,14 @@ void shim_main(uint64_t dtb)
 		draw_info();
 
 	payload_build();
-	ramoops_write();
 
-	/* give the store time to drain before we reset */
-	wait_ms(3000);
+	/*
+	 * D0 (USB-CONSOLE.md §6): do not touch USB at all. The only question is
+	 * whether the fastboot gadget ABL left behind is still enumerating while
+	 * we sit here. Reset back to Android after a 2 minute hold so the host
+	 * observer has a wide window.
+	 */
+	wait_ms(SENNA_D0_HOLD_MS);
 
 	psci(PSCI_SYSTEM_RESET);
 	psci(PSCI_SYSTEM_RESET2);
