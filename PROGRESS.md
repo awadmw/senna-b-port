@@ -235,6 +235,54 @@
 - 在 run_code 的 JS 模板字符串里直接写 PowerShell 的反引号换行转义（反引号加 r 再加反引号加 n）会把模板截断，导致 `Expected ',', got 'ident'`；改用字符串数组拼 `[Environment]::NewLine`。
 - `gh run download` 没有 `--clobber`，重复下载前要先删目标目录。
 - `gh api repos/torvalds/linux/contents/drivers/pstore/...` 恒 404：pstore 在 `fs/pstore`，且这类取文件用 `raw.githubusercontent.com` 更稳。
+## 2026-11-22（续）ramoops 终判「不持久」→ 通道关闭；输出通道重选（C.2b）；参数表补证
+
+### 已完成
+- **ramoops 终判：跨重启不持久 → 通道关闭**。新增 `build-chain/tools/persist_test.py`：先 `echo '<marker>' > /dev/pmsg0` + `sync`，`adb reboot`，等 `sys.boot_completed=1` 后再查 pstore。证据 `build-chain/evidence/boot-attempts/20261122T022935Z-pmsg-persist.md`：marker `SENNA-PMSG-PERSIST-20261122T022722Z`、重启前 `write_ok`、重启后 `/sys/fs/pstore` **total 0**、`dump-all`/`marker-grep`/`dropbox-grep` 全空 → 退出码 1（不持久）。
+- **旁证（不是 Android 删的）**：新 boot 的 dmesg 里 `[5.754536] init: Command 'copy /sys/fs/pstore/console-ramoops-0 /data/debugging/last_kmsg.txt' ... failed: Could not read input file ... No such file or directory`（`/system_ext/etc/init/init.oplus.debug.rc:816`）→ OPPO 自己每 boot 都在等这个文件，它从未出现过。
+- **用户态直读物理内存全部关闭**：`/proc/config.gz` 里 `CONFIG_PROC_KCORE is not set`、`# CONFIG_DEVMEM is not set`；`mknod /dev/mem c 1 1` 能建节点，但 `dd if=/dev/mem` 报 `No such device or address` → kcore/devmem 两条路永久作废。
+- **OPPO minidump 查完：不能当常规通道**。属性 `ro.oplus.minidump.kernel.log.support=true`、`persist.vendor.ssr.enable_ramdumps=1`、`init.svc.vendor.ss_ramdump=running`(pid 2700)；分区 `logdump 512 MiB`、`rawdump 256 MiB`、`logfs 8 MiB`、`xbl_ramdump_a 2 MiB`；但 `/data/persist_log/DCS/{de,en}/minidump` 与 `minidumpbackup`（`sdf10`）都是空的 → 只在崩溃时收集，且需内核先写 minidump 表。
+- **参数表补证（本机 DTB + 实机 dmesg，无套用）**：
+  - CNTFRQ = **19,200,000**（`from-binary.dts:5883` `clock-frequency = <0x124f800>`；dmesg `arch_timer: cp15 and mmio timer(s) running at 19.20MHz (virt/virt)`）。
+  - 架构 timer PPI：**secure-phys 13 / phys 14 / virt 11 / hyp 12**，全 level-low（`from-binary.dts:5882`）；dmesg `GICv3:arch_timer(11)` 与 virt=11 对上。sweet 的 19/18 不采用。
+  - GICv3：**988 SPIs、16 PPIs、0 Extended SPIs、无 Range Selector**；GICR stride `0x40000`（CPU0 `0x17180000`、CPU1 `0x171c0000`…）；ITS `0x17140000`（dmesg `Devices Table too large, reduce ids 32->19`）。
+  - 内存：`/proc/iomem` 见 `800000000-8398fffff`、`840000000-a7fffffff`（9 GiB）、`a0400000-a6dfffff`、`a7000000-e05fffff`、`f1400000-ffffffff`；`MemTotal 11,488,152 kB`；ramoops `0xa7a5c0000` 落在 `840000000-a7fffffff` 内 → 地址合法。
+  - UART：`0x99c000`、SPI 608、**GPIO26(TX)/GPIO27(RX)、function `qup7`**（`from-binary.dts:2573-2584`、`:17`）；实机 `/dev/ttyMSM*` 不存在（`con_enabled=0`），只有 `/dev/ttyHS0`（蓝牙）。
+  - USB：`a600000.ssusb`（`msm-dwc3`、模块 `dwc3-msm.ko`、QMP PHY `88e8000.ssphy`、EUD `88e0000.qcom,msm-eud`），UDC `a600000.dwc3`。
+  - 显示：无 `/sys/class/graphics`；DRM `card0-DSI-1`/`-DSI-2`/`-DP-1`/`-Virtual-1` + `sde-crtc-0..5`；DSI PHY `ae94400`/`ae96400`，`dsi0_phy_pll_out_dsiclk` 166.4 MHz。
+- **C.2b 输出通道重选写入 `build-chain/boot-chain/DESIGN.md`**：已证伪候选表（splash / ramoops / kcore / devmem / minidump）+ 剩余候选排序（① UART ② 裸机 DWC3 ③ DPU+DSI+DSC ④ flash 草稿区因「用户空间一字节不改」排除）+ 决策「优先 UART，否则立 C.2c 裸机 DWC3 控制台」。
+
+### 未完成
+- **C.2 仍阻塞在输出通道**：shim 的 12 行 `TAG <hex>` 一条未读回；通道落地前不再上机（上机也读不到）。
+- UART 接线方案 / C.2c 裸机 DWC3：都未启动。
+- C.3 未开始：`mkadt.py` senna 参数、`platform.sm8475.conf` 的 `RUNTIME_SUPPORT`、DPU+DSI+DSC 显示、iOS 16.7.16 rootfs 均未动。
+- B 剩余：EDL 演练、iOS 16.7.16 rootfs。
+
+### 关键参数表（本轮新增/改判）
+
+| 项 | 值 | 出处 | 状态 |
+| --- | --- | --- | --- |
+| CNTFRQ | 19,200,000 | `from-binary.dts:5883` + 实机 dmesg | 证 |
+| PTIMER / VTIMER PPI | 14 / 11（另 13 secure-phys、12 hyp），level-low | `from-binary.dts:5882` | 证 |
+| GICv3 拓扑 | 988 SPI、16 PPI、GICR stride 0x40000、ITS 0x17140000 | 实机 dmesg | 证 |
+| UART 引脚 | GPIO26 TX / GPIO27 RX，qup7，115200n8 | `from-binary.dts:2573-2584` | 引脚证；可用性未证 |
+| DWC3 / QMP / EUD | `0xa600000` / `88e8000` / `88e0000` | 实机 sysfs + DTB | 证 |
+| DSI PHY | `ae94400`、`ae96400` | 实机 `regulator_summary` | 证 |
+| ramoops 持久性 | **不持久** | `20261122T022935Z-pmsg-persist.md` | 证（通道关闭） |
+| `/dev/mem`、`/proc/kcore` | 内核未编 | `/proc/config.gz` | 证（路线关闭） |
+
+### 证据与工具索引
+- `build-chain/tools/persist_test.py`（pmsg 持久性终判；0 持久 / 1 不持久 / 2 等不到设备）
+- `build-chain/evidence/boot-attempts/20261122T022935Z-pmsg-persist.md`（marker `SENNA-PMSG-PERSIST-20261122T022722Z`）
+- `build-chain/evidence/boot-attempts/20261122T022610Z-pstore-after-reboot.md`（重启后 pstore 复查，仍空）
+- 临时脚本（不入库）：`build-chain/work/{dump_probe,minidump_probe,devmem_probe,facts_probe,debugfs_probe}.sh`
+
+### 环境坑（新增）
+- `mount -t debugfs none /sys/kernel/debug` 在 toybox 下报 `bad /etc/fstab`；改 `mount -t debugfs debugfs /sys/kernel/debug` 才成功。
+- `cat /sys/class/drm/...` 即便 `su` 也 `Permission denied`（SELinux `Enforcing`）。
+- 长任务（等重启、轮询 adb）必须 `run_in_background: true`：`run_code` 的 120 s 上限会杀掉前台进程，`pwsh` 的 `timeoutMs` 不覆盖它。
+- 用 pwsh 拼中文长文本写文件时，`cd` 后接相对路径不生效（被解析到 `default-workspace`）→ 一律用绝对路径，或改用 `edit` 在唯一锚点后追加。
+
 
 
 

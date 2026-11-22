@@ -97,7 +97,9 @@ Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649
 - 本机无 macOS，无法本地编译内核；一切构建只能在 GitHub Actions。
 - 设备为唯一实机，任何 `fastboot boot` 前必须先有回滚说明与用户确认。
 - **显示是 DSI command mode + DSC**（bootargs 面板名 `..._nt37705_1240_2772_dsc_cmd`）：ABL 推一帧进面板 GRAM 后没有持续扫描输出 → 在 shim/XNU 里往 splash 区写像素**看不见**。带画面的判读必须先有 DPU+DSI+DSC 驱动；在那之前只能用 ramoops/pstore（或未验证的 UART）做反馈通道。
-- **ramoops 在 `0xa7a5c0000`（0x240000，ecc 0）**：地址来自实机 dmesg 两次独立重启，稳定；但它是内核启动时分配的，理论上可能变，回读时要先核对 dmesg 里的地址再判读。
+- **ramoops/pstore 通道已彻底关闭（2026-11-22 终判，不要再试）**：`0x240000@0xa7a5c0000`（ecc 0）地址本身稳定，但**跨重启不持久**——内核 `console [ramoops-1]` 每 boot 都在写、OPPO 的 `/system_ext/etc/init/init.oplus.debug.rc:816` 每 boot 都在拷 `console-ramoops-0`，可重启后 `/sys/fs/pstore` 恒为空；pmsg 写 marker 的对照实验同样归零（`build-chain/evidence/boot-attempts/20261122T022935Z-pmsg-persist.md`）。
+- **`/dev/mem` 与 `/proc/kcore` 都不可用**：本机内核 `# CONFIG_DEVMEM is not set`、`CONFIG_PROC_KCORE is not set`；`mknod /dev/mem c 1 1` 能建节点但 `dd` 报 `No such device or address` → 用户态没有任何直读物理内存的途径。
+- **OPPO minidump 不是常规通道**：`/data/persist_log/**/minidump*`、`rawdump`、`xbl_ramdump_a` 都只在崩溃时收集，正常 boot 后全空。
 - **`fastboot boot` 后 adbd 可能长时间不枚举**（v0.5 实测：USB 上只有 MTP，10 min+ 无 adb）：此时设备其实是进了 Android 用户态，不是变砖；需用户解锁屏幕/重启把 adb 弄回来。
 
 ## 7. 未完成任务（按优先级）
@@ -114,36 +116,38 @@ Fork：https://github.com/awadmw/ios-sweet （上游 `45263bee51df4a0f55cdf9c649
 - **B.2/B.6 官方 OTA 交叉核对（已完成一半）**：`build-chain/ota-evidence/`。`RMX3706_13.1.0.115_CN01_rollback_4.0.zip`（7,585,057,674 字节）用 payload-dumper-go 抽 `dtbo`(=实机 `4F80DE98…`)、`vendor_boot`(=实机 `4AAB629E…`)、`uefi`（`F4CD52E1…`）、`boot`（`D9162A96…`，实机 `boot_b` 是 Magisk 补丁所以不同）。结论：DTBO 与 vendor_boot 来源已可追溯到官方全量包。**仍缺**：iOS 16.7.16 (20H392) rootfs。
 - 仍缺：vendor_boot base 选择算法的 bootloader 侧证据；活动帧缓冲实际 stride/format；CNTFRQ_EL0 与 GIC 中断实测；EDL 演练。
 
-**C. 引导链（主线；C.1 已通过，C.2 卡在「回读通道」上）**
+**C. 引导链（主线；C.1 已通过，C.2 阻塞在「输出通道」上）**
 - 设计：`build-chain/boot-chain/DESIGN.md`（v1 2026-11-20；2026-11-22 更新 §5 C.2、§6 未证项、§9 决策、§10 待办），路线 = 复用 ios-sweet shim，boot.img v4（v2 兜底）。
 - **C.1 已通过（2026-11-22）**：`fastboot boot` 官方 stock 去填充镜像（`boot-trimmed.img` 48,345,088 B，sha256 `2698dbbe…be09`）→ `Sending 47212 KB OKAY [1.122s]` + `Booting OKAY [0.515s]`，9 s 回 adb、48 s 开机完成、槽位/解锁状态不变。→ **senna ABL 支持 `fastboot boot`**。证据 `build-chain/evidence/boot-attempts/2026-11-22T01-00Z-c1-stock.md`。
 - **C.2 画屏路线证伪（2026-11-22，重大结论）**：面板是 DSI **command mode** + DSC（`from-binary.dts:16` bootargs 面板名 `..._dsc_cmd`），ABL 之后没有持续扫描输出，往 splash 区 `0xb8000000+0x2b00000` 写像素**永远不可见**。v0.2/v0.3 跑满全时长（v0.3 = 4.5 min）后自动 `PSCI_SYSTEM_RESET` 回 Android（uptime 归零）→ 代码执行链通，只是显示不可见。**对 C.3 的影响：XNU 上屏前置 = 移植 DPU+DSI+DSC 驱动**。
-- **C.2 现行通道：ramoops → pstore**。实机 dmesg 稳定给 `ramoops: using 0x240000@0xa7a5c0000, ecc: 0`（DT 无 `reg`，内核启动时分配）；`ecc: 0` 后校验只剩 `sig = 0x43474244`；`record_size=0` 使 console 区落在区域基址。shim 直接写 `{sig,start=0,size,data}`，内核用 `pgprot_noncached` 读真实 DRAM。
-  - v0.4（commit `0b09995`，sha256 `dd919a15…fbc6`）：上机 `2026-11-22T01:10:31Z`，fastboot OK、30 s 回 adb，但 **pstore 全空**。
-  - v0.5（commit `20c95d3b4403`，sha256 `a05c1136…a47a`）：只加 `dc civac` + `dsb sy; isb`。上机 `2026-11-22T01:15:46Z`，fastboot OK（`Total time: 0.789s`），之后 **adb 再未枚举**，USB 上只有 `CAPE-MTP _SN:78AD6B26`（VID_18D1&PID_4EE8）→ 系统进了 Android 用户态但 adbd 没起，pstore 取不到，也无法判断是正常 reset 还是看门狗复位。
-- **C.2 未完成**：读 pstore（或 kcore 直读 `0xa7a5c0000`）→ 12 项探测值回填 DESIGN §6 / `REMAINING.md`。
+- **C.2 四条回读路线全部关闭（2026-11-22 终判）**：splash 帧缓冲（cmd-mode 不可见）、ramoops/pstore（跨重启不持久）、`/proc/kcore`（内核未编）、`/dev/mem`（内核未编）；OPPO minidump 只在崩溃时收集。→ **C.2 当前唯一阻塞点 = 输出通道**，通道未定前不再上机（上机也读不到）。
+  - v0.4（commit `0b09995`，sha256 `dd919a15…fbc6`，ramoops 直写）：上机 `2026-11-22T01:10:31Z`，fastboot OK、30 s 回 adb，pstore 全空。
+  - v0.5（commit `20c95d3b4403`，sha256 `a05c1136…a47a`，加 `dc civac`）：上机 `2026-11-22T01:15:46Z`，fastboot OK（`Total time: 0.789s`），之后 adbd 长时间不枚举（USB 只有 `CAPE-MTP _SN:78AD6B26`）。
+  - 终判实验：`build-chain/tools/persist_test.py` 往 `/dev/pmsg0` 写 marker 再 `adb reboot`，重启后 pstore 连一条都没有（`build-chain/evidence/boot-attempts/20261122T022935Z-pmsg-persist.md`）→ 保留区不持久，**不是 shim 写错**。
+- **C.2b 输出通道重选（当前唯一路径）**：候选排序 ① UART（`qcom,msm-geni-console` @`0x99c000`，SPI 608，GPIO26/27，function `qup7`）② 裸机 DWC3 USB 控制台（`a600000.ssusb` + QMP `88e8000.ssphy`）③ DPU+DSI+DSC（顺带解决 XNU 上屏，工程量最大）④ flash 草稿区（被「用户空间一字节不改」排除）。决策与验收见 `build-chain/boot-chain/DESIGN.md` §5 C.2b。
+- **B 段顺带补齐的参数（都是本机出处，别再套 sweet）**：CNTFRQ = 19,200,000（`from-binary.dts:5883` + dmesg 19.20MHz）；架构 timer PPI = phys 14 / virt 11 / secure-phys 13 / hyp 12 全 level-low（`from-binary.dts:5882`）；GICv3 = 988 SPI + 16 PPI + GICR stride 0x40000 + ITS `0x17140000`（实机 dmesg）。
 - C.3 前置未动：`mkadt.py` senna 参数（dram/GIC/UFS/timebase/VTIMER INTID/FB 几何）、`platform.sm8475.conf` 的 `RUNTIME_SUPPORT`、B 段剩余实测；**新增 DPU+DSI+DSC 显示驱动**。
 - 任何实机动作前：给方案 + 回滚 + 用户确认；只 `fastboot boot`，不刷分区。
-- 工具：`build-chain/tools/boot-attempt.ps1`（校验 sha256 → 探测设备 → 生成证据 → 仅 `-Confirm` 时 `fastboot boot`）；`build-chain/tools/pstore-dump.sh`（设备侧读 pstore/last_kmsg）；`build-chain/tools/kcore-read.sh` + `kcore_phys.py`（按 `PAGE_OFFSET 0xFFFF000000000000 + phys` 从 `/proc/kcore` 直读物理页）。
+- 工具：`build-chain/tools/boot-attempt.ps1`（校验 sha256 → 探测设备 → 生成证据 → 仅 `-Confirm` 时 `fastboot boot`）；`build-chain/tools/persist_test.py`（pmsg 持久性终判）；`build-chain/tools/pstore-dump.sh`；`kcore-read.sh`/`kcore_phys.py`（已作废，内核没编 kcore）；`collect_readback.py`（pstore 空时转 kcore，已作废）。
 **D. 内核/用户空间**
 - 明确哪些 kext/用户态组件必须注入、哪些由内核补；rootfs 依然一字节不改（只读挂载或 overlay 方案需先论证）。
 ## 8. 下一会话第一件事
 
-**现状（2026-11-22）**：C.1 已通过（`fastboot boot` 可用）；C.2 画屏路线已证伪（command-mode 面板），反馈通道改走 ramoops/pstore；v0.4 上机后 pstore 为空，v0.5 上机后 **adbd 没起来**（PC 侧只有 MTP），取证被卡住。`DESIGN.md`、`PROGRESS.md` 已按这些事实回填。
+**现状（2026-11-22 终判）**：C.1 已通过（`fastboot boot` 可用）；C.2 的四条回读路线（splash 帧缓冲、ramoops/pstore、`/proc/kcore`、`/dev/mem`）全部关闭，OPPO minidump 只在崩溃时收集 → **当前唯一阻塞点 = 输出通道**。C.2b 方案已写入 `build-chain/boot-chain/DESIGN.md` §5，`PROGRESS.md` 已回填。
 
-**按顺序做，不要跳步**：
+**第一件事：先决策，不要自己选**——UART 硬件能不能接触（拆后盖接 GPIO26/27，或已有 USB-TTL / 工程线 / 9008 线里带串口）？
+- 能 → 走 **C.2b-UART**（成本最低、和 XNU 早期调试同一条路）。
+- 不能 → 走 **C.2c 裸机 DWC3 控制台**（工程量大，但与 C.3 的 USB 驱动同源，不算白做）。
 
-1. **先让 adb 回来**：解锁手机屏幕（看有没有「USB 调试」授权弹窗 / 是否卡在开机动画），必要时长按电源 10 s 重启（会回 boot_b 正常系统，root 由 Magisk 恢复）。判据：`adb devices` 出现 `78ad6b26 device`。
-2. **读 pstore**（首选，最省事）：
-   `adb push build-chain/tools/pstore-dump.sh /data/local/tmp/pstore.sh`
-   `adb shell su -c 'sh /data/local/tmp/pstore.sh'`
-   - 出现 `SENNA SHIM v0.5` + 12 行 `TAG <hex>` → 通道打通，把 DTB magic / CurrentEL / CNTFRQ / GICD-TYPER / GICR TYPER / ICC_SRE / PSCI 版本 / IMEM/FB 各项写回 DESIGN §6 与 `REMAINING.md`。
-   - 仍是空 → 进第 3 步。
-3. **kcore 直读物理内存**（绕开 pstore 校验，回答「到底有没有写进 DRAM」）：
-   `adb shell su -c 'dd if=/proc/kcore bs=1024 count=64 of=/data/local/tmp/kc.hdr'` → `adb pull /data/local/tmp/kc.hdr`
-   `python build-chain/tools/kcore_phys.py kc.hdr 0xa7a5c0000 4096` → 按输出的 `dd if=/proc/kcore bs=1 skip=... ` 在设备上 dump → 搜 `SENNA SHIM`。
-   - 有 → 数据进了 DRAM，问题在 pstore 的头部字段/覆盖顺序；改 shim 头部写入即可。
-   - 没有 → 写入确实没落盘（cache/映射问题），进第 4 步。
-4. **v0.6 方案**（先在 `DESIGN.md` §5 C.2 写清再上机，单变量）：按 `SCTLR_EL1.M` 分支决定是否清 cache；或换到 splash 之外的持久区；或去掉 `dc civac`（若 v0.5 的异常其实是它导致的挂死）。
-5. **不要再做画屏判读**：v0.2/v0.3 已证伪——面板是 DSI command mode + DSC，ABL 之后没有扫描输出，写 splash 区不可见；XNU 上屏必须先有 DPU+DSI+DSC 驱动（见 DESIGN §5 C.2 结论）。
-6. **边界不变**：只 `fastboot boot`，不刷分区、不动用户空间；每次实机动作前先给方案 + 回滚；执行器 `build-chain/tools/boot-attempt.ps1 -Image shim-v4 -Confirm`。
+**UART 路线（先离线写清，再上机一次验证）**：
+1. 写 `build-chain/boot-chain/UART.md`：GENI SE 在 `0x99c000`（窗口 `0x4000`）、SPI 608、引脚 GPIO26(TX)/GPIO27(RX)、function `qup7`、`115200n8`（出处 `from-binary.dts:17`、`:13812-13825`、`:2573-2584`）。只读 `GENI_S_STATUS`/`GENI_S_IRQ` 先判断 ABL 是否已把 SE 初始化过，再决定是否重配 `GENI_S_*`。
+2. shim 侧加 `uart_putc()`，把 12 行 `TAG <hex>` 直接打到串口（不依赖 ramoops）；串口无输出时退回最原始的忙等轮询 TX FIFO。
+3. 上机：`build-chain/tools/boot-attempt.ps1 -Image shim-v4 -Confirm`，PC 侧开串口记录（`mode COMx:115200,n,8,1` 或 PuTTY）。
+
+**DWC3 路线（若 UART 不可行）**：先离线读 DTB `ssusb@a600000` + `dwc3-msm.ko` 的初始化序列与 QMP PHY `88e8000.ssphy`，只做 device-mode 枚举；**换自有 VID/PID**（不要复用 `18D1:4EE8`，会和 adb 抢），先写完代码再上机。
+
+**不要再做的三件事**：读 pstore（跨重启不持久，已终判）、`/proc/kcore`+`/dev/mem`（内核没编）、画屏判读（面板是 DSI command mode + DSC，ABL 之后没有扫描输出）。
+
+**通道打通之后**：把 12 项 `TAG` 值（DTB magic、CurrentEL、SCTLR、CNTFRQ、CNTPCT、GICD_PIDR2/TYPER、GICR_TYPER、ICC_SRE、PSCI 版本、IMEM restart reason、FB 读回）写回 `DESIGN.md` §6 与 `REMAINING.md`，然后进 C.3。
+
+**边界不变**：只 `fastboot boot`，不刷分区、不动用户空间一字节；每次实机动作前先给「目标/做法/验收/失败日志」；执行器 `build-chain/tools/boot-attempt.ps1 -Image shim-v4 -Confirm`。

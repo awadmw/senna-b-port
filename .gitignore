@@ -29,3 +29,5 @@ build-chain/work/probe.sh
 build-chain/work/ramoops_probe.sh
 build-chain/work/pstore_after.sh
 build-chain/work/readback/
+build-chain/work/*.sh
+build-chain/work/progress_add.md

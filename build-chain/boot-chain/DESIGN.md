@@ -22,9 +22,10 @@
 | GICv3 ITS | `0x17140000+0x20000` | 同上 `:1334-1339` | 证（DTB） |
 | CPU 数 | 8（`cpu@0/100/200/300/400/500/600/700`，`enable-method = "psci"`） | `from-binary.dts:492-`，`/cpus` | 证（DTB） |
 | PSCI | `compatible = "arm,psci-1.0"`，`method = "smc"` | `from-binary.dts:1197-1199` | 证（DTB） |
-| 架构 timer 频率 | `clock-frequency = 0x124f800` = 19,200,000 | `from-binary.dts:7481-7487` `timer@17420000` | 证（DTB），运行时再用 `CNTFRQ_EL0` 交叉校验 |
+| 架构 timer 频率 | `clock-frequency = 0x124f800` = 19,200,000 | `from-binary.dts:7481-7487` `timer@17420000`；`from-binary.dts:5883` `timer` 节点 | 证（DTB）+ 证（实机 dmesg：`arch_timer: cp15 and mmio timer(s) running at 19.20MHz (virt/virt)`） |
+| 架构 timer PPI（EL1 可用） | secure-phys **13**、phys **14**、virt **11**、hyp **12**，全部 level-low（`0xff08`） | `from-binary.dts:5880-5886` `timer { compatible = "arm,armv8-timer" }` | 证（DTB）；实机 dmesg 输出 `GICv3:arch_timer(11)` 与 virt=11 一致 |
 | timer frame 0 | `frame@17421000`，regs `0x17421000+0x1000` / `0x17422000+0x1000`，`interrupts = <0 8 4 0 6 4>` | `from-binary.dts:7490-` | 证（DTB）；这是 EL2/hyp 视角的 SPI 编号，**不是** EL1 下可用的 PPI 号 |
-| UART 控制台 | GENI SE `0x99c000` + `0x4000`，`qcom,msm-geni-console`，`interrupts = <0 0x260 4>`（SPI 608） | `from-binary.dts:13812-13825` `qcom,qup_uart@99c000`；bootargs `console=ttyMSM0` | 证（DTB），但 SE 需要时钟/GPIO 初始化，ABL 之后是否仍可用**未证** |
+| UART 控制台 | GENI SE `0x99c000` + `0x4000`，`qcom,msm-geni-console`，`interrupts = <0 0x260 4>`（SPI 608），**引脚 GPIO26(TX)/GPIO27(RX)，function `qup7`**；`stdout-path = "/soc/qcom,qup_uart@99c000:115200n8"` | `from-binary.dts:2573-2584`（`qupv3_se7_2uart_pins`/`_active`）、`from-binary.dts:17` | `from-binary.dts:13812-13825` `qcom,qup_uart@99c000`；bootargs `console=ttyMSM0` | 证（DTB），但 SE 需要时钟/GPIO 初始化，ABL 之后是否仍可用**未证** |
 | IMEM | 基址 `0x146aa000`，`restart_reason@65c` → **`0x146aa65c`** | `from-binary.dts:12935-12950` | 证（DTB）；与 sweet 常量数值相同属巧合，senna 有独立出处 |
 | UFS host | `ufshc@1d84000`，`compatible = "qcom,ufshc"`，PHY `qcom,ufs-phy-qmp-v4-cape` | `from-binary.dts:12729`、`from-binary.dts:426`（alias `ufshc1`） | 证（DTB） |
 | splash 区 | `splash_region` = `0xb8000000 + 0x2b00000`（45,088,768），label `cont_splash_region` | `from-binary.dts:412-416` | 证（DTB）；**帧缓冲基址/stride/像素格式本身未证**（见 §6） |
@@ -95,7 +96,7 @@
 
 ### C.2 senna 诊断 shim（无 XNU，探测 + 文本回读）
 
-**状态：实机验证进行中（2026-11-22）。v0.1–v0.3 的「画屏」路线已判定不可行，改为经 ramoops/pstore 回读文本；v0.5 上机后 adbd 未恢复，取证被阻塞。**
+**状态：反馈通道判定完成（2026-11-22）——画屏证伪、ramoops/pstore 跨重启不持久、`/proc/kcore` 与 `/dev/mem` 均不可用 → 三条现成回读路线全部关闭。C.2 下一步是「重选输出通道」（见下文 C.2b），通道落地前不再做 shim 上机。**
 
 - **目标**：用我们自己的 boot.img 在 senna 上跑起 shim，验证 §2.1 常量与 §6 未证项。
 - **重大结论（2026-11-22，实机证伪）**：senna 的面板是 DSI **command mode** + DSC，bootargs 里写死 `msm_drm.dsi_display0=qcom,mdss_dsi_oplus_senna_bc_nt37705_1240_2772_dsc_cmd`（`build-chain/artifacts/dts-roundtrip/from-binary.dts:16`）。ABL 只把一帧推给面板 GRAM，之后**没有持续扫描输出**，因此往 splash 区（`0xb8000000+0x2b00000`）写像素**永远不会显示**——除非先跑起 DPU+DSI+DSC 驱动。
@@ -109,10 +110,36 @@
   - v0.3（屏显路线）：commit `3bbac9d`，CI run 44969357022；屏幕 4.5 min 内不可见 → 判伪。
   - v0.4（ramoops 首版）：commit `0b09995`，CI run 44970068008，`senna-shim-v4.img` sha256 `dd919a15c31d444e5854b8e3c6deee21b9eb1569c7f8f38c4d45b2700dcffbc6`；上机 `2026-11-22T01:10:31Z`，fastboot `Sending 84 KB OKAY` / `Booting OKAY`，30 s 回 adb、63 s `sys.boot_completed=1`，但 pstore 为空。
   - v0.5（加 `dc civac` 逐行清 cache + `dsb sy; isb`）：commit `20c95d3b4403`，CI run 44970517965，`senna-shim-v4.img` sha256 `a05c1136a35c4936b16103ec964400817d869d71330cf2b53cd49d29518ca47a`（v2 `eca04eddfa136184c1a214eac7a10323e92ecdb78a8b46dd9d5292abcd3935b3`）；上机 `2026-11-22T01:15:46Z`，fastboot 输出同上（`Total time: 0.789s`），之后 **adb 再未枚举**（USB 上只有 `CAPE-MTP _SN:78AD6B26`，VID_18D1&PID_4EE8，稳定 10 min 以上）→ 无法读 pstore，也无法判断是正常 reset 还是看门狗复位。
-- **验收**：shim 跑完后 `/sys/fs/pstore/console-ramoops-0` 出现 `SENNA SHIM v0.x` 文本，且 12 行 `TAG <hex>` 可解析；设备自动回到 Android；`fastboot getvar all` 无变化。
+- **验收（已作废）**：~~shim 跑完后 `/sys/fs/pstore/console-ramoops-0` 出现 `SENNA SHIM v0.x` 文本~~——ramoops 已判定不持久（C.2b），此验收不再适用；改由 C.2b 选定通道的验收替代。
 - **取证脚本**：`build-chain/tools/pstore-dump.sh`（设备侧读 pstore/last_kmsg）、`build-chain/tools/kcore-read.sh` + `build-chain/tools/kcore_phys.py`（绕开 pstore，直接从 `/proc/kcore` 线性映射 `PAGE_OFFSET+phys` 校验 `0xa7a5c0000` 是否被写入）。
 - **失败日志**：fastboot 完整输出（注意 v0.5 那次真输出落在 `.fastboot.err`，`.fastboot.log` 为 0 字节）、设备回 Android 耗时、pstore 目录列表、adbd 是否恢复；卡死 → 长按电源 10 s 并记录。
 
+### C.2b 输出通道重选（当前唯一阻塞点）
+
+**目标**：给 shim（以及将来的 XNU）找一条「裸机写 → 主机读」的可靠通道。
+**做法**：先把所有不依赖硬件的候选逐一证伪，再按成本排序；上机前每条通道都要有可离线复现的写入/读取脚本。
+**验收**：主机能完整读回 shim 的 12 行 `TAG <hex>`，且同一通道在 XNU 阶段可复用（或明确记录不可复用）。
+
+已证伪的候选（2026-11-22，均有实机证据）：
+
+| 候选 | 判据 | 结论 |
+| --- | --- | --- |
+| splash 帧缓冲 | v0.2/v0.3 跑满 4.5 min 屏幕仍在 ABL logo；面板名带 `_dsc_cmd`（`from-binary.dts:16`） | 不可见（cmd-mode + DSC），需 DPU+DSI 驱动，代价最大 |
+| ramoops/pstore | `build-chain/evidence/boot-attempts/20261122T022935Z-pmsg-persist.md`：`/dev/pmsg0` 写入 `write_ok`，重启后 `/sys/fs/pstore` total 0 | **不持久**（内核 console 与 pmsg 都写了，跨重启全丢） |
+| `/proc/kcore` | `/proc/config.gz`：`CONFIG_PROC_KCORE is not set` | 不可用 |
+| `/dev/mem` | `mknod /dev/mem c 1 1` 成功，但 `dd` 报 `No such device or address`；`/proc/config.gz`：`# CONFIG_DEVMEM is not set` | 不可用（内核没编 DEVMEM，与权限无关） |
+| OPPO minidump | `ro.oplus.minidump.kernel.log.support=true`、`/sys/class/ramdump`、分区 `rawdump/logdump/logfs/xbl_ramdump_a`；但 `/data/persist_log/DCS/{de,en}/minidump` 与 `minidumpbackup` 均为空 | 只在崩溃时收集，且需内核先写 minidump 表；不能当常规输出 |
+
+剩余候选（按成本/风险排序）：
+
+1. **UART**：GENI SE `0x99c000`，GPIO26(TX)/GPIO27(RX)，115200n8，SPI 608（§2.1）。最省事最可靠；代价是需要接触主板测试点或专用调试线。
+2. **裸机 USB device**：DWC3 `0xa600000`（`/sys/devices/platform/soc/a600000.ssusb`，驱动 `msm-dwc3`）+ QMP PHY（`88e8000.ssphy`）+ GCC 时钟/GDSC。不需额外硬件，成功后 shim 与 XNU 可共用一条控制台；代价是自写 USB 设备栈，且调试期本身「没有输出」，只能靠主机是否枚举来反馈。
+3. **DPU+DSI+DSC 显示**：C.3 迟早要做（iOS 需要画面），但作为调试通道投入产出比最差，应排在串口/USB 之后。
+4. **flash 草稿区**（`misc` 偏移 `0x800` 之后、`logfs` 等）：需要 shim 自带 UFS 栈（`ufshc@1d84000`），代价与 USB 相当，且属于分区写入，与 m00002 约束冲突 → 暂不考虑。
+
+决策：**优先 UART**；若无法接触 UART 测试点，则启动「裸机 DWC3 控制台」子项目（C.2c）作为替代。通道落地前，C.2 的探测结果一律按「未读回」处理，不写进 §6 已证列。
+
+**失败日志**：候选证伪时记录判据命令与原始输出（如上表），不要只写结论。
 ### C.3 XNU 接管（依赖 B 段剩余项）
 
 - **目标**：shim 把 payload（XNU demo kernel + ADT）拉起，出现 XNU 早期日志（帧缓冲/串口二选一）。
@@ -129,12 +156,12 @@
 | 项 | 现状 | 探测/替代方案 |
 | --- | --- | --- |
 | 帧缓冲基址 / stride / 像素格式 | **已降级为非阻塞**：面板是 DSI command mode + DSC，ABL 之后没有持续扫描输出，写 splash 区不可见（2026-11-22 实机证伪 v0.2/v0.3） | 不再靠画色块判 stride；要上屏必须先有 DPU+DSI+DSC 驱动（C.3 前置）。像素几何仍可留待 XNU 显示驱动阶段，用 DPU 寄存器读回 |
-| VTIMER/PTIMER INTID（EL1 可用 PPI） | sweet 用 19/18，senna 无出处 | C.2 v0.4/v0.5 已把候选逐个使能后的 `ICC_IAR1_EL1` 命中值写进 ramoops 文本；待 pstore 可读后回填 |
-| `CNTFRQ_EL0` | DTB 给 19,200,000 | C.2 直接读寄存器写进 ramoops，与 DTB 对照（待回读） |
-| ramoops 物理地址与布局 | 实机 dmesg 两次独立重启均为 `0x240000@0xa7a5c0000, ecc: 0`；DT 无 `reg`（`from-binary.dts:381-389`）→ 由内核启动时分配 | 地址确定性已证（同一地址跨重启）；但地址随内核分配策略可能变，shim 侧仍按「已知基址优先 + 扫描」处理，并在读到 pstore 后核对 |
-| 写入 DRAM 的可见性（cache） | ABL 交给 shim 时 MMU 是否开启、映射是否 cacheable **未证**；v0.4 写入未清 cache → pstore 为空 | v0.5 加 `dc civac` 逐 64 B 行清理 + `dsb sy; isb`；若 v0.5 的 pstore 有内容即证「MMU 开着且 cacheable」 |
+| VTIMER/PTIMER INTID（EL1 可用 PPI） | **已证**：phys 14、virt 11、secure-phys 13、hyp 12，level-low | `from-binary.dts:5882`（`arm,armv8-timer` interrupts），**不要**沿用 sweet 的 19/18 |
+| `CNTFRQ_EL0` | **已证** 19,200,000（DTB `clock-frequency` + 实机 dmesg `arch_timer ... 19.20MHz`） | 无需再探测；XNU 侧按 19.2 MHz 配置 timebase |
+| ramoops 物理地址与布局 | 地址 `0x240000@0xa7a5c0000` 稳定（`/sys/module/ramoops/parameters/mem_address=45002522624`），但**内容跨重启不保留** | 通道已关闭（C.2b）。若将来再次尝试，先解释「为什么内核自己每 boot 写 2 MB console 日志、重启后却一条都没有」 |
+| 写入 DRAM 的可见性（cache） | v0.5 已加 `dc civac` 逐 64 B 行 + `dsb sy; isb`，pstore 仍为空 → 无法据此判断 MMU/cache 属性 | 随通道关闭而挂起；新通道（UART/USB）自带「写入即输出」，不再依赖 DRAM 跨 boot 保留 |
 | PSHOLD 寄存器 | senna DTB 无 pshold 节点，**未证** | 不复用 sweet 的 `0x0c264000`；回退只用 `PSCI_SYSTEM_RESET`（PSCI 1.0 已证） |
-| UART 控制台可用性 | GENI `0x99c000` 有节点，但 SE 时钟/GPIO 状态未知 | 本阶段不用 UART；若将来需要，先证 ABL 是否留下已初始化的 SE |
+| UART 控制台可用性 | 引脚 GPIO26/27、115200n8、SPI 608 已证（§2.1）；但 ABL 之后 SE 时钟/PHY 状态、以及物理测试点是否可接触**未证** | 作为 C.2b 首选通道：先在不改分区的前提下用 shim 直接配 GENI SE（`se-clk`/`m-ahb`/`s-ahb` + QUP wrapper）发一个字符，主机侧看是否收到 |
 | ABL 是否把 x0 指向有效 DTB | 官方 kernel 需要它，故极可能为真 | C.2 打 DTB magic；无效则回退「扫描 `0x1000000` 起 32 MB 找 `SWEETXNU`」 |
 | ramdisk 载入地址 | v4 头 `ramdisk_addr = 0x1000000` | 直接扫描该地址；命中 `SWEETXNU` 即定案 |
 
@@ -168,6 +195,10 @@
 - 2026-11-22：**画屏路线证伪**。senna 面板是 DSI command mode + DSC（`from-binary.dts:16` bootargs 面板名 `..._dsc_cmd`），ABL 之后没有持续扫描输出，写 splash 区不可见；v0.2/v0.3 代码确实执行到自动复位（uptime 归零、回 Android），屏幕却全程停在 ABL logo。→ C.2 反馈通道改为 ramoops/pstore；C.3 上屏前置升级为「DPU+DSI+DSC 驱动」。
 - 2026-11-22：ramoops 通道选「直接写 `persistent_ram_buffer` 头」而不是伪造整块 ramoops 元数据。理由：本机 `ecc: 0`，校验只剩 `sig ^ PERSISTENT_RAM_SIG == 0`（`fs/pstore/ram_core.c:488-530`），只需 `{sig=0x43474244,start=0,size=len}` 三字段；内核用 `pgprot_noncached` 读真实 DRAM，绕开 cache 差异。
 - 2026-11-22：v0.4（无 cache 清理）→ pstore 为空后，v0.5 **只加 `dc civac` + `dsb`，不动基址/扫描范围/文本格式**，保持单变量；若仍为空，下一步改成按 `SCTLR_EL1.M` 分支（MMU 关时不需要清理，说明问题在别处）。
+- 2026-11-22：**ramoops 通道关闭**。终判依据：`/dev/pmsg0` 写入 `write_ok` + `sync`，`adb reboot` 后 `/sys/fs/pstore` total 0、marker 全无（`build-chain/evidence/boot-attempts/20261122T022935Z-pmsg-persist.md`）；同时 `init.oplus.debug.rc:816` 那句 `copy /sys/fs/pstore/console-ramoops-0 /data/debugging/last_kmsg.txt` 在每次启动都失败——说明**连 OPPO 自己都读不到这个文件**，不是 Android 删了它。
+- 2026-11-22：**用户态直读物理内存的路线全部关闭**：`/proc/config.gz` 里 `CONFIG_PROC_KCORE is not set`、`# CONFIG_DEVMEM is not set`；`mknod /dev/mem c 1 1` 能建节点但 `dd` 报 `No such device or address`。以后不要再在 kcore/devmem 上花时间。
+- 2026-11-22：**中断号以本机 DTB 为准**：`arm,armv8-timer` 给 PPI 13/14/11/12（`from-binary.dts:5882`），实机 dmesg 的 `GICv3:arch_timer(11)` 与 virt=11 对上；sweet 的 19/18 一律不采用。CNTFRQ 用 DTB `0x124f800` + dmesg `19.20MHz` 双证据定案。
+- 2026-11-22：**输出通道优先 UART**，次选裸机 DWC3 控制台；显示驱动排最后（虽然 C.3 终局需要）；flash 草稿区因与「不刷分区」约束冲突而排除（详见 C.2b）。
 
 ## 10. 待办（按顺序）
 
@@ -175,7 +206,8 @@
 2. [C.2] ~~建 `build-chain/work/senna-shim/`，替换常量、加探测与自动重启~~ 完成（源码见该目录）。
 3. [C.2] ~~交叉编译 + CI 出镜像~~ 完成（`.github/workflows/senna-shim.yml`，v4/v2 双镜像 + SHA256SUMS）。
 4. [C.2] ~~画屏判读 FB/stride/format~~ **证伪并关闭**：cmd-mode 面板，ABL 后无扫描输出（§5 C.2 结论）。
-5. [C.2] **当前阻塞点**：v0.5 上机后 adbd 未恢复，pstore 读不到 → 需用户确认手机屏幕/解锁并让 adb 回来；随后跑 `build-chain/tools/pstore-dump.sh`，或先用 `kcore-read.sh`+`kcore_phys.py` 直读 `0xa7a5c0000` 判「数据是否进 DRAM」。
-6. [C.2] 回读成功 → 把 `TAG <hex>` 12 行解析结果回填 §6 与 `REMAINING.md`（DTB magic、EL、CNTFRQ、GIC、PSCI、IMEM、splash 等）。
-7. [C.3] `mkadt.py` senna 参数落地（每个值在本文件 §2 有出处），并在 C.2 回读补齐未证项之后。
-8. [B 剩余] CNTFRQ、GIC 中断实测结果回填本文件与 `REMAINING.md`；EDL 演练、iOS 16.7.16 rootfs 另排。
+5. [C.2] ~~pstore 回读~~ **通道关闭**：pmsg 终判不持久（`20261122T022935Z-pmsg-persist.md`）；kcore/devmem 也都不存在（`CONFIG_PROC_KCORE`/`CONFIG_DEVMEM` 均未开）。
+6. [C.2b] **当前阻塞点 = 输出通道**：优先做 UART（GPIO26/27，需硬件可接触）；否则立「裸机 DWC3 控制台」子项目。通道先用一个最小可复现实验证明（shim 发一个字符 / 主机侧收到）。
+7. [C.2] 通道打通后再上机回读 `TAG <hex>`，把 DTB magic、EL、GIC/PSCI/IMEM 等未证项一次性回填 §6。
+8. [C.3] 与通道并行可做的离线工作：`mkadt.py` senna 参数落地、`xnu/senna/platform.sm8475.conf` 的 `RUNTIME_SUPPORT`、iOS 16.7.16 rootfs 与 `mkipsw` 道具链。
+9. [B 剩余] CNTFRQ、GIC 中断已按 DTB + 实机 dmesg 回填（§2.1、§6）；仍待：EDL 演练、iOS 16.7.16 rootfs。
