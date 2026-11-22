@@ -227,7 +227,7 @@
 5. [C.2] ~~pstore 回读~~ **通道关闭**：pmsg 终判不持久（`20261122T022935Z-pmsg-persist.md`）；kcore/devmem 也都不存在（`CONFIG_PROC_KCORE`/`CONFIG_DEVMEM` 均未开）。
 6. [C.2b] **决策已完成（2026-11-22）**：UART 硬件不可接触（用户 m01641）→ 转 C.2c 裸机 DWC3 控制台。UART 设计 `build-chain/boot-chain/UART.md` 保留备查，不再推进。
 6a. [C.2c] ~~设计稿~~ **v1 完成（2026-11-22）**：`build-chain/boot-chain/USB-CONSOLE.md`，含 DTB 证据表、DWC3 寄存器表（Linux v6.6 出处）、A/B/C 三条路径与 D0–D4 计划；主机侧观测器 `build-chain/tools/usb_watch.py` 已写并冒烟通过。
-6b. [C.2c/D0] ~~出 `senna-shim-v0.6spin` 镜像~~ **已就绪（2026-11-22，CI run `44977828469`）**：`SENNA_RAMOOPS_WRITE=0` + `SENNA_D0_HOLD_MS=120000`，v4 sha256 `bb0a77605dcca97ccb33ed9824e36314c0abef0a6b5133ed0a4e56a294cb0caf`。**下一步**：与用户约 2 分钟窗口，先跑 `usb_watch.py --duration 150` 再 `fastboot boot`，判 U1（A 继承 / B 重建 / C 重测）。
+6b. [C.2c/D0] ~~出 `senna-shim-v0.6spin` 镜像~~ **已就绪（2026-11-22，CI run `44977828469`）**：`SENNA_RAMOOPS_WRITE=0` + `SENNA_D0_HOLD_MS=120000`，v4 sha256 `bb0a77605dcca97ccb33ed9824e36314c0abef0a6b5133ed0a4e56a294cb0caf`。**下一步**：与用户约 2 分钟窗口，先跑 `usb_watch.py --pnp-only --duration 150` 再 `fastboot boot`，判 U1（A 继承 / B 重建 / C 重测）。**2026-11-22 首次执行失败**：旧观测器并发 fastboot 轮询写坏 ABL 栈（121 超时），设备需长按电源键恢复；`--pnp-only` 是硬要求。
 7. [C.2] 通道打通后（A 或 B 路径任一成立）再上机回读 `TAG <hex>`，把 DTB magic、EL、GIC/PSCI/IMEM 等未证项一次性回填 §6。
 8. [C.3] 与通道并行可做的离线工作：`mkadt.py` senna 参数落地、`xnu/senna/platform.sm8475.conf` 的 `RUNTIME_SUPPORT`、iOS 16.7.16 rootfs 与 `mkipsw` 道具链。
 9. [B 剩余] CNTFRQ、GIC 中断已按 DTB + 实机 dmesg 回填（§2.1、§6）；仍待：EDL 演练、iOS 16.7.16 rootfs。

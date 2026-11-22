@@ -105,10 +105,24 @@
 ## 6. 分阶段计划
 
 ### D0 主机侧观测（**不改任何 shim 逻辑**，只判 U1）
-- 镜像：`senna-shim-v0.6spin` —— 探测 → 不写 ramoops → `wait_ms(60000)` → `PSCI_SYSTEM_RESET`（相对 v0.5 只改「不写 ramoops」+ 60 s 等待）。
-- 主机侧：`build-chain/tools/usb_watch.py`，每 1 s 记录 `Get-PnpDevice` 里 `VID_18D1` 的在场情况与 `fastboot devices` 是否应答，落 CSV。
-- 验收（三选一）：(a) 设备在场、`fastboot devices` 有设备但 `getvar` 超时 → **路径 A**；(b) 设备消失 → **路径 B**；(c) 设备在场且 `getvar` 正常应答 → ABL 还在跑（不可能，需重测）。
-- 失败日志：`evidence/boot-attempts/<UTC>-d0-usb-inherit.md` + `d0-usb-watch-<UTC>.csv`。
+- 镜像：`senna-shim-v0.6spin` —— 探测 → 不写 ramoops → `SENNA_D0_HOLD_MS=120000`（2 分钟静置）→ `PSCI_SYSTEM_RESET`（相对 v0.5 只改「不写 ramoops」+ 静置时长）。
+- 主机侧：`python build-chain/tools/usb_watch.py --pnp-only --duration 150 --out build-chain/evidence/boot-attempts/d0-usb-watch.csv`。
+  **必须带 `--pnp-only`**：只读 `Get-CimInstance Win32_PnPEntity` 里 `VID_18D1`/`VID_05C6` 的在场情况，**不发任何 fastboot 命令**（见下面的 D0 事故记录）。
+- 在场判定：senna bootloader 枚举为 `USB\VID_18D1&PID_D00D`（FriendlyName = `Android Bootloader Interface`），**不是**老机型的 `18D1:4EE0`；回到 Android 后是 `18D1:4EE8`（MTP）。`Get-PnpDevice` 有时看不到这个设备（类不在 USB 下），必须用 `Win32_PnPEntity`。
+- 验收（三选一）：(a) 2 分钟内 `18D1:D00D` 一直在场（shim 里也没变成别的 PID）→ **路径 A**；(b) 引导后该设备从总线消失、始终不回来 → **路径 B**；(c) 在场且切到 `4EE8` → 设备已经回 Android，超时太短，需重测。
+- 失败日志：`evidence/boot-attempts/<UTC>-shim-v4.md`（含 fastboot 输出）+ `d0-usb-watch.csv`。
+
+#### D0 事故记录（2026-11-22，已 wedge 一次设备）
+
+第一次执行时把 `usb_watch.py`（旧版，会每 1 s 跑 `fastboot devices` + `getvar`）和
+`fastboot boot` 并发跑，bulk 传输直接失败：
+`Sending 'boot.img' (84 KB) FAILED (AdbWriteEndpointSync failed: 信号灯超时时间已到 (121))`。
+更麻烦的是 **ABL 的 fastboot 栈被写坏后不自愈**：kill 掉观测器、单独重跑 `fastboot boot`
+仍然 121，`getvar product` / `reboot-bootloader` 也全是 121（`fastboot devices` 仍能列出设备，
+因为那只是本地 WinUSB 枚举）。恢复只能长按电源键 ~15 s 强制重启。
+
+**结论**：D0 期间主机侧**只允许** `--pnp-only` 观测；`fastboot boot` 传输窗口内不得有任何
+其它 fastboot 进程。这也是 `boot-attempt.ps1` 的 `-Confirm` 提示语改掉的原因。
 
 ### D1 路径 A 最小发送
 - 目标：设备发 `SENNA USB OK`，主机收到完全相同字符串。
@@ -134,7 +148,7 @@
 
 | 文件 | 作用 | 状态 |
 |---|---|---|
-| `build-chain/tools/usb_watch.py` | D0 观测：轮询 PnP + fastboot，写 CSV | 本轮新增 |
+| `build-chain/tools/usb_watch.py` | D0 观测：`--pnp-only` 纯 PnP 轮询（默认）；旧 fastboot 轮询模式**禁止与 boot 并发** | 已可用（2026-11-22 冒烟） |
 | `build-chain/tools/usb_console.py` | D1/D2：pyusb 打开 VID/PID，读 EP1 IN，写文件 | 待写（D1 前） |
 | `build-chain/tools/boot-attempt.ps1` | 已有执行器，加 `shim-v6spin` 基线即可 | 已有 |
 
@@ -160,7 +174,7 @@
 
 ## 10. 待办
 
-1. [D0] 写 `usb_watch.py`（本轮）；出 `senna-shim-v0.6spin` 镜像（下一轮，需 CI）。
-2. [D0] 与用户约一次 2 分钟窗口执行，得到 U1 结论。
+1. [D0] ~~写 `usb_watch.py`；出 `senna-shim-v0.6spin` 镜像~~ 完成（CI run `44977828469`，v4 sha256 `bb0a7760…c0caf`）；观测器已加 `--pnp-only` 并通过冒烟。
+2. [D0] 等用户电源键重启后重跑：先起 `--pnp-only` 观测器，再 `fastboot boot`（不并发 fastboot）。
 3. [D1/D2] 按 U1 结果二选一实现。
 4. [C.3] USB 通道打通后，`TAG` 回填 `DESIGN.md` §6，再进 XNU 接管。

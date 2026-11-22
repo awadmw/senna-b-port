@@ -342,9 +342,48 @@
 - `build-chain/work/senna-shim/README.md` 增「v0.6spin（D0 保持构建）」小节（一次性构建、A/B/C 判读口径、完事把 `SENNA_RAMOOPS_WRITE` 改回 1）。
 
 ### 未完成
-- **D0 本体未执行**（需要设备在场 + 2 分钟窗口）：先起 `python build-chain/tools/usb_watch.py --duration 150 --out build-chain/evidence/boot-attempts/d0-usb-watch.csv`，再另一个窗口 `boot-attempt.ps1 -Image shim-v4 -Confirm`。
+- **D0 本体未执行**（需要设备在场 + 2 分钟窗口）：先起 `python build-chain/tools/usb_watch.py --pnp-only --duration 150 --out build-chain/evidence/boot-attempts/d0-usb-watch.csv`，再另一个窗口 `boot-attempt.ps1 -Image shim-v4 -Confirm`。（**2026-11-22 修正**：必须 `--pnp-only`，见「续 4」事故。）
 - U1 未判 → 路径 A（继承 EP1，~200 行）/ 路径 B（重建 DWC3，~600 行）未选。
 
 ### 环境坑
 - `python io.open(..., encoding="utf-8-sig")` 读 `.ps1` 会把 CRLF 统一成 LF，再用 `newline=""` 写回会整文件换行全变（129 行全 dirty）→ 改 `.ps1` 一律按 `rb`/`wb` 做字节替换。
 - **`boot-attempt.ps1` 生成证据文件的隐藏 bug（本轮修掉）**：PowerShell 里 `,` 比 `+` 结合更紧，`'a' + $x,` 会把后面的数组元素当字符串拼进来（用空格连接）→ 整个计划段被压成一行（`Set-Content`/`WriteAllLines` 都救不回）。修法：这些行改用 `-f` 格式化（`('# boot attempt {0} ({1})' -f $stamp, $Image),`），并用 `[System.IO.File]::WriteAllLines(..., UTF8Encoding($true))` 显式写 BOM+CRLF。此前 3 次「计划模式」证据文件（`20261122T011007Z/011026Z/025031Z-*`）都是压成一行，已删掉重生成（`20261122T025215Z-shim-v4.md`）。
+
+
+## 2026-11-22（续 4）D0 首次执行失败：ABL fastboot 栈被并发轮询写坏（设备已 wedge，待电源键）
+
+### 目标 / 做法 / 验收
+- 目标：判 U1 —— `fastboot boot` 跳进 shim 后，ABL 建的 fastboot gadget 是否还在总线上。
+- 做法：设备在 Android（`78ad6b26 device`）→ `adb reboot bootloader` → 后台起 `usb_watch.py --duration 150` → 4 s 后 `boot-attempt.ps1 -Image shim-v4 -Confirm`。
+- 验收：观测器中 `18D1` 设备持续在场且 `getvar` 超时 = 路径 A；设备消失 = 路径 B。
+
+### 结果：失败，两次都是 121
+- 第一次（观测器并发）：`Sending 'boot.img' (84 KB) FAILED (AdbWriteEndpointSync failed: 信号灯超时时间已到 (121))`，`.fastboot.log` 0 字节。
+- kill 观测器后单独重跑（无并发）：**同样 121** → 设备侧已经 wedge，不是「并发抢带宽」这类瞬态。
+- wedge 判定：`getvar product` 5.003 s 后 121；`reboot-bootloader` 121；但 `fastboot devices` 仍列出 `78ad6b26 fastboot`（本地枚举 ≠ 设备侧应答）。无残留 fastboot/python 进程。
+- 恢复：**只能长按电源键 ~15 s**。设备当前停在 wedge 的 bootloader，未回 Android。
+
+### 根因与修正
+- 根因：旧 `usb_watch.py` 每 1 s 跑 `fastboot devices` + `getvar product`，与 `fastboot boot` 的 bulk 写共用 ABL 的同一个 fastboot 栈；ABL 的 EP 被写挂后**不自愈**。
+- 修正 1：`usb_watch.py` 新增 **`--pnp-only`**（默认推荐）：完全不走 fastboot 协议，只读 `Win32_PnPEntity`，按 `VID_18D1` 在场判 U1；docstring 顶部写明并发会让 ABL 报 121 的警告。
+- 修正 2：**PID 不是 4EE0**。senna bootloader 枚举为 `USB\VID_18D1&PID_D00D`（FriendlyName `Android Bootloader Interface`），回到 Android 是 `18D1:4EE8`（MTP）。`Get-PnpDevice -Class USB` 看不到它（类不属 USB），旧的 `pnp_snapshot()` 因此一直返回空 → 改用 `Get-CimInstance Win32_PnPEntity` + `DeviceID -match 'VID_18D1|VID_05C6'`。
+- 修正 3：`boot-attempt.ps1` 计划段第 4 条与下一步提示改为「`usb_watch.py --pnp-only`，绝不并发 fastboot 轮询」，并加黄色警告；**改 .ps1 后 BOM 丢失（编辑工具按 UTF-8 无 BOM 重写）→ 已用 `WriteAllText + UTF8Encoding($true)` 补回 BOM**（首字节 `EF BB BF` 已验证）。
+- 冒烟：`--pnp-only --duration 3` → `fastboot_gadget=True` 2/2 → `VERDICT A`（此刻设备正是 wedge 的 bootloader，说明 PnP 判在场是可靠的）。
+
+### 证据文件
+- `build-chain/evidence/boot-attempts/20261122T051802Z-shim-v4.md` + `.fastboot.log`(0 B) + `.fastboot.err`(157 B)：并发那次。
+- `build-chain/evidence/boot-attempts/20261122T051827Z-shim-v4.md` + `.fastboot.log`(0 B) + `.fastboot.err`：单独重跑那次。
+- 两份 md 的「结果」段已按上面结论回填（不再留「待填」）。
+
+### 关键参数表（本轮新增）
+
+| 项 | 值 | 出处 |
+| --- | --- | --- |
+| bootloader USB ID | `USB\VID_18D1&PID_D00D`，`Android Bootloader Interface` | `Get-CimInstance Win32_PnPEntity`（2026-11-22 实测） |
+| Android(MTP) USB ID | `VID_18D1&PID_4EE8` | 同上 |
+| 失败码 | `AdbWriteEndpointSync failed` = WinUSB 写超时（127/121） | fastboot 报错原文 |
+| 恢复方式 | 长按电源键 ~15 s | 本轮实测（`reboot-bootloader` 失败） |
+
+### 未完成
+- U1 仍未判：设备 wedge，需用户电源键重启回 Android 后重跑 D0。
+- 重跑口径：先 `python build-chain/tools/usb_watch.py --pnp-only --duration 150 --out build-chain/evidence/boot-attempts/d0-usb-watch.csv`（只读 PnP），**等它真的开始采样后**再 `powershell -NoProfile -ExecutionPolicy Bypass -File build-chain/tools/boot-attempt.ps1 -Image shim-v4 -Confirm`；引导期间不跑任何 fastboot 命令。

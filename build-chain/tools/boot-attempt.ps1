@@ -72,7 +72,7 @@ $plan = if ($Image -like 'shim-*') {
     '1. fastboot boot 镜像（只进 RAM，不写分区，不改 slot）',
     '2. 屏幕不会更新：面板是 DSI command mode，ABL 之后没有扫描输出（DESIGN.md 第 5 节）',
     '3. shim 自持 2 min（v0.6spin）后 PSCI_SYSTEM_RESET 回 Android',
-    '4. 主机侧同时跑 usb_watch.py 记录 USB 在场情况（D0）'
+    '4. 主机侧用 usb_watch.py --pnp-only 记录 USB 在场情况（D0；绝不并发 fastboot 轮询）'
   )
 } else {
   @(
@@ -142,7 +142,8 @@ Write-Host ('  ' + $outFile)
 Write-Host ('  ' + $errFile)
 Write-Host ''
 if ($Image -like 'shim-*') {
-  Write-Host '下一步：D0——另开窗口跑 usb_watch.py，把 CSV 与结论写进证据文件「结果」节。' -ForegroundColor Cyan
+  Write-Host '下一步：D0——先起 usb_watch.py --pnp-only（不碰 fastboot 协议），再跑本脚本的 -Confirm。' -ForegroundColor Cyan
+Write-Host '警告：引导期间并发 fastboot devices/getvar 会写坏 ABL 的 fastboot 栈（121 报错），只能长按电源键重启。' -ForegroundColor Yellow
 } else {
   Write-Host '下一步：拍屏并把照片放到 build-chain/evidence/boot-attempts/，在证据文件「结果」节填写现象。' -ForegroundColor Cyan
 }
